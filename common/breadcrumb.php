@@ -3,7 +3,7 @@
 $breadcrumbs = $breadcrumbs ?? [];
 
 // ホームは必ず先頭に追加
-array_unshift($breadcrumbs, ['name' => 'ホーム', 'url' => '../フロント/G-8home.php']);
+array_unshift($breadcrumbs, ['name' => 'ホーム', 'url' => '../フロント/G-8_home.php']);
 ?>
 
 <nav class="breadcrumb">

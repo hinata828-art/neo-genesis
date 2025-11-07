@@ -15,37 +15,27 @@
     font-weight: bold;
 }
 
-/* スライダー全体 */
-.slider-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
 
-/* 横スクロール部分 */
+/* ★ 修正：横スクロール(flex)をやめ、グリッド(grid)に変更 */
 .pickapp-items {
-    display: flex;
-    overflow-x: auto;
+    /* display: flex; */
+    /* overflow-x: auto; */
+    display: grid; /* ★ グリッドレイアウトに変更 */
+    grid-template-columns: repeat(3, 1fr); /* ★ 3列均等割りに設定 */
     gap: 20px;
-    scroll-behavior: smooth;
-    padding: 10px 0;
-    /* スクロールバー非表示 */
-    scrollbar-width: none; /* Firefox */
-}
-.pickapp-items::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    /* scroll-behavior: smooth; */
+    /* padding: 10px 0; */
 }
 
 /* 商品カード */
 .item {
-    /* ★ 修正：380px固定幅をやめ、コンテナ幅に応じて3分割されるよう計算 */
-    /* (33.3%幅から、gap: 20px の 2/3 (約14px) を引いた値) */
-    flex: 0 0 calc(33.333% - 14px); 
-    
-    /* ★ 修正：横並び(flex)をやめ、縦積みに変更 */
-    /* display: flex; */ /* ← 削除 */
-    /* align-items: center; */ /* ← 削除 */
+    /* ★ 修正：flex固定幅をやめ、グリッド幅に合わせる */
+    /* flex: 0 0 110px; */ 
+    width: 100%; /* ★ グリッドのセル幅に合わせる */
+    box-sizing: border-box; /* ★ paddingを含めて幅100%にするため */
 
+    /* (以下は縦積みレイアウトのまま) */
+    display: block;
     background: #fafafa;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -58,74 +48,42 @@
 
 /* 商品画像 */
 .item img {
-    /* ★ 修正：固定幅(160px)をやめ、カード幅いっぱいに(100%) */
-    width: 100%; 
+    width: 100%;
     height: 100px;
     object-fit: cover;
     border-radius: 8px;
-    /* ★ 修正：横並び用のマージンを削除 */
-    /* margin-right: 15px; */ /* ← 削除 */
-    margin-bottom: 8px; /* ★ 追加：画像とテキストの間に隙間をあける */
+    margin-bottom: 8px; 
 }
 
 /* 商品情報 */
 .item-info {
     text-align: left;
-    /* ★ 修正：flexレイアウトの子要素設定を削除 */
-    /* flex: 1; */ /* ← 削除 */
 }
 .item-title {
     font-weight: bold;
     margin-bottom: 5px;
-    font-size: 0.9em; /* ★ 修正：カードが細くなるため少し小さく */
+    font-size: 0.9em; 
 }
 .item-price {
     color: #e60000;
-    font-size: 1.0em; /* ★ 修正：カードが細くなるため少し小さく */
+    font-size: 1.0em; 
     margin-bottom: 8px;
 }
 .item-btn {
     background-color: #ffd700;
     border: none;
     border-radius: 6px;
-    padding: 4px 8px; /* ★ 修正：カードが細くなるためパディングを少し小さく */
-    font-size: 0.85em; /* ★ 追加：フォントサイズも指定 */
+    padding: 4px 8px; 
+    font-size: 0.85em; 
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
-    text-decoration: none;
-    color: #333;
-    display: inline-block;
+    text-decoration: none; 
+    color: #333; 
+    display: inline-block; 
 }
 .item-btn:hover {
     background-color: #ffcc00;
-}
-
-/* スライダーボタン */
-.slider-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    cursor: pointer;
-    font-size: 20px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    transition: background-color 0.2s;
-    z-index: 10;
-}
-.slider-btn:hover {
-    background-color: rgba(255, 255, 255, 1);
-}
-.slider-btn.left {
-    left: -10px;
-}
-.slider-btn.right {
-    right: -10px;
 }
 
 
