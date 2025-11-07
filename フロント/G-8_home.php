@@ -87,15 +87,24 @@ try {
     <!-- スライダー操作スクリプト -->
     <script>
         const slider = document.getElementById('slider');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-        prevBtn.addEventListener('click', () => {
-            slider.scrollBy({ left: -300, behavior: 'smooth' });
-        });
-        nextBtn.addEventListener('click', () => {
-            slider.scrollBy({ left: 300, behavior: 'smooth' });
-        });
+    // 商品1枚分の幅を動的に取得
+    function getItemWidth() {
+        const item = slider.querySelector('.item');
+        return item ? item.offsetWidth + 20 : 300; // 20は隙間(gap)の調整
+    }
+
+    prevBtn.addEventListener('click', () => {
+        const scrollAmount = getItemWidth();
+        slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+        const scrollAmount = getItemWidth();
+        slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
     </script>
 
     <!-- ===== カテゴリボタンエリア ===== -->
