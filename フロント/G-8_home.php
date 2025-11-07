@@ -2,8 +2,15 @@
 // データベース接続
 require '../common/db_connect.php';
 
-// 必要に応じてデータ取得処理をここに書くことができます
-// 例）$stmt = $pdo->query("SELECT * FROM rental LIMIT 5");
+// ===== 商品データ取得 =====
+try {
+    $sql = "SELECT product_name, price, product_image FROM product LIMIT 8";
+    $stmt = $pdo->query($sql);
+    $products = $stmt->fetchAll();
+} catch (PDOException $e) {
+    echo '商品データ取得エラー: ' . $e->getMessage();
+    $products = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -36,7 +43,9 @@ require '../common/db_connect.php';
     ?>
     <!-- ▲ パンくずリスト -->
 
-    <main>
+<main>
+
+    <!-- ===== おすすめ商品セクション（DB連動） ===== -->
     <section class="pickapp">
         <div class="pickapp-label">
             <h2>おすすめ商品！！！</h2>
@@ -49,41 +58,25 @@ require '../common/db_connect.php';
 
             <!-- スライダー内容 -->
             <div class="pickapp-items" id="slider">
-                <div class="item">
-                    <img src="../img/sample1.jpg" alt="AQUAVIEW 55V型 4K 有機ELテレビ">
-                    <div class="item-info">
-                        <p class="item-title">AQUAVIEW 55V型<br>4K 有機ELテレビ</p>
-                        <p class="item-price">¥128,000</p>
-                        <button class="item-btn">詳細</button>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <img src="../img/sample2.jpg" alt="COOLWAVE 400L 冷蔵庫">
-                    <div class="item-info">
-                        <p class="item-title">COOLWAVE 400L 冷蔵庫</p>
-                        <p class="item-price">¥89,800</p>
-                        <button class="item-btn">詳細</button>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <img src="../img/sample3.jpg" alt="BREEZE 6kg 洗濯機">
-                    <div class="item-info">
-                        <p class="item-title">BREEZE 6kg 洗濯機</p>
-                        <p class="item-price">¥49,800</p>
-                        <button class="item-btn">詳細</button>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <img src="../img/sample4.jpg" alt="SmartClean 掃除機">
-                    <div class="item-info">
-                        <p class="item-title">SmartClean 掃除機</p>
-                        <p class="item-price">¥25,800</p>
-                        <button class="item-btn">詳細</button>
-                    </div>
-                </div>
+                <?php if (!empty($products)): ?>
+                    <?php foreach ($products as $p): ?>
+                        <div class="item">
+                            <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
+                                 alt="<?php echo htmlspecialchars($p['product_name']); ?>">
+                            <div class="item-info">
+                                <p class="item-title">
+                                    <?php echo htmlspecialchars($p['product_name']); ?>
+                                </p>
+                                <p class="item-price">
+                                    ¥<?php echo number_format($p['price']); ?>
+                                </p>
+                                <button class="item-btn">詳細</button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>現在、おすすめ商品はありません。</p>
+                <?php endif; ?>
             </div>
 
             <!-- 右ボタン -->
@@ -94,65 +87,74 @@ require '../common/db_connect.php';
     <!-- スライダー操作スクリプト -->
     <script>
         const slider = document.getElementById('slider');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-        prevBtn.addEventListener('click', () => {
-            slider.scrollBy({ left: -300, behavior: 'smooth' });
-        });
-        nextBtn.addEventListener('click', () => {
-            slider.scrollBy({ left: 300, behavior: 'smooth' });
-        });
+    // 商品1枚分の幅を動的に取得
+    function getItemWidth() {
+        const item = slider.querySelector('.item');
+        return item ? item.offsetWidth + 20 : 300; // 20は隙間(gap)の調整
+    }
+
+    prevBtn.addEventListener('click', () => {
+        const scrollAmount = getItemWidth();
+        slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+        const scrollAmount = getItemWidth();
+        slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
     </script>
 
+    <!-- ===== カテゴリボタンエリア ===== -->
     <section class="category-section">
-    <div class="category-buttons">
+        <div class="category-buttons">
 
-        <a href="G-12_tv.php" class="category-item">
-            <img src="../img/tv.png" alt="テレビ">
-            <p>テレビ</p>
-        </a>
+            <a href="G-12_tv.php" class="category-item">
+                <img src="../img/tv.png" alt="テレビ">
+                <p>テレビ</p>
+            </a>
 
-        <a href="G-13_refrigerator.php" class="category-item">
-            <img src="../img/refrigerator.png" alt="冷蔵庫">
-            <p>冷蔵庫</p>
-        </a>
+            <a href="G-13_refrigerator.php" class="category-item">
+                <img src="../img/refrigerator.png" alt="冷蔵庫">
+                <p>冷蔵庫</p>
+            </a>
 
-        <a href="G-14_microwave.php" class="category-item">
-            <img src="../img/microwave.png" alt="電子レンジ">
-            <p>電子レンジ</p>
-        </a>
+            <a href="G-14_microwave.php" class="category-item">
+                <img src="../img/microwave.png" alt="電子レンジ">
+                <p>電子レンジ</p>
+            </a>
 
-        <a href="G-15_camera.php" class="category-item">
-            <img src="../img/camera.png" alt="カメラ">
-            <p>カメラ</p>
-        </a>
+            <a href="G-15_camera.php" class="category-item">
+                <img src="../img/camera.png" alt="カメラ">
+                <p>カメラ</p>
+            </a>
 
-        <a href="G-16_headphone.php" class="category-item">
-            <img src="../img/headphone.png" alt="ヘッドホン">
-            <p>ヘッドホン</p>
-        </a>
+            <a href="G-16_headphone.php" class="category-item">
+                <img src="../img/headphone.png" alt="ヘッドホン">
+                <p>ヘッドホン</p>
+            </a>
 
-        <a href="G-17_washing.php" class="category-item">
-            <img src="../img/washing.png" alt="洗濯機">
-            <p>洗濯機</p>
-        </a>
+            <a href="G-17_washing.php" class="category-item">
+                <img src="../img/washing.png" alt="洗濯機">
+                <p>洗濯機</p>
+            </a>
 
-        <a href="G-18_laptop.php" class="category-item">
-            <img src="../img/laptop.png" alt="ノートPC">
-            <p>ノートPC</p>
-        </a>
+            <a href="G-18_laptop.php" class="category-item">
+                <img src="../img/laptop.png" alt="ノートPC">
+                <p>ノートPC</p>
+            </a>
 
-        <a href="G-19_smartphone.php" class="category-item">
-            <img src="../img/smartphone.png" alt="スマートフォン">
-            <p>スマートフォン</p>
-        </a>
+            <a href="G-19_smartphone.php" class="category-item">
+                <img src="../img/smartphone.png" alt="スマートフォン">
+                <p>スマートフォン</p>
+            </a>
 
-    </div>
-</section>
+        </div>
+    </section>
 
 </main>
-
 
 </body>
 </html>
