@@ -1,41 +1,38 @@
 <!-- /common/header.php -->
 <header>
-    
+    <!-- 上段：ロゴ、カート、会員情報 -->
     <div class="top">
-        <div class="menu">
-            <a href="#"><img src="../img/menu.png" alt="メニューアイコン" width="100" height="50"></a>
-        </div>
-
-        <div class="header-button">
-            <div class="header-icon">
-                <a href="G-1_customer-form.php"><img src="../img/icon.png" alt="アカウントアイコン" width="50" height="50"></a>
-            </div>
-        </div>
-
-        <div class="header-cart">
-            <a href="#">
-                <img src="../img/cart.png" alt="カートアイコン">
-                <label>カート</label>
+        
+        <!-- ロゴ (仮：ホームへのリンク) -->
+        <div class="header-logo">
+            <a href="G-8_home.php">
+                <!-- imgフォルダは ../img/ にあると仮定 -->
+                <!-- ★ロゴ画像のサイズ指定もCSS側で行うためインラインスタイルを削除（または .header-logo img としてCSSで指定） -->
+                <img src="../img/NishimuraOnline.png" alt="ロゴ" class="logo-image">
             </a>
         </div>
-    </div>
 
-    <div class="bottom">
-        <div class="select-box">
-            <select>
-                <option value="">すべて</option>
-                <option value="tv">テレビ</option>
-                <option value="refrigerator">冷蔵庫</option>
-                <option value="microwave">電子レンジ</option>
-                <option value="camera">カメラ</option>
-                <option value="headphone">ヘッドホン</option>
-                <option value="washer">洗濯機</option>
-            </select>
-        </div>
+        <!-- ボタン類 (カート・会員情報) -->
+        <div class="header-button">
 
-        <div class="search-box">
-            <input type="text" placeholder="商品名で検索">
-            <button type="submit">🔍</button>
+            <!-- カート -->
+            <div class="header-cart">
+                <a href="G-10_cart.php">
+                    <!-- ★インラインスタイルがないことを確認 -->
+                    <img src="../img/cart.png" alt="カート">
+                    <label>カート</label>
+                </a>
+            </div>
+
+            <!-- 会員情報 (アイコン) -->
+            <div class="header-user" style="margin-left: 15px;">
+                <a href="G-4_member-information.php">
+                    <!-- ★★★ ここにあった style="..." を削除 ★★★ -->
+                    <img src="../img/icon.png" alt="会員情報">
+                </a>
+            </div>
+
         </div>
     </div>
+    <!-- (下段：検索フォーム...は省略) -->
 </header>
