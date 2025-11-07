@@ -4,169 +4,143 @@
     margin: 0;
     padding: 0;
 }
-
 body {
     font-family: sans-serif;
-    /* ページ全体の横はみ出しを防ぐ */
     overflow-x: hidden; 
 }
 
 /* ===== ヘッダー全体 ===== */
 header {
-    /* 100vw は横はみ出しの原因になるため削除 */
-    background-color: #c9d6ff;
+    background-color: #a9bcf5; /* 画像から抽出した背景色 */
     padding: 10px;
 }
 
 /* ===== 上段：ロゴ・アイコン・カート ===== */
-.top {
+.top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 均等配置 */
+    gap: 10px;
+}
+
+/* ハンバーガーメニュー (BulmaのCSSも一部上書き) */
+.hamburger-menu {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    width: 38px; /* サイズ指定 */
+    height: 38px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.hamburger-menu span {
+    display: block;
+    height: 4px;
+    width: 100%;
+    background-color: #ffffff; /* 白い線 */
+    border-radius: 2px;
+}
+
+/* ロゴ */
+.header-logo {
     display: flex;
     align-items: center;
 }
-
-/* ★追加：ロゴ画像のサイズを指定 */
-.header-logo {
-    margin-right: 15px; /* ロゴとボタンの間に隙間を空ける */
-}
 .header-logo img {
-    height: 40px; /* ロゴの高さを 40px に指定 */
-    width: auto;  /* 幅は自動調整 */
-    display: block;
+    height: 40px;
+    width: auto;
 }
 
-/* 右側のボタン（カートとアイコン）の親 */
-.header-button {
-    margin-left: auto; /* 右寄せにする */
-    display: flex;     /* ★ カートとアイコンを横並びにする */
+/* 右側のアイコン群 */
+.header-icons {
+    display: flex;
     align-items: center;
-    gap: 15px;         /* カートとアイコンの間の隙間 */
+    gap: 10px;
 }
 
-/* カート部分：枠で囲んでボタン風に */
+/* ユーザーアイコン */
+.header-user {
+    background-color: #ddd; /* グレーの円 */
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header-user img {
+    width: 28px;
+    height: 28px;
+}
+
+/* カートボタン */
 .header-cart a {
     display: flex;
     align-items: center;
     gap: 5px;
     background-color: #fff;
-    border: 1px solid #aaa;
-    border-radius: 8px;
-    padding: 5px 10px;
+    border: 1px solid #333; /* 黒い枠線 */
+    border-radius: 9999px; /* 角丸 (円形) */
+    padding: 8px 16px;
     text-decoration: none;
     color: #333;
-    transition: 0.2s;
-}
-
-.header-cart a:hover {
-    background-color: #f1f1f1;
-}
-
-/* カートアイコンのサイズ */
-.header-cart img {
-    width: 30px;
-    height: 30px;
-    display: block;
-}
-
-.header-cart label {
-    font-size: 16px;
     font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.header-cart img {
+    width: 24px;
+    height: 24px;
 }
 
-/* ★追加：ユーザーアイコンのサイズを指定 */
-.header-user img {
-    width: 40px;  /* ユーザーアイコンのサイズ */
-    height: 40px;
-    display: block;
-    border-radius: 50%; /* 円形にする (任意) */
-}
-
-/* ===== 下段：セレクトボックス + 検索窓 ===== */
-.bottom {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* ===== 下段：検索窓 ===== */
+.bottom-row {
     margin-top: 10px;
     width: 100%;
 }
-
-/* 左3割のセレクトボックス */
-.select-box {
-    flex: 3;
-}
-
-.select-box select {
+.search-container {
+    position: relative;
     width: 100%;
-    padding: 8px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    font-size: 16px;
-}
-
-/* 右7割の検索窓＋🔍ボタン */
-.search-box {
-    flex: 7;
     display: flex;
 }
-
-.search-box input {
+.search-container input {
     width: 100%;
-    padding: 8px 10px;
-    border-radius: 10px 0 0 10px;
-    border: 1px solid #ccc;
+    padding: 12px 60px 12px 20px; /* 右側にボタンのスペースを空ける */
+    border-radius: 9999px; /* 角丸 */
+    border: 1px solid #333; /* 黒い枠線 */
     font-size: 16px;
 }
 
-/* 🔍ボタン */
-.search-box button {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-left: none;
-    border-radius: 0 10px 10px 0;
-    padding: 0 15px;
-    font-size: 18px;
+/* kensaku.png を使うボタン */
+.search-button {
+    position: absolute;
+    right: 5px; /* 右端からの位置 */
+    top: 50%;
+    transform: translateY(-50%); /* 上下中央揃え */
+    
+    background: none;
+    border: none;
+    padding: 5px;
     cursor: pointer;
-    filter: grayscale(100%);
-    transition: 0.2s;
+    height: 80%; /* 検索窓の高さに合わせる */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
-.search-box button:hover {
-    background-color: #f0f0f0;
+.search-button img {
+    height: 100%;
+    width: auto;
+    max-height: 28px; /* 検索アイコンの最大サイズ */
 }
 
 /* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
-    
-    /* 下段を縦積みに変更 */
-    .bottom {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .select-box,
-    .search-box {
-        flex: unset; 
-        width: 100%;
-    }
-
-    .header-cart a {
-        padding: 5px 8px;
-    }
-
+    /* スマホではカートの文字を非表示 (任意) */
     .header-cart label {
-        font-size: 14px;
+        display: none;
     }
-
-    /* ★追加：スマホではロゴやアイコンも少し小さくする (任意) */
-    .header-logo img {
-        height: 35px;
-    }
-    .header-user img {
-        width: 35px;
-        height: 35px;
-    }
-    .header-cart img {
-        width: 25px;
-        height: 25px;
+    .header-cart a {
+        padding: 8px 12px;
     }
 }
