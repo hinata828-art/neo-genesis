@@ -1,0 +1,41 @@
+.breadcrumb {
+    background-color: #f2f2f2; /* 薄いグレー背景 */
+    padding: 6px 20px;
+    font-size: 13px;
+    color: #333;
+    border-top: 1px solid #ddd; /* ヘッダーとの区切り線 */
+}
+
+.breadcrumb ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb li {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb li::after {
+    content: ">";
+    margin: 0 6px;
+    color: #999;
+    font-size: 12px;
+}
+
+.breadcrumb li:last-child::after {
+    content: "";
+}
+
+.breadcrumb a {
+    color: #333;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
