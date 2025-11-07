@@ -11,25 +11,42 @@ body {
 
 /* ===== ヘッダー全体 ===== */
 header {
-    background-color: #a9bcf5; /* 画像から抽出した背景色 */
-    padding: 10px;
+    background-color: #a9bcf5;
+    /* ★修正：上下のパディングを少し減らし、左右のパディングを削除 */
+    /* これで「青の面積が横に広く」なります */
+    padding: 8px 0; 
+}
+
+/* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
+/* ★追加：ヘッダー内の要素に左右の余白を持たせる */
+.top-row,
+.bottom-row {
+    width: 100%;
+    padding: 0 10px; /* 左右に10pxの余白 */
+    display: flex;
+    align-items: center;
 }
 
 /* ===== 上段：ロゴ・アイコン・カート ===== */
 .top-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* 均等配置 */
+    justify-content: space-between; /* 左グループと右グループを両端に配置 */
     gap: 10px;
 }
 
-/* ハンバーガーメニュー (BulmaのCSSも一部上書き) */
+/* ★追加：左側（ハンバーガーとロゴ） */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* ★ハンバーガーとロゴの隙間を狭くする */
+}
+
+/* ハンバーガーメニュー (Bulmaのnavbar-burgerを流用) */
 .hamburger-menu {
     border: none;
     background: none;
     padding: 0;
     cursor: pointer;
-    width: 38px; /* サイズ指定 */
+    width: 38px;
     height: 38px;
     display: flex;
     flex-direction: column;
@@ -39,22 +56,19 @@ header {
     display: block;
     height: 4px;
     width: 100%;
-    background-color: #ffffff; /* 白い線 */
+    background-color: #ffffff;
     border-radius: 2px;
 }
 
 /* ロゴ */
-.header-logo {
-    display: flex;
-    align-items: center;
-}
 .header-logo img {
     height: 40px;
     width: auto;
+    display: block; /* 余計な隙間を削除 */
 }
 
-/* 右側のアイコン群 */
-.header-icons {
+/* ★修正：右側のアイコン群（旧 header-icons） */
+.header-right-icons {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -62,7 +76,7 @@ header {
 
 /* ユーザーアイコン */
 .header-user {
-    background-color: #ddd; /* グレーの円 */
+    background-color: #ddd;
     border-radius: 50%;
     width: 44px;
     height: 44px;
@@ -81,8 +95,8 @@ header {
     align-items: center;
     gap: 5px;
     background-color: #fff;
-    border: 1px solid #333; /* 黒い枠線 */
-    border-radius: 9999px; /* 角丸 (円形) */
+    border: 1px solid #333;
+    border-radius: 9999px;
     padding: 8px 16px;
     text-decoration: none;
     color: #333;
@@ -96,8 +110,8 @@ header {
 
 /* ===== 下段：検索窓 ===== */
 .bottom-row {
-    margin-top: 10px;
-    width: 100%;
+    /* ★修正：検索バーの上の隙間を減らす (縦長感を解消) */
+    margin-top: 8px; 
 }
 .search-container {
     position: relative;
@@ -106,24 +120,23 @@ header {
 }
 .search-container input {
     width: 100%;
-    padding: 12px 60px 12px 20px; /* 右側にボタンのスペースを空ける */
-    border-radius: 9999px; /* 角丸 */
-    border: 1px solid #333; /* 黒い枠線 */
+    padding: 12px 60px 12px 20px;
+    border-radius: 9999px;
+    border: 1px solid #333;
     font-size: 16px;
 }
 
 /* kensaku.png を使うボタン */
 .search-button {
     position: absolute;
-    right: 5px; /* 右端からの位置 */
+    right: 5px;
     top: 50%;
-    transform: translateY(-50%); /* 上下中央揃え */
-    
+    transform: translateY(-50%);
     background: none;
     border: none;
     padding: 5px;
     cursor: pointer;
-    height: 80%; /* 検索窓の高さに合わせる */
+    height: 80%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,7 +144,7 @@ header {
 .search-button img {
     height: 100%;
     width: auto;
-    max-height: 28px; /* 検索アイコンの最大サイズ */
+    max-height: 28px;
 }
 
 /* ===== スマホ対応（600px以下） ===== */
@@ -142,5 +155,31 @@ header {
     }
     .header-cart a {
         padding: 8px 12px;
+    }
+
+    /* ★修正：スマホではアイコンとロゴも少し小さくする (縦長感の解消) */
+    .header-user {
+        width: 40px;
+        height: 40px;
+    }
+    .header-user img {
+        width: 24px;
+        height: 24px;
+    }
+    .header-logo img {
+        height: 35px;
+    }
+    .hamburger-menu {
+        width: 35px;
+        height: 35px;
+    }
+    .hamburger-menu span {
+        height: 3px;
+    }
+    
+    .search-container input {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: 14px;
     }
 }
