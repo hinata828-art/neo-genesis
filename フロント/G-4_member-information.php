@@ -100,7 +100,7 @@ try {
 
         <!-- 1. ページ専用ヘッダー -->
         <header class="header">
-            <a href="../G-8_home.php" class="back-link">&lt;</a> <!-- ホームに戻る (仮) -->
+            <a href="../G-8_home.php" class="back-link"><img src="../img/modoru.png" alt="戻る"></a>
             <h1 class="header-title">マイページ</h1>
             <span class="header-dummy"></span>
         </header>
@@ -114,7 +114,7 @@ try {
             <!-- 購入履歴 -->
             <section class="history-section">
                 <div class="history-items">
-                    <h2 class="section-title">購入履歴</h2>
+                    <h2 class="section-title">購入履歴</h2><br>
                     <?php if (empty($purchase_history)): ?>
                         <p class="no-history">購入履歴はありません。</p>
                     <?php else: ?>
@@ -132,7 +132,7 @@ try {
             <!-- レンタル履歴 -->
             <section class="history-section">
                 <div class="history-items">
-                    <h2 class="section-title">レンタル履歴</h2>
+                    <h2 class="section-title">レンタル履歴</h2><br>
                     <?php if (empty($rental_history)): ?>
                         <p class="no-history">レンタル履歴はありません。</p>
                     <?php else: ?>

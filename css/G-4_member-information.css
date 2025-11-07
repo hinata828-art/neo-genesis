@@ -26,14 +26,14 @@ body {
 .back-link {
     font-size: 24px;
     font-weight: bold;
-    color: #374151;
+    color: #ffffff;
     text-decoration: none;
     width: 24px;
 }
 .header-title {
     font-size: 20px;
     font-weight: 700;
-    text-align: center;
+    text-align: left;
     flex-grow: 1;
 }
 .header-dummy {
@@ -71,7 +71,7 @@ body {
     overflow-x: auto; /* 横スクロール */
     gap: 16px;
     padding: 4px 0 16px 0; /* スクロールバーや影のための余白 */
-    
+    background-color: bisque;
     /* スクロールバー非表示 (任意) */
     scrollbar-width: none; /* Firefox */
 }
