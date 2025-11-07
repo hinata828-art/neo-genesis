@@ -24,17 +24,37 @@ body {
     border-bottom: 1px solid #e5e7eb;
 }
 .back-link {
-    font-size: 2px;
+    /* font-size: 2px; */ /* ★ 修正 (削除) */
     font-weight: bold;
-    color: #ffffff;
+    /* color: #ffffff; */ /* ★ 修正 (削除 - 画像のため) */
     text-decoration: none;
-    width: 2px;
+    /* width: 2px; */ /* ★ 修正 (削除) */
+    width: 24px; /* ★ 修正 (適切なアイコンサイズを指定) */
+    height: 24px; /* ★ 修正 (適切なアイコンサイズを指定) */
+    display: block; /* ★ 追加 (サイズ指定のため) */
 }
+/* ★ 追加：戻るボタンの画像サイズを制御 */
+.back-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* アスペクト比を維持して収める */
+}
+
 .header-title {
     font-size: 20px;
     font-weight: 700;
-    text-align: left;
+    text-align: left; /* ★ 修正：元のコードに合わせて left に戻しました（中央揃えの場合は center） */
     flex-grow: 1;
+    /* ★ 補足：もし「マイページ」を中央揃えにしたい場合、
+       text-align: center; を指定し、
+       .header の padding-left と .back-link の width を
+       .header-dummy の width (24px) + .header の padding-right (16px) と
+       うまくバランスさせる必要があります。
+       
+       現状の space-between と flex-grow: 1 でも、
+       .back-link (24px) と .header-dummy (24px) の幅が同じため、
+       タイトルは中央に配置されやすくなっています。
+    */
 }
 .header-dummy {
     width: 24px;
@@ -71,7 +91,7 @@ body {
     overflow-x: auto; /* 横スクロール */
     gap: 16px;
     padding: 4px 0 16px 0; /* スクロールバーや影のための余白 */
-    background-color: bisque;
+    background-color: #f9fafb; /* ★ 修正 (bisque から薄い灰色に変更) */
     /* スクロールバー非表示 (任意) */
     scrollbar-width: none; /* Firefox */
 }
@@ -116,12 +136,12 @@ body {
     text-overflow: ellipsis;
 }
 
-/* --- ★ご要望箇所：会員情報セクション --- */
+/* --- 会員情報セクション --- */
 .info-section {
-    background-color: #f9fafb; /* ★薄い灰色 (f9fafb) */
+    background-color: #f9fafb; 
     border-radius: 8px;
     padding: 20px;
-    border: 1px solid #e5e7eb; /* 境界線を明確に */
+    border: 1px solid #e5e7eb; 
 }
 .info-group {
     margin-bottom: 16px;

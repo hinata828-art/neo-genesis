@@ -108,7 +108,7 @@ try {
 
         <header class="header">
             <a href="../G-8_home.php" class="back-link"><img src="../img/modoru.png" alt="戻る"></a>
-            <h1 class="header-title">マイページ</h1>
+            <h1 class="header-title">マイページ画面</h1>
             <span class="header-dummy"></span>
         </header>
 
