@@ -66,7 +66,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ご購入履歴</title>
+    <title>ご購入履歴２</title>
     <!-- 外部CSSファイル（G-16_order-history.css）を読み込む -->
     <link rel="stylesheet" href="../css/G-16_order-history.css">
 </head>
