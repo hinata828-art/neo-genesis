@@ -165,27 +165,25 @@
 }
 
 .footer-banner {
-  display: flex;                 /* 横並びにする */
-  justify-content: space-around; /* 均等配置 */
-  align-items: center;           /* 縦位置そろえ */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
   background: linear-gradient(90deg, #00aaff, #0077cc);
   color: #fff;
   text-align: center;
   padding: 15px;
-  flex-wrap: nowrap;             /* 折り返し防止 */
 }
 
 .footer-box {
-  flex: 1;                       /* 均等幅 */
+  flex: 1;
   margin: 5px;
   padding: 15px 10px;
   background: rgba(255,255,255,0.2);
   border-radius: 10px;
   font-weight: bold;
-  box-sizing: border-box;        /* 幅の計算を安定 */
 }
 
-/* スマホでは縦並び */
+/* スマホ対応 */
 @media (max-width: 600px) {
   .footer-banner {
     flex-direction: column;
