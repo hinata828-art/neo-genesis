@@ -62,7 +62,7 @@ header {
 
 /* ロゴ */
 .header-logo img {
-    height: 40px;
+    height: 60px;
     width: auto;
     display: block; /* 余計な隙間を削除 */
 }

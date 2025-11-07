@@ -13,8 +13,6 @@ require '../common/db_connect.php';
 <?php
 $delivery_days = '未定'; // 初期値
 
-// ★不具合修正 1: セッションから「今完了した注文」のIDを取得
-// (このセッション変数は、注文処理の最後に必ず保存してください)
 if (isset($_SESSION['last_transaction_id'])) {
     $last_transaction_id = $_SESSION['last_transaction_id'];
 
@@ -36,7 +34,6 @@ if (isset($_SESSION['last_transaction_id'])) {
 
     } catch (PDOException $e) {
         $delivery_days = 'エラー';
-        // エラー処理
     }
 } else {
     // 直接このページに来た場合など
@@ -54,12 +51,12 @@ if (isset($_SESSION['last_transaction_id'])) {
 </head>
 <body>
     
-    <?php require '../common/header.php'; // ★ヘッダーは通常ここに配置します ?>
+    <?php require '../common/header.php'; ?>
 
     <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="logo-image">
 
     <div class="message-area">
-        レンタルが完了しました！！！！
+        レンタルが完了しました！！
     </div>
 
     <div class="delivery-date">
