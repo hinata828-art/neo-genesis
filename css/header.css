@@ -7,14 +7,23 @@
 
 body {
     font-family: sans-serif;
+    /* body に overflow-x: hidden; を設定すると、
+       万が一の横はみ出しをページ全体で防げます。
+    */
+    overflow-x: hidden; 
 }
 
 /* ===== ヘッダー全体 ===== */
 header {
-    width: 100vw; /* ← 画面幅いっぱいに */
+    /* ★修正点 1: width: 100vw; を削除★
+       (width: 100%; もしくは width 指定なし)
+       100vw はスクロールバーの幅も計算に入れてしまうため、
+       横にはみ出す原因になります。
+       ブロック要素は元々幅100%なので、指定なしで問題ありません。
+    */
     background-color: #c9d6ff;
     padding: 10px;
-    overflow-x: hidden; /* ← はみ出し防止 */
+    /* overflow-x: hidden; も不要なので削除 */
 }
 
 /* ===== 上段：メニュー・アイコン・カート ===== */
@@ -109,18 +118,20 @@ header {
     background-color: #f0f0f0;
 }
 
-/* ===== スマホ対応（横並び維持） ===== */
+/* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
+    
+    /* ★修正点 2: 縦積みに変更★ */
     .bottom {
-        flex-wrap: wrap;
+        flex-direction: column; /* 横並びから縦積みに変更 */
+        gap: 10px; /* 縦の隙間を指定 */
     }
 
-    .select-box {
-        flex: 3;
-    }
-
+    /* select-box と search-box の flex比率設定を解除し、幅を100%にする */
+    .select-box,
     .search-box {
-        flex: 7;
+        flex: unset; /* flex設定をリセット */
+        width: 100%;
     }
 
     .header-cart a {
