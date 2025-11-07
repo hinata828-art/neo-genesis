@@ -61,7 +61,7 @@ try {
                 <?php if (!empty($products)): ?>
                     <?php foreach ($products as $p): ?>
                         <div class="item">
-                            <img src="../img/<?php echo htmlspecialchars($p['product_image']); ?>" 
+                            <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
                                  alt="<?php echo htmlspecialchars($p['product_name']); ?>">
                             <div class="item-info">
                                 <p class="item-title">
