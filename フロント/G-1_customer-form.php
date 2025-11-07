@@ -13,7 +13,7 @@
   <!-- 🔵 ロゴ画像部分 -->
   <img src="../img/NishimuraOnline.png" alt="企業ロゴ" class="logo">
 
-  <form action="G-3_home.php" method="post">
+  <form action="G-8_home.php" method="post">
     <h1>ログイン</h1>
     <fieldset>
       <label for="email">メールアドレス</label>
