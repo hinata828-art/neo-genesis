@@ -1,0 +1,167 @@
+/* --- 基本設定 --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    margin: 0;
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+/* --- 全体コンテナ (スマホ幅) --- */
+.container {
+    max-width: 480px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* --- 1. ページ専用ヘッダー --- */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.back-link {
+    font-size: 24px;
+    font-weight: bold;
+    color: #374151;
+    text-decoration: none;
+    width: 24px;
+}
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    flex-grow: 1;
+}
+.header-dummy {
+    width: 24px;
+}
+
+/* --- メインコンテンツ --- */
+.main-content {
+    padding: 24px 16px;
+}
+
+/* --- エラー表示 --- */
+.error-box {
+    padding: 16px;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* --- 履歴セクション (購入/レンタル) --- */
+.history-section {
+    margin-bottom: 32px;
+}
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #111827;
+}
+.history-items {
+    display: flex;
+    overflow-x: auto; /* 横スクロール */
+    gap: 16px;
+    padding: 4px 0 16px 0; /* スクロールバーや影のための余白 */
+    
+    /* スクロールバー非表示 (任意) */
+    scrollbar-width: none; /* Firefox */
+}
+.history-items::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+.no-history {
+    color: #6b7280;
+    font-size: 14px;
+    padding: 10px;
+}
+.history-item {
+    display: block;
+    text-decoration: none;
+    color: #1f2937;
+    flex: 0 0 140px; /* カードの幅を固定 */
+    width: 140px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s;
+}
+.history-item:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+.history-item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    background-color: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+}
+.history-item p {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px;
+    margin: 0;
+    /* 1行で省略表示 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- ★ご要望箇所：会員情報セクション --- */
+.info-section {
+    background-color: #f9fafb; /* ★薄い灰色 (f9fafb) */
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e5e7eb; /* 境界線を明確に */
+}
+.info-group {
+    margin-bottom: 16px;
+}
+.info-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+.info-group input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #e5e7eb; /* 読み取り専用(readonly)の背景色 */
+    color: #374151;
+    box-sizing: border-box; /* paddingを含めてwidth 100% */
+}
+
+/* --- ボタン --- */
+.btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-edit {
+    background-color: #facc15; /* 黄色 */
+    color: #1f2937;
+    border: none;
+}
+.btn-edit:hover {
+    background-color: #eab308;
+}
