@@ -38,9 +38,14 @@
 
 /* 商品カード */
 .item {
-    flex: 0 0 380px; /* 横幅 */
-    display: flex; /* ← 画像と情報を横並びに */
-    align-items: center;
+    /* ★ 修正：380px固定幅をやめ、コンテナ幅に応じて3分割されるよう計算 */
+    /* (33.3%幅から、gap: 20px の 2/3 (約14px) を引いた値) */
+    flex: 0 0 calc(33.333% - 14px); 
+    
+    /* ★ 修正：横並び(flex)をやめ、縦積みに変更 */
+    /* display: flex; */ /* ← 削除 */
+    /* align-items: center; */ /* ← 削除 */
+
     background: #fafafa;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -53,39 +58,44 @@
 
 /* 商品画像 */
 .item img {
-    width: 160px;
+    /* ★ 修正：固定幅(160px)をやめ、カード幅いっぱいに(100%) */
+    width: 100%; 
     height: 100px;
     object-fit: cover;
     border-radius: 8px;
-    margin-right: 15px;
+    /* ★ 修正：横並び用のマージンを削除 */
+    /* margin-right: 15px; */ /* ← 削除 */
+    margin-bottom: 8px; /* ★ 追加：画像とテキストの間に隙間をあける */
 }
 
 /* 商品情報 */
 .item-info {
     text-align: left;
-    flex: 1;
+    /* ★ 修正：flexレイアウトの子要素設定を削除 */
+    /* flex: 1; */ /* ← 削除 */
 }
 .item-title {
     font-weight: bold;
     margin-bottom: 5px;
-    font-size: 0.95em;
+    font-size: 0.9em; /* ★ 修正：カードが細くなるため少し小さく */
 }
 .item-price {
     color: #e60000;
-    font-size: 1.1em;
+    font-size: 1.0em; /* ★ 修正：カードが細くなるため少し小さく */
     margin-bottom: 8px;
 }
 .item-btn {
     background-color: #ffd700;
     border: none;
     border-radius: 6px;
-    padding: 5px 12px;
+    padding: 4px 8px; /* ★ 修正：カードが細くなるためパディングを少し小さく */
+    font-size: 0.85em; /* ★ 追加：フォントサイズも指定 */
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
-    text-decoration: none; /* aタグになったため追加 */
-    color: #333; /* aタグになったため追加 */
-    display: inline-block; /* aタグになったため追加 */
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
 }
 .item-btn:hover {
     background-color: #ffcc00;
@@ -120,6 +130,7 @@
 
 
 /* ===== ★修正：カテゴリーボタンエリア ===== */
+/* (ここは変更ありません) */
 .category-section {
     width: 95%;
     margin: 40px auto;
@@ -189,6 +200,7 @@
 }
 
 /* ===== フッターバナー (CSS追加) ===== */
+/* (ここは変更ありません) */
 .footer-banner {
     display: flex;
     justify-content: space-around;
