@@ -68,7 +68,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ご購入履歴</title>
     <!-- 外部CSSファイル（G-16_order-history.css）を読み込む -->
-    <link rel="stylesheet" href="G-16_order-history.css">
+    <link rel="stylesheet" href="../css/G-16_order-history.css">
 </head>
 <body>
     <?php require '../common/header.php'; // ★ヘッダーは通常ここに配置します ?>
