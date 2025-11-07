@@ -1,24 +1,22 @@
-<?php session_start(); ?>
 <?php
+// 1. セッションを開始 (1回だけにする)
 session_start();
+
+// 2. デバッグ（エラー表示）設定 (開発中のみ)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-?>
-<?php // ヘッダーは通常 <body> 内で読み込みます ?>
-<?php 
-// db-connect.php で $pdo が定義されている
+
+// 3. 共通のデータベース接続ファイルを読み込む
 require '../common/db_connect.php'; 
-?>
-<?php
+
 $delivery_days = '未定'; // 初期値
 
+// 4. セッションにIDがあるか確認
 if (isset($_SESSION['last_transaction_id'])) {
     $last_transaction_id = $_SESSION['last_transaction_id'];
 
     try {
-        // ★不具合修正 2: DB接続を再定義せず、$pdo をそのまま使う
-        // ★不具合修正 3: 注文ID (transaction_id) で絞り込む
         $sql = "SELECT rental_days FROM rental WHERE transaction_id = :tid ORDER BY rental_id DESC LIMIT 1";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':tid', $last_transaction_id, PDO::PARAM_INT);
@@ -29,14 +27,14 @@ if (isset($_SESSION['last_transaction_id'])) {
             $delivery_days = $result['rental_days'];
         }
         
-        // 一度使ったセッションは削除する（リロード時に備える）
+        // 一度使ったセッションは削除する
         unset($_SESSION['last_transaction_id']);
 
     } catch (PDOException $e) {
         $delivery_days = 'エラー';
     }
 } else {
-    // 直接このページに来た場合など
+    // セッションにIDがない（直接アクセスしたなど）
     $delivery_days = '（表示不可）';
 }
 ?>
@@ -53,7 +51,8 @@ if (isset($_SESSION['last_transaction_id'])) {
     
     <?php require '../common/header.php'; ?>
 
-    <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="logo-image">
+    <!-- ★修正：クラス名を .logo-image から .completion-logo に変更 -->
+    <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="completion-logo">
 
     <div class="message-area">
         レンタルが完了しました！！
