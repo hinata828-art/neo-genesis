@@ -31,7 +31,7 @@
         <div class="header-right-icons">
             <!-- 会員情報 (アイコン) -->
             <div class="header-user">
-                <a href="../フロント/G-4_member-information.php">
+                <a href="../フロント/G-4_member-infomation.php">
                     <img src="../img/icon.png" alt="会員情報" class="user-icon-image">
                 </a>
             </div>
