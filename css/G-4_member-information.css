@@ -24,11 +24,11 @@ body {
     border-bottom: 1px solid #e5e7eb;
 }
 .back-link {
-    font-size: 24px;
+    font-size: 2px;
     font-weight: bold;
     color: #ffffff;
     text-decoration: none;
-    width: 24px;
+    width: 2px;
 }
 .header-title {
     font-size: 20px;
@@ -48,9 +48,9 @@ body {
 /* --- エラー表示 --- */
 .error-box {
     padding: 16px;
-    background-color: #fee2e2;
+    background-color: #d6d6d6;
     color: #b91c1c;
-    border: 1px solid #fca5a5;
+    border: 1px solid #d6d6d6;
     border-radius: 8px;
     text-align: center;
     margin-bottom: 24px;
