@@ -27,23 +27,13 @@ header {
 }
 
 /* ===== 上段：メニュー・アイコン・カート ===== */
-
 .top {
     display: flex;
     align-items: center;
 }
 
-/* ★追加：ロゴ画像のサイズ指定 */
-.header-logo img {
-    height: 40px; /* ロゴの高さを指定 */
-    width: auto;  /* 幅は自動調整 */
-    display: block;
-}
-
 .header-button {
     margin-left: auto;
-    display: flex; /* ★追加：カートとユーザーアイコンを横並びにする */
-    align-items: center;
 }
 
 /* カート部分：枠で囲んでボタン風に */
@@ -59,22 +49,19 @@ header {
     color: #333;
     transition: 0.2s;
 }
+
 .header-cart a:hover {
     background-color: #f1f1f1;
 }
 
-/* ★修正：カート画像のサイズをCSSで指定 */
 .header-cart img {
-    width: 30px;  /* ← 30pxに戻す (または 40px) */
-    height: 30px; /* ← 30pxに戻す (または 40px) */
-    display: block;
+    width: 30px;
+    height: 30px;
 }
 
-/* ★追加：ユーザーアイコンのサイズをCSSで指定 */
-.header-user img {
-    width: 40px;  /* ← カートと合わせるか、希望のサイズに */
-    height: 40px; /* ← カートと合わせるか、希望のサイズに */
-    display: block;
+.header-cart label {
+    font-size: 16px;
+    font-weight: bold;
 }
 
 /* ===== 下段：セレクトボックス + 検索窓 ===== */
