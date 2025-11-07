@@ -1,0 +1,80 @@
+/* style.css */
+
+/* --- 基本設定 --- */
+body { 
+    text-align: center; 
+    font-family: sans-serif; 
+    margin: 0; 
+    padding: 20px; 
+    background-color: #f4f4f4; 
+}
+
+/* --- ロゴ画像 --- */
+.logo-image {
+    max-width: 350px; /* ★修正：PCでの最大幅を 350px に拡大★ */
+    width: 90%;       /* 親要素に対して90%の幅に拡大 */
+    height: auto;     
+    display: block;   
+    margin: 50px auto 30px; 
+}
+
+/* --- メッセージエリア --- */
+.message-area { 
+    font-size: 1.5em; 
+    margin-bottom: 20px; 
+    color: #333;
+}
+
+/* --- お届け日 --- */
+.delivery-date { 
+    font-size: 1.8em; 
+    margin-bottom: 30px;
+    color: #333;
+}
+.delivery-date span { 
+    color: #007bff; 
+    font-weight: bold; 
+}
+
+/* --- ホームボタン --- */
+.home-button { 
+    background-color: #ffc107; 
+    color: black; 
+    padding: 15px 40px; 
+    font-size: 1.3em; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    transition: background-color 0.3s ease; 
+}
+.home-button:hover {
+    background-color: #e0a800; 
+}
+
+/* --- レスポンシブ対応 (スマホ向けスタイル) --- */
+@media (max-width: 768px) {
+    body {
+        padding: 15px; 
+    }
+    .logo-image {
+        max-width: 250px; /* ★修正：スマホでの最大幅を 250px に拡大★ */
+        margin-top: 30px; 
+        margin-bottom: 20px;
+    }
+    .message-area {
+        font-size: 1.2em; 
+        margin-bottom: 15px;
+    }
+    .delivery-date {
+        font-size: 1.5em; 
+        margin-bottom: 20px;
+    }
+    .home-button {
+        padding: 12px 60px; 
+        font-size: 1.1em;
+    }
+}
