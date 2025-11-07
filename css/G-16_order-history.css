@@ -1,143 +1,144 @@
-/* --- 基本設定 --- */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+/* ===== 基本設定 ===== */
+* {
+    box-sizing: border-box;
     margin: 0;
-    background-color: #f3f4f6; /* 背景色 */
-    color: #1f2937;
+    padding: 0;
 }
 
-/* --- 全体コンテナ (スマホ幅) --- */
-.container {
-    max-width: 480px; /* スマホの最大幅 */
-    min-height: 100vh;
-    margin: 0 auto; /* 中央揃え */
-    background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+body {
+    font-family: sans-serif;
+    /* body に overflow-x: hidden; を設定すると、
+      万が一の横はみ出しをページ全体で防げます。
+    */
+    overflow-x: hidden; 
 }
 
-/* --- 1. ヘッダー --- */
-.header {
+/* ===== ヘッダー全体 ===== */
+header {
+    /* ★修正点 1: width: 100vw; を削除★
+      (width: 100%; もしくは width 指定なし)
+      100vw はスクロールバーの幅も計算に入れてしまうため、
+      横にはみ出す原因になります。
+      ブロック要素は元々幅100%なので、指定なしで問題ありません。
+    */
+    background-color: #c9d6ff;
+    padding: 10px;
+    /* overflow-x: hidden; も不要なので削除 */
+}
+
+/* ===== 上段：メニュー・アイコン・カート ===== */
+.top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
 }
-.back-link {
-    font-size: 24px;
+
+.header-button {
+    margin-left: auto;
+}
+
+/* カート部分：枠で囲んでボタン風に */
+.header-cart a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #333;
+    transition: 0.2s;
+}
+
+.header-cart a:hover {
+    background-color: #f1f1f1;
+}
+
+.header-cart img {
+    width: 30px;
+    height: 30px;
+}
+
+.header-cart label {
+    font-size: 16px;
     font-weight: bold;
-    color: #374151;
-    text-decoration: none;
-    width: 24px; /* 幅を固定 */
-}
-.header-title {
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    flex-grow: 1; /* 中央を埋める */
-}
-.header-dummy {
-    width: 24px; /* 戻るボタンと同じ幅で中央揃えを維持 */
 }
 
-/* --- メインコンテンツ --- */
-.main-content {
-    padding: 24px 16px;
-}
-
-/* --- 2. 商品カード --- */
-.product-card {
-    margin-bottom: 24px;
-}
-.product-image-container {
-    height: 10px; /* 10rem */
-    background-color: #e5e7eb; /* 画像プレースホルダー色 */
-    border-radius: 8px;
-    margin-bottom: 16px;
+/* ===== 下段：セレクトボックス + 検索窓 ===== */
+.bottom {
     display: flex;
     align-items: center;
-    justify-content: center;
-    overflow: hidden; /* 画像がはみ出ないように */
-}
-.product-image {
+    gap: 10px;
+    margin-top: 10px;
     width: 100%;
-    height: 100%;
-    object-fit: cover; /* 画像をコンテナに合わせて調整 */
 }
-.button-group {
+
+/* 左3割のセレクトボックス */
+.select-box {
+    flex: 3;
+}
+
+.select-box select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff; /* 白背景 */
+    font-size: 16px;
+}
+
+/* 右7割の検索窓＋🔍ボタン */
+.search-box {
+    flex: 7;
     display: flex;
-    justify-content: flex-end;
-    gap: 16px; /* ボタン間のスペース */
 }
-.btn {
-    font-size: 14px;
-    font-weight: 700;
-    padding: 8px 24px;
-    border: none;
-    border-radius: 9999px; /* 角丸 (円形) */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+.search-box input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* 🔍ボタン */
+.search-box button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    padding: 0 15px;
+    font-size: 18px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.btn-detail {
-    background-color: #facc15; /* 黄色 */
-    color: #1f2937;
-}
-.btn-detail:hover {
-    background-color: #eab308;
-}
-.btn-purchase {
-    background-color: #3b82f6; /* 青色 */
-    color: #ffffff;
-}
-.btn-purchase:hover {
-    background-color: #2563eb;
+    filter: grayscale(100%); /* モノクロ化 */
+    transition: 0.2s;
 }
 
-/* --- 3 & 4. 詳細セクション --- */
-.detail-section {
-    margin-bottom: 24px;
-}
-.section-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    border-left: 4px solid #3b82f6; /* 左の青い線 */
-    padding-left: 8px;
-}
-.detail-box {
-    border: 1px solid #e5e7eb;
-    background-color: #f9fafb; /* 薄いグレー */
-    border-radius: 8px;
-    padding: 16px;
-    min-height: 50px; /* 画像の「お支払方法」の高さに合わせる */
-}
-.detail-row {
-    display: flex;
-    margin-bottom: 8px;
-}
-.detail-label {
-    width: 112px; /* ラベル幅固定 */
-    color: #4b5563;
-    font-weight: 600;
-    flex-shrink: 0; /* 縮まないように */
-}
-.detail-value {
-    color: #1f2937;
-    word-break: break-all; /* 長い商品名がはみ出ないように */
+.search-box button:hover {
+    background-color: #f0f0f0;
 }
 
-/* --- 5. フッター --- */
-.footer {
-    padding: 16px;
-    text-align: center;
-    border-top: 1px solid #e5e7eb;
-}
-.footer-link {
-    color: #2563eb;
-    text-decoration: none;
-    font-size: 14px;
-}
-.footer-link:hover {
-    text-decoration: underline;
+/* ===== スマホ対応（600px以下） ===== */
+@media screen and (max-width: 600px) {
+    
+    /* ★修正点 2: 縦積みに変更★ */
+    .bottom {
+        flex-direction: column; /* 横並びから縦積みに変更 */
+        gap: 10px; /* 縦の隙間を指定 */
+    }
+
+    /* select-box と search-box の flex比率設定を解除し、幅を100%にする */
+    .select-box,
+    .search-box {
+        flex: unset; /* flex設定をリセット */
+        width: 100%;
+    }
+
+    .header-cart a {
+        padding: 5px 8px;
+    }
+
+    .header-cart label {
+        font-size: 14px;
+    }
 }
