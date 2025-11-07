@@ -22,7 +22,9 @@ body {
     justify-content: space-between;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff; /* ★ 背景色を白に指定 */
 }
+
 .back-link {
     /* font-size: 2px; */ /* ★ 修正 (削除) */
     font-weight: bold;
