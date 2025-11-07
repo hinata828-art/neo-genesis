@@ -29,10 +29,11 @@
     gap: 20px;
     scroll-behavior: smooth;
     padding: 10px 0;
-    scrollbar-width: none;
+    /* スクロールバー非表示 */
+    scrollbar-width: none; /* Firefox */
 }
 .pickapp-items::-webkit-scrollbar {
-    display: none;
+    display: none; /* Chrome, Safari */
 }
 
 /* 商品カード */
@@ -82,6 +83,9 @@
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
+    text-decoration: none; /* aタグになったため追加 */
+    color: #333; /* aタグになったため追加 */
+    display: inline-block; /* aタグになったため追加 */
 }
 .item-btn:hover {
     background-color: #ffcc00;
@@ -114,7 +118,8 @@
     right: -10px;
 }
 
-/* ===== カテゴリーボタンエリア ===== */
+
+/* ===== ★修正：カテゴリーボタンエリア ===== */
 .category-section {
     width: 95%;
     margin: 40px auto;
@@ -123,44 +128,86 @@
 
 .category-buttons {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    /* アイテムの最小幅を少し広げます */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
     gap: 25px;
     justify-items: center;
 }
 
-/* aタグもカードとして扱う */
+/* aタグ (アイテム全体のラッパー) */
 .category-item {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* ★縦積み (円 + テキスト) */
     align-items: center;
-    justify-content: center;
-    width: 100px;
-    height: 100px;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    padding: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    width: 120px; /* カード全体の幅 */
     text-decoration: none;
+    background-color: transparent; 
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
 .category-item:hover {
-    transform: scale(1.08);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transform: scale(1.08); /* ホバーエフェクトは維持 */
 }
 
+/* ★新設：画像を入れるための円形コンテナ */
+.category-icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; /* 円のサイズ */
+    height: 100px; /* 円のサイズ */
+    border: 2px solid #ccc;
+    border-radius: 50%; /* ★円形にする */
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 10px; /* ★円とテキストの間の隙間 */
+    transition: box-shadow 0.2s;
+    overflow: hidden; /* 画像がはみ出ないように */
+}
+/* ホバーエフェクトを円側に移設 */
+.category-item:hover .category-icon-circle {
+     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+
 .category-item img {
-    width: 50px;
-    height: 50px;
+    width: 60px;  /* ★修正：画像サイズを 60px に拡大 */
+    height: 60px; /* ★修正：画像サイズを 60px に拡大 */
     object-fit: contain;
-    margin-bottom: 5px;
+    /* margin-bottom は削除 (親コンテナの margin-bottom に移動) */
 }
 
 .category-item p {
-    font-size: 0.85em;
+    font-size: 0.9em; /* テキストサイズを少し調整 */
     color: #007b83;
+    font-weight: bold;
     margin: 0;
+    text-align: center; /* 中央揃え */
 }
 
+/* ===== フッターバナー (CSS追加) ===== */
+.footer-banner {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #f8f8f8;
+    padding: 15px 10px;
+    border-top: 2px solid #ddd;
+    width: 100%;
+    margin-top: 40px;
+}
+.footer-box {
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9em;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    flex: 1; /* 均等幅 */
+    margin: 0 5px; /* 左右の隙間 */
+}
