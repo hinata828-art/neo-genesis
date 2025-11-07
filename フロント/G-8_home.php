@@ -156,5 +156,22 @@ try {
 
 </main>
 
+<footer>
+    <div class="footer-content">
+        <div class="footer-section1">
+            <p>レンタルで<br>
+            お得な<br>
+            ルーレット！！</p>
+        </div>
+
+        <div class="footer-section1">
+        </div>
+            <p>レンタル<br>
+            OK!!!</p>
+        <div class="footer-section1">
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>
