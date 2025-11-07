@@ -113,8 +113,8 @@ try {
 
             <!-- 購入履歴 -->
             <section class="history-section">
-                <h2 class="section-title">購入履歴</h2>
                 <div class="history-items">
+                    <h2 class="section-title">購入履歴</h2>
                     <?php if (empty($purchase_history)): ?>
                         <p class="no-history">購入履歴はありません。</p>
                     <?php else: ?>
@@ -131,8 +131,8 @@ try {
 
             <!-- レンタル履歴 -->
             <section class="history-section">
-                <h2 class="section-title">レンタル履歴</h2>
                 <div class="history-items">
+                    <h2 class="section-title">レンタル履歴</h2>
                     <?php if (empty($rental_history)): ?>
                         <p class="no-history">レンタル履歴はありません。</p>
                     <?php else: ?>
