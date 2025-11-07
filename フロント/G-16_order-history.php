@@ -83,7 +83,7 @@ try {
         <!-- 1. ヘッダー -->
         <header class="header">
             <a href="G-4_member-information.php" class="back-link">&lt;</a> 
-            <h1 class="header-title">ご購入履歴</h1>
+            <h1 class="header-title">購入履歴</h1>
             <span class="header-dummy"></span>
         </header>
 
