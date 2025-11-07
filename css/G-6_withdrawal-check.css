@@ -1,0 +1,104 @@
+body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+/* --- ヘッダー --- */
+
+.logo {
+    width: min(50vw, 300px); /* 画面幅の25%、ただし最大100px */
+    height: auto;
+    margin-bottom: 10px;
+}
+
+
+
+.site-title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.site-title span {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* --- メインボックス --- */
+.confirm-box {
+    border: 1px solid #ccc;
+    padding: 30px 10px;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.alert-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.confirm-text {
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+/* --- ボタン --- */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap; /* ✅ 画面が狭いときに自動で折り返す */
+}
+
+.btn {
+    border: none;
+    padding: 14px 0;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    width: 45%;          /* ✅ 画面幅の45%を使用（横に2つ並ぶ） */
+    max-width: 180px;    /* PCでは大きすぎないよう制限 */
+    min-width: 130px;    /* 最小サイズを確保 */
+    text-align: center;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+.btn-red {
+    background-color: #e53935;
+}
+
+.btn-yellow {
+    background-color: #fbc02d;
+    color: #000;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* --- ✅ スマホ画面向け調整 --- */
+@media screen and (max-width: 480px) {
+    .btn {
+        width: 45%;      /* スマホでは1列にして横幅いっぱい */
+        font-size: 17px;
+    }
+   
+}
+
+
+
+

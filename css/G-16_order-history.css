@@ -1,0 +1,143 @@
+/* --- 基本設定 --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    margin: 0;
+    background-color: #f3f4f6; /* 背景色 */
+    color: #1f2937;
+}
+
+/* --- 全体コンテナ (スマホ幅) --- */
+.container {
+    max-width: 480px; /* スマホの最大幅 */
+    min-height: 100vh;
+    margin: 0 auto; /* 中央揃え */
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* --- 1. ヘッダー --- */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.back-link {
+    font-size: 24px;
+    font-weight: bold;
+    color: #374151;
+    text-decoration: none;
+    width: 24px; /* 幅を固定 */
+}
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    flex-grow: 1; /* 中央を埋める */
+}
+.header-dummy {
+    width: 24px; /* 戻るボタンと同じ幅で中央揃えを維持 */
+}
+
+/* --- メインコンテンツ --- */
+.main-content {
+    padding: 24px 16px;
+}
+
+/* --- 2. 商品カード --- */
+.product-card {
+    margin-bottom: 24px;
+}
+.product-image-container {
+    height: 160px; /* 10rem */
+    background-color: #e5e7eb; /* 画像プレースホルダー色 */
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* 画像がはみ出ないように */
+}
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 画像をコンテナに合わせて調整 */
+}
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px; /* ボタン間のスペース */
+}
+.btn {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 24px;
+    border: none;
+    border-radius: 9999px; /* 角丸 (円形) */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-detail {
+    background-color: #facc15; /* 黄色 */
+    color: #1f2937;
+}
+.btn-detail:hover {
+    background-color: #eab308;
+}
+.btn-purchase {
+    background-color: #3b82f6; /* 青色 */
+    color: #ffffff;
+}
+.btn-purchase:hover {
+    background-color: #2563eb;
+}
+
+/* --- 3 & 4. 詳細セクション --- */
+.detail-section {
+    margin-bottom: 24px;
+}
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    border-left: 4px solid #3b82f6; /* 左の青い線 */
+    padding-left: 8px;
+}
+.detail-box {
+    border: 1px solid #e5e7eb;
+    background-color: #f9fafb; /* 薄いグレー */
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 50px; /* 画像の「お支払方法」の高さに合わせる */
+}
+.detail-row {
+    display: flex;
+    margin-bottom: 8px;
+}
+.detail-label {
+    width: 112px; /* ラベル幅固定 */
+    color: #4b5563;
+    font-weight: 600;
+    flex-shrink: 0; /* 縮まないように */
+}
+.detail-value {
+    color: #1f2937;
+    word-break: break-all; /* 長い商品名がはみ出ないように */
+}
+
+/* --- 5. フッター --- */
+.footer {
+    padding: 16px;
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+}
+.footer-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 14px;
+}
+.footer-link:hover {
+    text-decoration: underline;
+}

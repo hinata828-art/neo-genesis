@@ -1,0 +1,133 @@
+/* ===== 基本設定 ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+/* ===== ヘッダー全体 ===== */
+header {
+    width: 100vw; /* ← 画面幅いっぱいに */
+    background-color: #c9d6ff;
+    padding: 10px;
+    overflow-x: hidden; /* ← はみ出し防止 */
+}
+
+/* ===== 上段：メニュー・アイコン・カート ===== */
+.top {
+    display: flex;
+    align-items: center;
+}
+
+.header-button {
+    margin-left: auto;
+}
+
+/* カート部分：枠で囲んでボタン風に */
+.header-cart a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #333;
+    transition: 0.2s;
+}
+
+.header-cart a:hover {
+    background-color: #f1f1f1;
+}
+
+.header-cart img {
+    width: 30px;
+    height: 30px;
+}
+
+.header-cart label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ===== 下段：セレクトボックス + 検索窓 ===== */
+.bottom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* 左3割のセレクトボックス */
+.select-box {
+    flex: 3;
+}
+
+.select-box select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff; /* 白背景 */
+    font-size: 16px;
+}
+
+/* 右7割の検索窓＋🔍ボタン */
+.search-box {
+    flex: 7;
+    display: flex;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* 🔍ボタン */
+.search-box button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    padding: 0 15px;
+    font-size: 18px;
+    cursor: pointer;
+    filter: grayscale(100%); /* モノクロ化 */
+    transition: 0.2s;
+}
+
+.search-box button:hover {
+    background-color: #f0f0f0;
+}
+
+/* ===== スマホ対応（横並び維持） ===== */
+@media screen and (max-width: 600px) {
+    .bottom {
+        flex-wrap: wrap;
+    }
+
+    .select-box {
+        flex: 3;
+    }
+
+    .search-box {
+        flex: 7;
+    }
+
+    .header-cart a {
+        padding: 5px 8px;
+    }
+
+    .header-cart label {
+        font-size: 14px;
+    }
+}

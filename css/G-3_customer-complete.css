@@ -1,0 +1,50 @@
+body {
+    background-color: #f8fafc;
+    font-family: "メイリオ", "ヒラギノ角ゴシック", "Segoe UI", sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding-top: 15vh;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.logo {
+    width: 220px;
+    height: auto;
+    margin-bottom: 40px;
+}
+
+.message {
+    font-size: 22px;
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 50px;
+    font-weight: 600;
+}
+
+.btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #007bff, #0096ff);
+    color: #fff;
+    text-decoration: none;
+    padding: 18px 60px;
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

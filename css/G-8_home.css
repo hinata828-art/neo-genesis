@@ -1,0 +1,165 @@
+/* ===== おすすめ商品セクション ===== */
+.pickapp {
+    width: 95%;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.pickapp-label h2 {
+    color: red;
+    font-size: 1.4em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* スライダー全体 */
+.slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* 横スクロール部分 */
+.pickapp-items {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+    scrollbar-width: none;
+}
+.pickapp-items::-webkit-scrollbar {
+    display: none;
+}
+
+/* 商品カード */
+.item {
+    flex: 0 0 380px; /* 横幅 */
+    display: flex; /* ← 画像と情報を横並びに */
+    align-items: center;
+    background: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 10px;
+    transition: transform 0.2s;
+}
+.item:hover {
+    transform: scale(1.03);
+}
+
+/* 商品画像 */
+.item img {
+    width: 160px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+}
+
+/* 商品情報 */
+.item-info {
+    text-align: left;
+    flex: 1;
+}
+.item-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.95em;
+}
+.item-price {
+    color: #e60000;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+.item-btn {
+    background-color: #ffd700;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.item-btn:hover {
+    background-color: #ffcc00;
+}
+
+/* スライダーボタン */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+.slider-btn:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+.slider-btn.left {
+    left: -10px;
+}
+.slider-btn.right {
+    right: -10px;
+}
+
+/* ===== カテゴリーボタンエリア ===== */
+.category-section {
+    width: 95%;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.category-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 25px;
+    justify-items: center;
+}
+
+/* aタグもカードとして扱う */
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+}
+
+.category-item:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.category-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.category-item p {
+    font-size: 0.85em;
+    color: #007b83;
+    margin: 0;
+}

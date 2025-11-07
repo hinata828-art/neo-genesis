@@ -1,0 +1,68 @@
+/* --- 全体 --- */
+body {
+    background-color: #f2f2f2;
+    font-family: "Segoe UI", "ヒラギノ角ゴシック", "メイリオ", sans-serif;
+    margin: 0;
+    height: 100vh; /* 画面全体に広げる */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 縦中央 */
+    align-items: center;      /* 横中央 */
+    text-align: center;
+}
+
+/* --- ロゴ --- */
+.logo {
+    width: 300px;        /* 🔹以前の約2倍 */
+    height: auto;
+    margin-bottom: 60px; /* 間隔も広げる */
+}
+
+/* --- メッセージ --- */
+.message {
+    font-size: 32px;      /* 🔹文字も大きく */
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 70px;
+    font-weight: 600;
+}
+
+/* --- ボタン --- */
+.btn {
+    display: inline-block;
+    background-color: #ffe600;
+    color: #000000;
+    text-decoration: none;
+    padding: 22px 80px;   /* 🔹ボタンも2倍サイズ */
+    border-radius: 10px;
+    font-size: 28px;      /* 🔹文字サイズUP */
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn:hover {
+    background-color: #040105;
+    transform: translateY(-3px);
+}
+
+/* --- スマホ対応（狭い画面） --- */
+@media screen and (max-width: 480px) {
+    .logo {
+        width: 200px;
+        margin-bottom: 40px;
+    }
+    .message {
+        font-size: 22px;
+        margin-bottom: 50px;
+    }
+    .btn {
+        width: 90%;
+        padding: 18px 0;
+        font-size: 22px;
+    }
+}
+
+
+
+

@@ -1,0 +1,93 @@
+/* body全体 */
+body {
+  font-family: "Segoe UI", "ヒラギノ角ゴ ProN", "Meiryo", sans-serif;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+}
+
+/* ロゴ画像 */
+.logo {
+  width: 240px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* フォーム本体 */
+form {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 340px;
+}
+
+/* タイトル */
+h1 {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 1.4em;
+}
+
+/* fieldset */
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ラベル */
+label {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.95em;
+}
+
+/* 入力欄 */
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+/* ボタン */
+button {
+  width: 100%;
+  background-color: #3273dc;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 6px;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #275ab0;
+}
+
+/* フッターリンク */
+p {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.9em;
+}
+
+a {
+  color: #3273dc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
