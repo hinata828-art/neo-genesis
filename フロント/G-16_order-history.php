@@ -82,7 +82,7 @@ try {
     <div class="container">
         <!-- 1. ヘッダー -->
         <header class="header">
-            <a href="G-4_member-information.php" class="back-link">&lt;</a> 
+            <a href="G-5_member-information.php"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
             <h1 class="header-title">購入履歴</h1>
             <span class="header-dummy"></span>
         </header>
