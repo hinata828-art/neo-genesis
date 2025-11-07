@@ -21,7 +21,7 @@
             
             <!-- ロゴ (ホームへのリンク) -->
             <div class="header-logo">
-                <a href="G-8_home.php">
+                <a href="../フロント/G-8_home.php">
                     <img src="../img/NishimuraOnline.png" alt="ロゴ" class="logo-image">
                 </a>
             </div>
@@ -31,13 +31,13 @@
         <div class="header-right-icons">
             <!-- 会員情報 (アイコン) -->
             <div class="header-user">
-                <a href="G-4_member-information.php">
+                <a href="../フロント/G-4_member-information.php">
                     <img src="../img/icon.png" alt="会員情報" class="user-icon-image">
                 </a>
             </div>
             <!-- カート -->
             <div class="header-cart">
-                <a href="G-10_cart.php">
+                <a href="../フロント/G-10_cart.php">
                     <img src="../img/cart.png" alt="カート">
                     <label>カート</label>
                 </a>
@@ -46,7 +46,7 @@
     </div>
 
     <!-- 下段：検索フォーム -->
-    <form action="G-9_search-result.php" method="GET" class="bottom-row">
+    <form action="../フロント/G-9_search-result.php" method="GET" class="bottom-row">
         
         <div class="search-container">
             <input type="text" name="keyword" placeholder="何をお探しですか？">
