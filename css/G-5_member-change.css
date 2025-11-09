@@ -1,0 +1,170 @@
+/* --- 基本設定 --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    margin: 0;
+    background-color: #f3f4f6; /* 背景は薄いグレー */
+    color: #1f2937;
+}
+
+/* --- 全体コンテナ (スマホ幅) --- */
+.container {
+    max-width: 480px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background-color: #ffffff; /* 変更画面の背景は白 */
+}
+
+/* --- 1. ページ専用ヘッダー --- */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff; /* ヘッダーも白 */
+}
+.back-link {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+.back-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    flex-grow: 1;
+}
+.header-dummy {
+    width: 24px; /* 戻るボタン分の幅 */
+}
+
+/* --- メインコンテンツ --- */
+.main-content {
+    padding: 24px 16px;
+}
+.error-box {
+    padding: 16px;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* --- 変更フォーム --- */
+.change-form {
+    width: 100%;
+}
+
+/* フォームの各項目 */
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    font-size: 16px; /* ラベルを少し大きく */
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+/* 「ご住所」の見出し */
+.section-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 8px;
+}
+
+/* 入力欄とアイコンのラッパー */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* テキスト入力欄 */
+.input-wrapper input[type="text"],
+.input-wrapper input[type="tel"] {
+    width: 100%;
+    padding: 12px 40px 12px 12px; /* ★右側にアイコン分の隙間(40px)を確保 */
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #ffffff; /* 編集可能なので白 */
+    box-sizing: border-box; /* paddingを含めてwidth 100% */
+}
+.input-wrapper input::placeholder {
+    color: #9ca3af;
+}
+
+/* 編集アイコン */
+.edit-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px; /* アイコンのサイズ */
+    height: 24px;
+    opacity: 0.7;
+}
+
+/* お支払方法 (select) */
+.select-wrapper select {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    
+    /* ★標準の矢印を消す */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* ★ 'V' の矢印をCSSで描画 */
+.select-wrapper::after {
+    content: 'V';
+    font-weight: bold;
+    font-size: 16px;
+    color: #6b7280;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* 矢印をクリックしてもselectが反応するように */
+}
+
+
+/* 確定ボタン */
+.btn-submit {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 32px;
+    
+    /* ★画像に合わせた黄色いボタン */
+    background-color: #facc15; 
+    color: #1f2937;
+    border: none;
+}
+.btn-submit:hover {
+    background-color: #eab308;
+}
