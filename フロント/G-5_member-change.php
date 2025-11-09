@@ -72,7 +72,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
             <?php endif; ?>
 
             <?php if ($customer_info): ?>
-                <form action="G-4_member-information.php" method="post" class="change-form">
+                <form action="G-5_member-change_process.php" method="post" class="change-form">
                     
                     <div class="form-group">
                         <label for="name">お名前</label>
@@ -141,12 +141,12 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                     </div>
 
                     <div class="form-group">
-                        <label for="birthdate">生年月日</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="birthdate" name="birth_date" placeholder="2000/01/01" value="<?php echo htmlspecialchars($customer_info['birth_date'] ?? ''); ?>">
-                            <img src="../img/insert.png" alt="編集" class="edit-icon">
+                            <label for="birthdate">生年月日</label>
+                            <div class="input-wrapper">
+                                <input type="date" id="birthdate" name="birth_date" value="<?php echo htmlspecialchars($customer_info['birth_date'] ?? ''); ?>">
+                                <img src="../img/insert.png" alt="編集" class="edit-icon">
+                            </div>
                         </div>
-                    </div>
 
                     <button type="submit" class="btn btn-submit">会員情報変更確定</button>
 
