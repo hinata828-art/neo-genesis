@@ -72,13 +72,13 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
             <?php endif; ?>
 
             <?php if ($customer_info): ?>
-                <form action="G-5_member-change_output.php" method="post" class="change-form">
+                <form action="G-4_member-information.php" method="post" class="change-form">
                     
                     <div class="form-group">
                         <label for="name">お名前</label>
                         <div class="input-wrapper">
                             <input type="text" id="name" name="customer_name" value="<?php echo htmlspecialchars($customer_info['customer_name'] ?? ''); ?>">
-                            <img src="../img/edit-pen.png" alt="編集" class="edit-icon">
+                            <img src="../img/insert.png" alt="編集" class="edit-icon">
                         </div>
                     </div>
 
@@ -88,7 +88,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                         <label for="postal_code">郵便番号</label>
                         <div class="input-wrapper">
                             <input type="text" id="postal_code" name="postal_code" placeholder="000-0000" value="<?php echo htmlspecialchars($customer_info['postal_code'] ?? ''); ?>">
-                            <img src="../img/edit-pen.png" alt="編集" class="edit-icon">
+                            <img src="../img/insert.png" alt="編集" class="edit-icon">
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                         <label for="prefecture">都道府県</label>
                         <div class="input-wrapper">
                             <input type="text" id="prefecture" name="prefecture" value="<?php echo htmlspecialchars($customer_info['prefecture'] ?? ''); ?>">
-                            <img src="../img/edit-pen.png" alt="編集" class="edit-icon">
+                            <img src="../img/insert.png" alt="編集" class="edit-icon">
                         </div>
                     </div>
 
@@ -104,7 +104,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                         <label for="city">市区町村</label>
                         <div class="input-wrapper">
                             <input type="text" id="city" name="city" value="<?php echo htmlspecialchars($customer_info['city'] ?? ''); ?>">
-                            <img src="../img/edit-pen.png" alt="編集" class="edit-icon">
+                            <img src="../img/insert.png" alt="編集" class="edit-icon">
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                         <label for="address_line">番地・建物名</label>
                         <div class="input-wrapper">
                             <input type="text" id="address_line" name="address_line" placeholder="00-00" value="<?php echo htmlspecialchars($customer_info['address_line'] ?? ''); ?>">
-                            <img src="../img/edit-pen.png" alt="編集" class="edit-icon">
+                            <img src="../img/insert.png" alt="編集" class="edit-icon">
                         </div>
                     </div>
 
@@ -120,7 +120,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                         <label for="phone">電話番号</label>
                         <div class="input-wrapper">
                             <input type="tel" id="phone" name="phone_number" placeholder="090-0000-0000" value="<?php echo htmlspecialchars($customer_info['phone_number'] ?? ''); ?>">
-                            <img src="../img/edit-pen.png" alt="編集" class="edit-icon">
+                            <img src="../img/insert.png" alt="編集" class="edit-icon">
                         </div>
                     </div>
 
@@ -144,7 +144,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                         <label for="birthdate">生年月日</label>
                         <div class="input-wrapper">
                             <input type="text" id="birthdate" name="birth_date" placeholder="2000/01/01" value="<?php echo htmlspecialchars($customer_info['birth_date'] ?? ''); ?>">
-                            <img src="../img/edit-pen.png" alt="編集" class="edit-icon">
+                            <img src="../img/insert.png" alt="編集" class="edit-icon">
                         </div>
                     </div>
 
