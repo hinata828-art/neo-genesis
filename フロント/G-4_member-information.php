@@ -170,8 +170,8 @@ try {
                     <label for="payment">お支払方法</label>
                     <input type="text" id="payment" value="<?php echo htmlspecialchars($customer_info['payment_method']); ?>" readonly>
                 </div>
-                
-                <a href="G-4-edit_member-information.php" class="btn btn-edit">会員情報変更画面へ</a>
+
+                <a href="G-5_member-change.php" class="btn btn-edit">会員情報変更画面へ</a>
             </section>
             <?php endif; ?>
 
