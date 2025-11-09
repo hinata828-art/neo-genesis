@@ -15,26 +15,35 @@
     font-weight: bold;
 }
 
+/* ★ 追加：スライダー全体コンテナ */
+.slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
-/* ★ 修正：横スクロール(flex)をやめ、グリッド(grid)に変更 */
+/* ★ 修正：グリッド(grid)から横スクロール(flex)に戻す */
 .pickapp-items {
-    /* display: flex; */
-    /* overflow-x: auto; */
-    display: grid; /* ★ グリッドレイアウトに変更 */
-    grid-template-columns: repeat(3, 1fr); /* ★ 3列均等割りに設定 */
+    display: flex; /* ★ flex に戻す */
+    overflow-x: auto; /* ★ 横スクロールを許可 */
     gap: 20px;
-    /* scroll-behavior: smooth; */
-    /* padding: 10px 0; */
+    scroll-behavior: smooth; /* スムーズスクロール */
+    padding: 10px 0;
+    
+    /* ★ スクロールバー非表示 (PC) */
+    scrollbar-width: none; /* Firefox */
+}
+.pickapp-items::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
 }
 
 /* 商品カード */
 .item {
-    /* ★ 修正：flex固定幅をやめ、グリッド幅に合わせる */
-    /* flex: 0 0 110px; */ 
-    width: 100%; /* ★ グリッドのセル幅に合わせる */
-    box-sizing: border-box; /* ★ paddingを含めて幅100%にするため */
+    /* ★ 修正：グリッド幅(100%)をやめ、スライダー用の固定幅に戻す */
+    flex: 0 0 110px; /* ★ 3列表示用の幅 (110px) */
+    width: 110px;
+    box-sizing: border-box; 
 
-    /* (以下は縦積みレイアウトのまま) */
     display: block;
     background: #fafafa;
     border-radius: 10px;
@@ -55,7 +64,7 @@
     margin-bottom: 8px; 
 }
 
-/* 商品情報 */
+/* 商品情報 (変更なし) */
 .item-info {
     text-align: left;
 }
@@ -86,9 +95,35 @@
     background-color: #ffcc00;
 }
 
+/* ★ 追加：スライダーボタンのCSSを復活 */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+.slider-btn:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+.slider-btn.left {
+    left: -10px; /* 位置調整 */
+}
+.slider-btn.right {
+    right: -10px; /* 位置調整 */
+}
 
-/* ===== ★修正：カテゴリーボタンエリア ===== */
-/* (ここは変更ありません) */
+
+/* ===== カテゴリーボタンエリア ===== */
 .category-section {
     width: 95%;
     margin: 40px auto;
@@ -97,18 +132,18 @@
 
 .category-buttons {
     display: grid;
-    /* アイテムの最小幅を少し広げます */
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
-    gap: 25px;
+    /* ★ 修正：3列表示されやすいよう、最小幅とgapを調整 */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+    gap: 15px; /* ★ 隙間を 25px から 15px に縮小 */
     justify-items: center;
 }
 
 /* aタグ (アイテム全体のラッパー) */
 .category-item {
     display: flex;
-    flex-direction: column; /* ★縦積み (円 + テキスト) */
+    flex-direction: column;
     align-items: center;
-    width: 120px; /* カード全体の幅 */
+    width: 100px; /* ★ 修正：minmax(100px) と合わせる */
     text-decoration: none;
     background-color: transparent; 
     border: none;
@@ -118,47 +153,43 @@
 }
 
 .category-item:hover {
-    transform: scale(1.08); /* ホバーエフェクトは維持 */
+    transform: scale(1.08); 
 }
 
-/* ★新設：画像を入れるための円形コンテナ */
+/* 円形コンテナ */
 .category-icon-circle {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px; /* 円のサイズ */
-    height: 100px; /* 円のサイズ */
+    width: 90px; /* ★ 修正：円を少し小さく (100px -> 90px) */
+    height: 90px; /* ★ 修正：円を少し小さく (100px -> 90px) */
     border: 2px solid #ccc;
-    border-radius: 50%; /* ★円形にする */
+    border-radius: 50%;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 10px; /* ★円とテキストの間の隙間 */
+    margin-bottom: 10px;
     transition: box-shadow 0.2s;
-    overflow: hidden; /* 画像がはみ出ないように */
+    overflow: hidden;
 }
-/* ホバーエフェクトを円側に移設 */
 .category-item:hover .category-icon-circle {
      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-
 .category-item img {
-    width: 60px;  /* ★修正：画像サイズを 60px に拡大 */
-    height: 60px; /* ★修正：画像サイズを 60px に拡大 */
+    width: 50px;  /* ★ 修正：画像サイズ (60px -> 50px) */
+    height: 50px; /* ★ 修正：画像サイズ (60px -> 50px) */
     object-fit: contain;
-    /* margin-bottom は削除 (親コンテナの margin-bottom に移動) */
 }
 
 .category-item p {
-    font-size: 0.9em; /* テキストサイズを少し調整 */
+    font-size: 0.9em;
     color: #007b83;
     font-weight: bold;
     margin: 0;
-    text-align: center; /* 中央揃え */
+    text-align: center;
 }
 
-/* ===== フッターバナー (CSS追加) ===== */
-/* (ここは変更ありません) */
+/* ===== フッターバナー (変更なし) ===== */
 .footer-banner {
     display: flex;
     justify-content: space-around;
@@ -178,6 +209,6 @@
     border-radius: 8px;
     background-color: #fff;
     border: 1px solid #ccc;
-    flex: 1; /* 均等幅 */
-    margin: 0 5px; /* 左右の隙間 */
+    flex: 1; 
+    margin: 0 5px;
 }
