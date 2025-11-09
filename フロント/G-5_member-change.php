@@ -72,7 +72,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
             <?php endif; ?>
 
             <?php if ($customer_info): ?>
-                <form action="G-5_member-change_process.php" method="post" class="change-form">
+                <form action="G-5_member-change-process.php" method="post" class="change-form">
                     
                     <div class="form-group">
                         <label for="name">お名前</label>
