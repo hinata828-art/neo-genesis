@@ -93,7 +93,8 @@ body {
 
 /* テキスト入力欄 */
 .input-wrapper input[type="text"],
-.input-wrapper input[type="tel"] {
+.input-wrapper input[type="tel"],
+.input-wrapper input[type="date"] { /* ★ 修正： type="date" をここに追加 */
     width: 100%;
     padding: 12px 40px 12px 12px; /* ★右側にアイコン分の隙間(40px)を確保 */
     font-size: 16px;
@@ -106,6 +107,12 @@ body {
     color: #9ca3af;
 }
 
+/* ★ 追加：ブラウザ標準の日付アイコンを非表示にする */
+.input-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
 /* 編集アイコン */
 .edit-icon {
     position: absolute;
@@ -115,6 +122,8 @@ body {
     width: 24px; /* アイコンのサイズ */
     height: 24px;
     opacity: 0.7;
+    /* ★ 修正：日付入力欄でアイコンがクリックを妨げないようにする */
+    pointer-events: none; 
 }
 
 /* お支払方法 (select) */
