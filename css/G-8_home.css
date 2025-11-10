@@ -213,4 +213,5 @@
     display: flex; /* ✅ 追加：中身を中央に配置する */
     align-items: center; /* ✅ 縦中央揃え */
     justify-content: center; /* ✅ 横中央揃え */
+    height: 100px;
 }
