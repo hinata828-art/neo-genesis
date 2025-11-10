@@ -94,7 +94,7 @@ try {
 
     <section class="category-section">
         <div class="category-buttons">
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-12_tv.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/tv.png" alt="テレビ">
                 </div>
