@@ -7,7 +7,9 @@ $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // ===== 商品詳細を取得 =====
 try {
-    $sql = "SELECT product_name, price, product_image, product_id FROM product WHERE product_id = :id";
+    $sql = "SELECT product_name, price, product_image, product_id, product_detail 
+            FROM product 
+            WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->execute();
@@ -25,7 +27,10 @@ if (!$product) {
 
 // ===== 関連商品を3件取得 =====
 try {
-    $sql = "SELECT product_id, product_name, product_image FROM product WHERE product_id != :id LIMIT 3";
+    $sql = "SELECT product_id, product_name, product_image 
+            FROM product 
+            WHERE product_id != :id 
+            LIMIT 3";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->execute();
@@ -90,7 +95,18 @@ try {
         </div>
     </div>
 
-    <!-- ===== 関連商品フッター ===== -->
+    <!-- ===== 商品説明 ===== -->
+    <section class="product-description">
+        <h3>詳細</h3>
+        <p>
+            <?php 
+                echo nl2br(htmlspecialchars($product['product_detail'])); 
+                // 改行対応＋XSS防止
+            ?>
+        </p>
+    </section>
+
+    <!-- ===== 関連商品 ===== -->
     <footer class="related-footer">
         <h3>関連商品</h3>
         <div class="related-items">
