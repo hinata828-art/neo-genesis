@@ -75,13 +75,11 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ご購入履歴</title>
     <link rel="stylesheet" href="../css/header.css">
-    <!-- 外部CSSファイル（G-16_order-history.css）を読み込む -->
     <link rel="stylesheet" href="../css/G-16_order-history.css">
 </head>
 <body>
     <?php require '../common/header.php'; // ヘッダーを読み込む ?>
     <div class="container">
-        <!-- 1. ヘッダー -->
         <header class="header">
         
         <a href="G-4_member-information.php"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
@@ -89,19 +87,14 @@ try {
             <span class="header-dummy"></span>
         </header>
 
-        <!-- メインコンテンツ -->
         <main class="main-content">
 
-            <?php if (isset($error_message)): ?>
-                <!-- エラー表示 -->
+            <?php if (!empty($error_message)): ?>
                 <div class="error-box">
                     <p><?php echo htmlspecialchars($error_message); ?></p>
                 </div>
                 
             <?php elseif (!empty($products)): ?>
-                <!-- 正常表示 -->
-                
-                <!-- 2. 商品カード (★foreachでループ処理に変更★) -->
                 <?php foreach ($products as $product): ?>
                     <section class="product-card">
                         <div class="product-image-container">
@@ -118,7 +111,6 @@ try {
                     </section>
                 <?php endforeach; ?>
 
-                <!-- 3. ご注文の詳細 (共通情報を表示) -->
                 <section class="detail-section">
                     <h2 class="section-title">ご注文の詳細</h2>
                     <div class="detail-box">
@@ -126,11 +118,9 @@ try {
                             <span class="detail-label">ご購入日時</span>
                             <span class="detail-value"><?php echo htmlspecialchars($order_info['purchase_date_formatted']); ?></span>
                         </div>
-                        <!-- 「商品名」は複数あるため、ここでは非表示にするか、代表商品名を表示します -->
-                    </div>
+                        </div>
                 </section>
 
-                <!-- 4. お支払方法 (共通情報を表示) -->
                 <section class="detail-section">
                     <h2 class="section-title">お支払方法</h2>
                     <div class="detail-box">
@@ -138,7 +128,6 @@ try {
                     </div>
                 </section>
                 
-                <!-- 5. 配送状況 (共通情報を表示) -->
                 <section class="delivery-status">
                     <p><?php echo htmlspecialchars($order_info['delivery_status_text']); ?></p>
                 </section>
@@ -147,7 +136,6 @@ try {
 
         </main>
 
-        <!-- 6. フッターリンク -->
         <footer class="footer">
             <a href="#" class="footer-link">購入キャンセルはコチラ</a>
         </footer>
