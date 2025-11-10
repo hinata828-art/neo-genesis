@@ -20,6 +20,7 @@ if (!empty($_SESSION['product'])) {
         echo '</tr>';
         $total += $subtotal;
     }
+
     echo '<tr><td>合計</td><td></td><td></td><td></td><td>', $total, '</td><td></td></tr>';
     echo '</table>';
 }else {
