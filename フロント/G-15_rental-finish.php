@@ -48,7 +48,7 @@ if (isset($_SESSION['last_transaction_id'])) {
     </div>
 
     <?php if (isset($last_transaction_id) && $delivery_days !== '（表示不可）' && $delivery_days !== 'エラー'): ?>
-        <a href="../G-16_order-history.php?id=<?php echo htmlspecialchars($last_transaction_id); ?>" class="detail-button">注文詳細を見る</a>
+        <a href="G-16_order-history.php?id=<?php echo htmlspecialchars($last_transaction_id); ?>" class="detail-button">注文詳細を見る</a>
     <?php endif; ?>
 
     <a href="../G-8_home.php" class="home-button">ホーム画面へ</a>
