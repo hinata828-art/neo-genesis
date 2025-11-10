@@ -15,13 +15,13 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- 1. ヘッダー (ページ固有) --- */
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff; /* ★ この行を追加 */
 }
 .back-link {
     font-size: 24px;

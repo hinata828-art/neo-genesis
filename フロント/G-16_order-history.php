@@ -112,10 +112,10 @@ try {
                 <?php endforeach; ?>
 
                 <section class="detail-section">
-                    <h2 class="section-title">ご注文の詳細</h2>
+                    <h2 class="section-title">注文の詳細</h2>
                     <div class="detail-box">
                         <div class="detail-row">
-                            <span class="detail-label">ご購入日時</span>
+                            <span class="detail-label">購入日時</span>
                             <span class="detail-value"><?php echo htmlspecialchars($order_info['purchase_date_formatted']); ?></span>
                         </div>
                         </div>
