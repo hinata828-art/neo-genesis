@@ -60,35 +60,28 @@ try {
 
     
     // 6. SQL 2: 購入履歴の取得 (最新5件)
-    // 6. SQL 2: 購入履歴の取得 (最新5件)
-    $sql_purchase = "SELECT 
-                        p.product_name, 
-                        p.product_image, 
-                        t.transaction_id AS tid -- ★ 'transaction_id' から 'tid' に別名を付けます
-                    FROM transaction_table AS t
-                    JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
-                    JOIN product AS p ON d.product_id = p.product_id
-                    WHERE t.customer_id = :id AND t.transaction_type = '購入'
-                    ORDER BY t.transaction_date DESC
-                    LIMIT 5";
+    // ★★★ 修正点 1: t.transaction_id AS tid に変更 ★★★
+    $sql_purchase = "SELECT p.product_name, p.product_image, t.transaction_id AS tid
+                       FROM transaction_table AS t
+                       JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
+                       JOIN product AS p ON d.product_id = p.product_id
+                       WHERE t.customer_id = :id AND t.transaction_type = '購入'
+                       ORDER BY t.transaction_date DESC
+                       LIMIT 5"; // 最新5件のみ表示
     $stmt_purchase = $pdo->prepare($sql_purchase);
     $stmt_purchase->bindValue(':id', $customer_id, PDO::PARAM_INT);
     $stmt_purchase->execute();
     $purchase_history = $stmt_purchase->fetchAll(PDO::FETCH_ASSOC);
 
     // 7. SQL 3: レンタル履歴の取得 (最新5件)
-    // 7. SQL 3: レンタル履歴の取得 (最新5件)
-    // 7. SQL 3: レンタル履歴の取得 (最新5件)
-    $sql_rental = "SELECT 
-                    p.product_name, 
-                    p.product_image, 
-                    t.transaction_id AS tid -- ★ こちらも 'tid' に別名を付けます
-                FROM transaction_table AS t
-                JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
-                JOIN product AS p ON d.product_id = p.product_id
-                WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
-                ORDER BY t.transaction_date DESC
-                LIMIT 5";
+    // ★★★ 修正点 2: t.transaction_id AS tid に変更 ★★★
+    $sql_rental = "SELECT p.product_name, p.product_image, t.transaction_id AS tid
+                       FROM transaction_table AS t
+                       JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
+                       JOIN product AS p ON d.product_id = p.product_id
+                       WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
+                       ORDER BY t.transaction_date DESC
+                       LIMIT 5"; // 最新5件のみ表示
     $stmt_rental = $pdo->prepare($sql_rental);
     $stmt_rental->bindValue(':id', $customer_id, PDO::PARAM_INT);
     $stmt_rental->execute();
@@ -127,25 +120,33 @@ try {
             <section class="history-section">
                 <h2 class="section-title">購入履歴</h2>
                 <div class="history-items">
-                    <?php foreach ($purchase_history as $item): ?>
-                        <a href="G-16_order-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
-                            <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
-                            <p><?php echo htmlspecialchars($item['product_name']); ?></p>
-                        </a>
-                    <?php endforeach; ?>
-                    </div>
+                    <?php if (empty($purchase_history)): ?>
+                        <p class="no-history">購入履歴はありません。</p>
+                    <?php else: ?>
+                        <?php foreach ($purchase_history as $item): ?>
+                            <a href="G-16_order-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
+                                <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
+                                <p><?php echo htmlspecialchars($item['product_name']); ?></p>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </section>
 
             <section class="history-section">
                 <h2 class="section-title">レンタル履歴</h2>
                 <div class="history-items">
-                    <?php foreach ($rental_history as $item): ?>
-                        <a href="G-17_rental-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
-                            <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
-                            <p><?php echo htmlspecialchars($item['product_name']); ?></p>
-                        </a>
-                    <?php endforeach; ?>
-                    </div>
+                    <?php if (empty($rental_history)): ?>
+                        <p class="no-history">レンタル履歴はありません。</p>
+                    <?php else: ?>
+                        <?php foreach ($rental_history as $item): ?>
+                            <a href="G-17_rental-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
+                                <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
+                                <p><?php echo htmlspecialchars($item['product_name']); ?></p>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </section>
 
             <?php if ($customer_info): ?>
