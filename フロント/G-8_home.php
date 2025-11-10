@@ -4,8 +4,11 @@ require '../common/db_connect.php';
 
 // ===== 商品データ取得 =====
 try {
-    // おすすめ商品を8件取得
-    $sql = "SELECT product_name, price, product_image, product_id FROM product LIMIT 8";
+    // ランダムで8件取得
+    $sql = "SELECT product_name, price, product_image, product_id 
+            FROM product 
+            ORDER BY RAND() 
+            LIMIT 8";
     $stmt = $pdo->query($sql);
     $products = $stmt->fetchAll();
 } catch (PDOException $e) {
