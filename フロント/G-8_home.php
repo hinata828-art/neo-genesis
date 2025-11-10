@@ -96,47 +96,47 @@ try {
         <div class="category-buttons">
             <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
                 <div class="category-icon-circle">
-                    <img src="<?php echo htmlspecialchars($p['product_image']); ?>">
+                    <img src="../img/tv.png" alt="テレビ">
                 </div>
                 <p>テレビ</p>
             </a>
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-13_refrigerator.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/refrigerator.png" alt="冷蔵庫">
                 </div>
                 <p>冷蔵庫</p>
             </a>
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-14_microwave.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/microwave.png" alt="電子レンジ">
                 </div>
                 <p>電子レンジ</p>
             </a>
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-15_camera.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/camera.png" alt="カメラ">
                 </div>
                 <p>カメラ</p>
             </a>
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-16_headphone.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/headphone.png" alt="ヘッドホン">
                 </div>
                 <p>ヘッドホン</p>
             </a>
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-17_washing.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/washing.png" alt="洗濯機">
                 </div>
                 <p>洗濯機</p>
             </a>
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-18_laptop.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/laptop.png" alt="ノートPC">
                 </div>
                 <p>ノートPC</p>
             </a>
-            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
+            <a href="G-19_smartphone.php" class="category-item">
                 <div class="category-icon-circle">
                     <img src="../img/smartphone.png" alt="スマートフォン">
                 </div>
