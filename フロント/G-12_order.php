@@ -5,7 +5,7 @@
     <!-- スマホ拡大防止 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 固有CSS -->
-    <link rel="stylesheet" href="G-12_order.css">
+    <link rel="stylesheet" href="../css/G-12_order.css">
 
     <!-- 共通ヘッダーCSS -->
     <link rel="stylesheet" href="../css/header.css">
