@@ -46,21 +46,22 @@ try {
         <div class="pickapp-items" id="slider">
             <?php if (!empty($products)): ?>
                 <?php foreach ($products as $p): ?>
-                    <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="item-link">
-                        <div class="item">
-                            <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
-                                 alt="<?php echo htmlspecialchars($p['product_name']); ?>">
-                            <div class="item-info">
-                                <p class="item-title">
-                                    <?php echo htmlspecialchars($p['product_name']); ?>
-                                </p>
-                                <p class="item-price">
-                                    ¥<?php echo number_format($p['price']); ?>
-                                </p>
-                                <span class="item-btn">詳細を見る</span>
-                            </div>
+                    <div class="item">
+                        <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
+                             alt="<?php echo htmlspecialchars($p['product_name']); ?>">
+                        <div class="item-info">
+                            <p class="item-title">
+                                <?php echo htmlspecialchars($p['product_name']); ?>
+                            </p>
+                            <p class="item-price">
+                                ¥<?php echo number_format($p['price']); ?>
+                            </p>
+                            <!-- ★ ここだけリンクにする -->
+                            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="item-btn">
+                                詳細を見る
+                            </a>
                         </div>
-                    </a>
+                    </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <p>現在、おすすめ商品はありません。</p>
@@ -70,6 +71,7 @@ try {
         <button class="slider-btn right" id="nextBtn">&#10095;</button>
     </div>
 </section>
+
 
 
     <script>
