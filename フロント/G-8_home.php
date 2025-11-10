@@ -36,16 +36,17 @@ try {
 <main>
 
     <section class="pickapp">
-        <div class="pickapp-label">
-            <h2>おすすめ商品！！！</h2>
-        </div>
+    <div class="pickapp-label">
+        <h2>おすすめ商品！！！</h2>
+    </div>
 
-        <div class="slider-container">
-            <button class="slider-btn left" id="prevBtn">&#10094;</button>
+    <div class="slider-container">
+        <button class="slider-btn left" id="prevBtn">&#10094;</button>
 
-            <div class="pickapp-items" id="slider">
-                <?php if (!empty($products)): ?>
-                    <?php foreach ($products as $p): ?>
+        <div class="pickapp-items" id="slider">
+            <?php if (!empty($products)): ?>
+                <?php foreach ($products as $p): ?>
+                    <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="item-link">
                         <div class="item">
                             <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
                                  alt="<?php echo htmlspecialchars($p['product_name']); ?>">
@@ -56,18 +57,20 @@ try {
                                 <p class="item-price">
                                     ¥<?php echo number_format($p['price']); ?>
                                 </p>
-                                <a href="G-5_product-detail.php?id=<?php echo $p['product_id']; ?>" class="item-btn">詳細</a>
+                                <span class="item-btn">詳細を見る</span>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>現在、おすすめ商品はありません。</p>
-                <?php endif; ?>
-            </div>
-
-            <button class="slider-btn right" id="nextBtn">&#10095;</button>
+                    </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>現在、おすすめ商品はありません。</p>
+            <?php endif; ?>
         </div>
-    </section>
+
+        <button class="slider-btn right" id="nextBtn">&#10095;</button>
+    </div>
+</section>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
