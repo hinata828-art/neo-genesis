@@ -1,12 +1,13 @@
 <?php
 session_start();
-require 'db-connect.php'; // DB接続定数: SERVER, DBNAME, USER, PASS が定義されているファイル
+require 'db-connect.php';
 
 // ログイン確認（必要ならコメントを外す）
+/*
 if (!isset($_SESSION['customer']['customer_id'])) {
     exit('ログイン情報が確認できません。');
 }
-
+*/
 $customer_id = $_SESSION['customer']['customer_id'];
 
 $connect = 'mysql:host=' . SERVER . ';dbname=' . DBNAME . ';charset=utf8';
@@ -23,7 +24,6 @@ try {
     $pdo = new PDO($connect, USER, PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // 最新の購入データを1件取得
     $sql = "SELECT transaction_id, total_amount, payment, delivery_status
             FROM transaction
             WHERE customer_id = ?
