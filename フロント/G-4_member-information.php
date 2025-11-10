@@ -78,6 +78,7 @@ try {
 
     // 7. SQL 3: レンタル履歴の取得 (最新5件)
     // 7. SQL 3: レンタル履歴の取得 (最新5件)
+    // 7. SQL 3: レンタル履歴の取得 (最新5件)
     $sql_rental = "SELECT 
                     p.product_name, 
                     p.product_image, 
