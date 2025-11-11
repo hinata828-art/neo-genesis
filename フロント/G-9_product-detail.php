@@ -24,11 +24,41 @@ if (!$product) {
     exit;
 }
 
+// ===== カテゴリごとのカラー設定 =====
+$category_colors = [
+    'C01' => ['オリジナル', 'イエロー', 'ホワイト'],
+    'C02' => ['オリジナル', 'ブルー', 'グリーン'],
+    'C03' => ['オリジナル', 'ブルー', 'レッド'],
+    'C04' => ['オリジナル', 'ホワイト'],
+    'C05' => ['オリジナル', 'ピンク'],
+    'C06' => ['オリジナル', 'グレー'],
+    'C07' => ['オリジナル', 'ゲーミング'],
+    'C08' => ['オリジナル', 'ブルー'],
+];
+
+// 該当カテゴリのカラーを取得
+$category_id = $product['category_id'] ?? 'C01';
+$colors = $category_colors[$category_id] ?? ['オリジナル'];
+
+// ===== 画像URLを整形 =====
+// 現在のURLには「-色名」が末尾にある（例：https://aso2501223.chu.jp/AIimage/テレビ3-黄色）
+// これを削除して“オリジナル”画像を生成
+$image_url = $product['product_image'];
+$original_image = preg_replace('/-[^-]+$/u', '', $image_url);
+
+// 実際のDB上のオリジナルカラー（中身は例えば「ブラック」）
+$original_color_value = $product['color'] ?? '不明';
+
 // ===== 関連商品を3件取得 =====
 try {
-    $sql = "SELECT product_id, product_name, product_image FROM product WHERE product_id != :id LIMIT 3";
+    $sql = "SELECT product_id, product_name, product_image 
+            FROM product 
+            WHERE product_id != :id 
+            AND category_id = :cat 
+            LIMIT 3";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
+    $stmt->bindValue(':cat', $category_id, PDO::PARAM_STR);
     $stmt->execute();
     $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -48,6 +78,7 @@ try {
 
 <body>
     <?php require __DIR__ . '/../common/header.php'; ?>
+
     <?php
     $breadcrumbs = [
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
@@ -62,16 +93,26 @@ try {
         <h2 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h2>
 
         <div class="product-image-area">
-            <img src="<?php echo htmlspecialchars($product['product_image']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+            <img id="mainImage"
+                 src="<?php echo htmlspecialchars($original_image); ?>.jpg"
+                 alt="<?php echo htmlspecialchars($product['product_name']); ?>">
         </div>
 
         <div class="product-info">
             <p class="price">¥<?php echo number_format($product['price']); ?> <span>（税込み）</span></p>
 
             <div class="color-select">
-                <label><input type="radio" name="color" value="red"> 赤</label>
-                <label><input type="radio" name="color" value="blue"> 青</label>
-                <label><input type="radio" name="color" value="normal" checked> ノーマル</label>
+                <p class="color-label">カラーを選択：</p>
+                <?php foreach ($colors as $i => $color): ?>
+                    <label>
+                        <input type="radio" 
+                               name="color" 
+                               value="<?php echo $color === 'オリジナル' ? htmlspecialchars($original_color_value) : htmlspecialchars($color); ?>"
+                               data-color="<?php echo htmlspecialchars($color); ?>"
+                               <?php if ($i === 0) echo 'checked'; ?>>
+                        <?php echo htmlspecialchars($color); ?>
+                    </label>
+                <?php endforeach; ?>
             </div>
 
             <div class="action-buttons">

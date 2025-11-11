@@ -152,7 +152,7 @@ try {
             <h2>キャンセルしますか？</h2>
             
             <div class="modal-buttons">
-                <a href="G-16_order-cancel.php?id=<?php echo htmlspecialchars($transaction_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
+                <a href="G_transaction-cancel.php?id=<?php echo htmlspecialchars($transaction_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
                 
                 <button id="confirm-no" class="btn btn-secondary">いいえ</button>
             </div>
