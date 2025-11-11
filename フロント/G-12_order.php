@@ -12,7 +12,7 @@ if (isset($_SESSION['customer'])) {
     $customer_info = $_SESSION['customer'];
 } else {
     // (テスト用にダミー情報を設定)
-    $customer_info = ['customer_name' => '（ゲスト）', 'address' => '（住所未登録）'];
+    $customer_info = ['name' => '（ゲスト）', 'address' => '（住所未登録）'];
 }
 
 
@@ -22,6 +22,7 @@ $color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'norma
 
 // 4. 商品IDを使ってDBから商品情報を取得
 try {
+    // ★ G-9 の時と同じように、product_image も取得
     $sql = "SELECT product_name, price, product_image FROM product WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
@@ -38,11 +39,10 @@ if (!$product) {
     exit;
 }
 
-// 6. カラー名を取得（switch文を削除し、受け取った値をそのまま使用）
+// 6. カラー名を取得
 $color_name = $color_value;
 
-// 7. ご請求額を計算（小計と同じと仮定）
-// ※ここは「小計」として扱い、JavaScriptでオプション料金を加算します
+// 7. ご請求額を計算（小計）
 $total_price = $product['price'];
 
 ?>
@@ -63,6 +63,7 @@ $total_price = $product['price'];
     // パンくずリスト
     $breadcrumbs = [
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
+        // ★ 商品名とG-9へのリンクを正しく表示 (G-12 PHPコードの40行目 $product['product_name'] が必要)
         ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
         ['name' => '注文情報入力']
     ];
@@ -100,7 +101,7 @@ $total_price = $product['price'];
 
         <div class="delivery-section">
             <label>お届け先氏名：</label><br>
-            <input type="text" name="name" ... value="<?php echo htmlspecialchars($customer_info['name'] ?? ''); ?>" required><br>
+            <input type="text" name="name" class="input-text" value="<?php echo htmlspecialchars($customer_info['name'] ?? ''); ?>" required><br>
             <label>お届け先住所：</label><br>
             <input type="text" name="address" class="input-text" value="<?php echo htmlspecialchars($customer_info['address'] ?? ''); ?>" required><br>
         </div>
@@ -114,9 +115,22 @@ $total_price = $product['price'];
             </div>
             <div class="payment-box">
                 <label><input type="radio" name="payment" value="credit">クレジットカード決済</label><br>
+                
                 <div class="credit-details">
+                    <label>カード名義：</label><br>
+                    <input type="text" name="cardname" placeholder="YAMADA TAROU" class="input-text"><br>
+                    <label>カード番号：</label><br>
+                    <input type="text" name="cardnumber" placeholder="0000-0000-0000" class="input-text"><br>
+                    <label>有効期限：</label><br>
+                    <div class="expiry-row">
+                        <input type="text" name="monthnumber" placeholder="月" class="input-small">
+                        <label>/</label>
+                        <input type="text" name="yearnumber" placeholder="年" class="input-small"><br>
                     </div>
-            </div>
+                    <label>セキュリティコード：</label><br>
+                    <input type="text" name="code" class="input-text"><br>
+                </div>
+                </div>
             <div class="payment-box">
                 <label><input type="radio" name="payment" value="bank">銀行振込</label><br>
             </div>
@@ -144,37 +158,21 @@ $total_price = $product['price'];
 </div>
 
 <script>
-// ページが読み込まれたら実行
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // 1. 必要な要素を取得
     const warrantyCheckbox = document.getElementById('warranty_cb');
     const totalPriceDisplay = document.getElementById('total_price_display');
     const totalAmountHidden = document.getElementById('total_amount_hidden');
-
-    // 2. 元の価格（小計）をPHPから取得
     const basePrice = parseInt(totalAmountHidden.value, 10);
-    
-    // 3. 補償サービスの価格（value属性から取得）
     const warrantyPrice = parseInt(warrantyCheckbox.value, 10);
 
-    // 4. チェックボックスが変更されたときのイベント
     warrantyCheckbox.addEventListener('change', function() {
-        
         let newTotalPrice;
-
         if (this.checked) {
-            // チェックされたら、基本料金 + 補償料金
             newTotalPrice = basePrice + warrantyPrice;
         } else {
-            // チェックが外されたら、基本料金のみ
             newTotalPrice = basePrice;
         }
-
-        // 5. 画面の表示を更新 (toLocaleStringでカンマ区切りにする)
         totalPriceDisplay.innerText = '￥' + newTotalPrice.toLocaleString();
-        
-        // 6. 次のページに送る hidden フィールドの値も更新
         totalAmountHidden.value = newTotalPrice;
     });
 });
