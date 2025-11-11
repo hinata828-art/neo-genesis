@@ -10,16 +10,7 @@ $customer_info = null;
 if (isset($_SESSION['customer'])) {
     // ログイン済みの場合、セッションから顧客情報を取得
     $customer_info = $_SESSION['customer'];
-    
-    // (もし住所情報が別テーブルなら、ここでDBから追加取得しても良い)
-    // 例: $customer_info['name'] = $_SESSION['customer']['customer_name'];
-    // 例: $customer_info['address'] = $_SESSION['customer']['address'];
 } else {
-    // ログインしていない場合（テスト用、実際はログインページにリダイレクト）
-    // echo "ログインしていません。G-1_login.php にリダイレクトします。";
-    // header('Location: G-1_login.php');
-    // exit;
-    
     // (テスト用にダミー情報を設定)
     $customer_info = ['customer_name' => '（ゲスト）', 'address' => '（住所未登録）'];
 }
@@ -47,21 +38,11 @@ if (!$product) {
     exit;
 }
 
-// 6. カラーの値を日本語に変換（任意）
-$color_name = '';
-switch ($color_value) {
-    case 'red':
-        $color_name = '赤';
-        break;
-    case 'blue':
-        $color_name = '青';
-        break;
-    default:
-        $color_name = 'ノーマル';
-        break;
-}
+// 6. カラー名を取得（switch文を削除し、受け取った値をそのまま使用）
+$color_name = $color_value;
 
 // 7. ご請求額を計算（小計と同じと仮定）
+// ※ここは「小計」として扱い、JavaScriptでオプション料金を加算します
 $total_price = $product['price'];
 
 ?>
@@ -79,7 +60,7 @@ $total_price = $product['price'];
     <?php require __DIR__ . '/../common/header.php'; ?>
     
     <?php
-    // ★ パンくずリストを動的に修正
+    // パンくずリスト
     $breadcrumbs = [
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
         ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
@@ -87,7 +68,7 @@ $total_price = $product['price'];
     ];
     require __DIR__ . '/../common/breadcrumb.php';
     ?>
-     
+    
 <div class="container">
     <p>注文内容</p>
     <hr>
@@ -98,14 +79,14 @@ $total_price = $product['price'];
             <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
             <div class="product-color-row">
                 <label class="product-color-label">商品カラー：</label>
-                <label class="product-color"><?php echo $color_name; ?></label>
+                <label class="product-color"><?php echo htmlspecialchars($color_name); ?></label>
             </div>
         </div>
     </div>
 
     <div class="price-section">
             <p>商品の小計：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
-            <p>ご請求額：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
+            <p>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($total_price); ?></span></p>
     </div>
 
     <hr>
@@ -113,9 +94,9 @@ $total_price = $product['price'];
     <form action="G-13_order_complete.php" method="POST">
 
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-        <input type="hidden" name="color" value="<?php echo $color_value; ?>">
-        <input type="hidden" name="total_amount" value="<?php echo $total_price; ?>">
-
+        <input type="hidden" name="color" value="<?php echo htmlspecialchars($color_value); ?>">
+        
+        <input type="hidden" name="total_amount" id="total_amount_hidden" value="<?php echo $total_price; ?>">
 
         <div class="delivery-section">
             <label>お届け先氏名：</label><br>
@@ -142,11 +123,62 @@ $total_price = $product['price'];
         </div>
         
         <div class="option-section">
-             </div>
+            <p>追加オプション</p>
+            <div class="option-box">
+                <label>
+                    <input type="checkbox" name="option_warranty" id="warranty_cb" value="500">
+                    補償サービス（+500円/月で破損・水没も保証）
+                </label>
+            </div>
+            <div class="option-box">
+                <label>
+                    <input type="checkbox" name="option_delivery" value="1">
+                    配送・返却サービス（自宅集荷）
+                </label>
+            </div>
+        </div>
         
         <button type="submit" class="confirm-button">購入を確定する</button>
 
-    </form> </div>
+    </form> 
+</div>
+
+<script>
+// ページが読み込まれたら実行
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. 必要な要素を取得
+    const warrantyCheckbox = document.getElementById('warranty_cb');
+    const totalPriceDisplay = document.getElementById('total_price_display');
+    const totalAmountHidden = document.getElementById('total_amount_hidden');
+
+    // 2. 元の価格（小計）をPHPから取得
+    const basePrice = parseInt(totalAmountHidden.value, 10);
+    
+    // 3. 補償サービスの価格（value属性から取得）
+    const warrantyPrice = parseInt(warrantyCheckbox.value, 10);
+
+    // 4. チェックボックスが変更されたときのイベント
+    warrantyCheckbox.addEventListener('change', function() {
+        
+        let newTotalPrice;
+
+        if (this.checked) {
+            // チェックされたら、基本料金 + 補償料金
+            newTotalPrice = basePrice + warrantyPrice;
+        } else {
+            // チェックが外されたら、基本料金のみ
+            newTotalPrice = basePrice;
+        }
+
+        // 5. 画面の表示を更新 (toLocaleStringでカンマ区切りにする)
+        totalPriceDisplay.innerText = '￥' + newTotalPrice.toLocaleString();
+        
+        // 6. 次のページに送る hidden フィールドの値も更新
+        totalAmountHidden.value = newTotalPrice;
+    });
+});
+</script>
 
 </body>
 </html>
