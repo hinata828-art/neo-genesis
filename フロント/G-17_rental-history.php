@@ -11,24 +11,25 @@ error_reporting(E_ALL);
 require '../common/db_connect.php'; // $pdo 変数がここで作成されると仮定
 
 // 4. 表示するデータを初期化
-$products = []; // ★商品リスト用の配列
-$order_info = null; // ★注文共通情報用 (rental_info から変更)
+$products = []; // 商品リスト用の配列
+$order_info = null; // 注文・レンタル共通情報用
 $error_message = '';
+$is_cancellable = false; // ★【追加】キャンセル可能か判定するフラグ
+$transaction_id = 0; // ★【追加】IDを保持する変数
 
 try {
     // 5. URLから表示したい「取引ID」を取得
-    // ★ G-16 と同じロジックに戻します
     if (!isset($_GET['id'])) {
         throw new Exception('取引IDが指定されていません。');
     }
-    $transaction_id = $_GET['id']; // ★ rental_id から transaction_id に変更
+    $transaction_id = $_GET['id']; // ★ rental_id から変更
     
     // 6. データベースからレンタル情報を取得
-    // ★★★ SQLクエリを「正しいテーブル構造」に全面的に修正 ★★★
+    // ★★★ SQLクエリを「transaction_table(親)」と「rental(子)」のJOINに修正 ★★★
     $sql = "SELECT 
                 t.transaction_date,    /* 取引日 (親テーブルから) */
                 t.payment,             /* 支払い方法 (親テーブルから) */
-                t.delivery_status,     /* 配達ステータス (親テーブルから) */
+                t.delivery_status,     /* ★配送状況 (親テーブルから) */
                 t.total_amount,        /* 合計金額 (親テーブルから) */
                 p.product_id,
                 p.product_name, 
@@ -37,12 +38,12 @@ try {
                 r.rental_start,        /* レンタル開始日 (子テーブルから) */
                 r.rental_end           /* レンタル終了日 (子テーブルから) */
             FROM transaction_table AS t
-            JOIN rental AS r ON t.transaction_id = r.transaction_id /* ★修正★ rental_table -> rental */
-            JOIN product AS p ON r.product_id = p.product_id       /* ★修正★ d.product_id -> r.product_id */
-            WHERE t.transaction_id = :id"; /* ★修正★ r.rental_id -> t.transaction_id */
+            JOIN rental AS r ON t.transaction_id = r.transaction_id /* ★修正★ */
+            JOIN product AS p ON r.product_id = p.product_id       /* ★修正★ */
+            WHERE t.transaction_id = :id"; 
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':id', $transaction_id, PDO::PARAM_INT); // ★修正★
+    $stmt->bindValue(':id', $transaction_id, PDO::PARAM_INT);
     $stmt->execute();
     
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -52,30 +53,31 @@ try {
     }
     
     // 注文共通情報を $products の最初の要素から取得
-    $order_info = $products[0]; // ★ rental_info から変更
+    $order_info = $products[0];
     
-    // 日付フォーマットの整形
-    // ★ カラム名をDBの画像に合わせて修正 ('rental_start', 'rental_end')
+    // 日付フォーマットの整形 (DBのカラム名に合わせる)
     $order_info['start_date_formatted'] = date('Y/m/d H:i', strtotime($order_info['rental_start']));
     $order_info['return_date_formatted'] = date('Y/m/d', strtotime($order_info['rental_end']));
     
-    // 返却状況のテキストを整形
-    // ★ 'return_status' ではなく 'delivery_status' (親テーブルのステータス) を使うと仮定
+    // ★★★ 【修正】ステータスに応じて表示テキストと「キャンセル可否」を決定 ★★★
     switch ($order_info['delivery_status']) { 
+        case '注文受付':
+            $order_info['return_status_text'] = '発送準備中です';
+            $is_cancellable = true; // ★「注文受付」の時だけキャンセル可能
+            break;
         case 'レンタル中':
             $order_info['return_status_text'] = '返却予定日: ' . $order_info['return_date_formatted'];
             break;
         case '返却済み':
             $order_info['return_status_text'] = '返却完了済み';
             break;
-        case '受付完了':
-            $order_info['return_status_text'] = '発送準備中です';
+        case 'キャンセル済み': // ★「キャンセル済み」の場合の表示を追加
+            $order_info['return_status_text'] = 'この取引はキャンセルされました';
             break;
         default:
             $order_info['return_status_text'] = 'ステータス: ' . htmlspecialchars($order_info['delivery_status']);
             break;
     }
-
 
 } catch (Exception $e) {
     $error_message = $e->getMessage();
@@ -158,8 +160,11 @@ try {
         </main>
 
        <footer class="footer">
-            <a href="#" id="open-cancel-modal" class="footer-link">レンタルキャンセルはコチラ</a>
-        </footer>
+            <?php if ($is_cancellable): ?>
+                <a href="#" id="open-cancel-modal" class="footer-link">レンタルキャンセルはコチラ</a>
+            <?php else: ?>
+                <?php endif; ?>
+       </footer>
 
     </div> 
     
@@ -184,25 +189,33 @@ try {
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('cancel-modal');
+        
+        // ★ フッターのリンクが存在する場合のみ、イベントリスナーを登録
         const openBtn = document.getElementById('open-cancel-modal');
-        const closeBtn = document.getElementById('close-modal');
-        const noBtn = document.getElementById('confirm-no');
-        openBtn.addEventListener('click', function(e) {
-            e.preventDefault(); 
-            modal.style.display = 'flex'; 
-        });
-        noBtn.addEventListener('click', function() {
-            modal.style.display = 'none'; 
-        });
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none'; 
-        });
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) { 
+        if (openBtn) {
+            const modal = document.getElementById('cancel-modal');
+            const closeBtn = document.getElementById('close-modal');
+            const noBtn = document.getElementById('confirm-no');
+
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                modal.style.display = 'flex'; 
+            });
+
+            noBtn.addEventListener('click', function() {
                 modal.style.display = 'none'; 
-            }
-        });
+            });
+
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none'; 
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) { 
+                    modal.style.display = 'none'; 
+                }
+            });
+        }
     });
     </script>
 

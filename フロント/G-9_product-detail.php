@@ -93,16 +93,38 @@ try {
             <p class="price">¥<?php echo number_format($product['price']); ?> <span>（税込み）</span></p>
 
             <!-- カラー選択 -->
-            <div class="color-select">
-                <p class="color-label">カラーを選択：</p>
-                <?php foreach ($colors as $i => $color): ?>
-                    <label>
-                        <input type="radio" name="color" value="<?php echo htmlspecialchars($color); ?>" 
-                            <?php if ($i === 0) echo 'checked'; ?>>
-                        <?php echo htmlspecialchars($color); ?>
-                    </label>
-                <?php endforeach; ?>
-            </div>
+<div class="color-select">
+    <p class="color-label">カラーを選択：</p>
+    <?php
+    // カテゴリごとのカラー設定
+    $category_colors = [
+        'C01' => ['オリジナル', 'イエロー', 'ホワイト'],
+        'C02' => ['オリジナル', 'ブルー', 'グリーン'],
+        'C03' => ['オリジナル', 'ブルー', 'レッド'],
+        'C04' => ['オリジナル', 'ホワイト'],
+        'C05' => ['オリジナル', 'ピンク'],
+        'C06' => ['オリジナル', 'グレー'],
+        'C07' => ['オリジナル', 'ゲーミング'],
+        'C08' => ['オリジナル', 'ブルー'],
+    ];
+
+    // カテゴリIDとカラーを取得
+    $category_id = $product['category_id'] ?? 'C01';
+    $colors = $category_colors[$category_id] ?? ['オリジナル'];
+
+    // 最初の「オリジナル」はDBのカラーに置き換える（内部的に）
+    $original_color_value = $product['color'] ?? '不明';
+    ?>
+
+    <?php foreach ($colors as $i => $color): ?>
+        <label>
+            <input type="radio" name="color" 
+                   value="<?php echo $color === 'オリジナル' ? htmlspecialchars($original_color_value) : htmlspecialchars($color); ?>"
+                   <?php if ($i === 0) echo 'checked'; ?>>
+            <?php echo htmlspecialchars($color); // 表示は「オリジナル」 ?>
+        </label>
+    <?php endforeach; ?>
+</div>
 
             <!-- ボタン -->
             <div class="action-buttons">
