@@ -8,12 +8,10 @@ error_reporting(E_ALL);
 require '../common/db_connect.php'; // $pdo が定義されていると仮定
 
 // 3. 顧客IDの取得（ログインセッションから）
-// ★注意： 'customer' のキー名は、実際のログイン処理で保存したキー名に変更してください
 if (isset($_SESSION['customer']['id'])) {
     $customer_id = $_SESSION['customer']['id'];
 } else {
-    // ログインしていない場合のテスト用（またはログインページへ強制送還）
-    // $customer_id = 1; 
+    // ログインしていない場合
     echo "ログインしていません。";
     // header('Location: G-1_login.php'); // ログインページへ
     exit;
@@ -26,8 +24,7 @@ $rental_history = [];
 $error_message = '';
 
 try {
-    // 5. SQL 1: 会員情報の取得 (customerテーブルから)
-    // (※住所は address テーブルにあると仮定してLEFT JOIN)
+    // 5. SQL 1: 会員情報の取得 (変更なし)
     $sql_customer = "SELECT c.*, a.prefecture, a.city 
                        FROM customer AS c
                        LEFT JOIN address AS a ON c.customer_id = a.customer_id
@@ -42,26 +39,16 @@ try {
         throw new Exception('顧客情報が見つかりません。');
     }
     
-    // 住所を結合 (addressテーブルにデータがない場合も考慮)
+    // (会員情報の null チェック ... 元のコードのまま)
     $customer_info['full_address'] = ($customer_info['prefecture'] ?? '') . ($customer_info['city'] ?? '');
-    if(empty($customer_info['full_address'])){
-        $customer_info['full_address'] = '（住所未登録）';
-    }
-
-    // 電話番号が空の場合
-    if(empty($customer_info['phone_number'])){
-        $customer_info['phone_number'] = '（電話番号未登録）';
-    }
-    
-    // 支払方法が空の場合
-    if(empty($customer_info['payment_method'])){
-        $customer_info['payment_method'] = '（支払方法未登録）';
-    }
+    if(empty($customer_info['full_address'])){ $customer_info['full_address'] = '（住所未登録）'; }
+    if(empty($customer_info['phone_number'])){ $customer_info['phone_number'] = '（電話番号未登録）'; }
+    if(empty($customer_info['payment_method'])){ $customer_info['payment_method'] = '（支払方法未登録）'; }
 
     
     // 6. SQL 2: 購入履歴の取得 (最新5件)
-    // ★★★ 修正点 1: t.transaction_id AS tid に変更 ★★★
-    $sql_purchase = "SELECT p.product_name, p.product_image, t.transaction_id AS tid
+    // ★★★ 修正点 1: t.delivery_status を SELECT に追加 ★★★
+    $sql_purchase = "SELECT p.product_name, p.product_image, t.transaction_id AS tid, t.delivery_status
                        FROM transaction_table AS t
                        JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
                        JOIN product AS p ON d.product_id = p.product_id
@@ -74,14 +61,14 @@ try {
     $purchase_history = $stmt_purchase->fetchAll(PDO::FETCH_ASSOC);
 
     // 7. SQL 3: レンタル履歴の取得 (最新5件)
-    // ★★★ 修正点 2: t.transaction_id AS tid に変更 ★★★
-    $sql_rental = "SELECT p.product_name, p.product_image, t.transaction_id AS tid
-                       FROM transaction_table AS t
-                       JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
-                       JOIN product AS p ON d.product_id = p.product_id
-                       WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
-                       ORDER BY t.transaction_date DESC
-                       LIMIT 5"; // 最新5件のみ表示
+    // ★★★ 修正点 2: SQL全体を「rental」テーブルを使うように修正 ★★★
+    $sql_rental = "SELECT p.product_name, p.product_image, t.transaction_id AS tid, t.delivery_status
+                     FROM transaction_table AS t
+                     JOIN rental AS r ON t.transaction_id = r.transaction_id
+                     JOIN product AS p ON r.product_id = p.product_id
+                     WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
+                     ORDER BY t.transaction_date DESC
+                     LIMIT 5"; // 最新5件のみ表示
     $stmt_rental = $pdo->prepare($sql_rental);
     $stmt_rental->bindValue(':id', $customer_id, PDO::PARAM_INT);
     $stmt_rental->execute();
@@ -124,9 +111,21 @@ try {
                         <p class="no-history">購入履歴はありません。</p>
                     <?php else: ?>
                         <?php foreach ($purchase_history as $item): ?>
-                            <a href="G-16_order-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
+                            <?php
+                                // ★★★ ステータスに応じてCSSクラスを準備 ★★★
+                                $card_class = 'history-item';
+                                $status_text = htmlspecialchars($item['delivery_status']);
+                                
+                                if ($item['delivery_status'] == 'キャンセル済み') {
+                                    $card_class .= ' cancelled';
+                                } else if ($item['delivery_status'] == '配達完了') {
+                                    $card_class .= ' completed';
+                                }
+                            ?>
+                            <a href="G-16_order-history.php?id=<?php echo $item['tid']; ?>" class="<?php echo $card_class; ?>">
                                 <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                                 <p><?php echo htmlspecialchars($item['product_name']); ?></p>
+                                <p class="history-status"><?php echo $status_text; ?></p>
                             </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -140,9 +139,21 @@ try {
                         <p class="no-history">レンタル履歴はありません。</p>
                     <?php else: ?>
                         <?php foreach ($rental_history as $item): ?>
-                            <a href="G-17_rental-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
+                            <?php
+                                // ★★★ ステータスに応じてCSSクラスを準備 ★★★
+                                $card_class = 'history-item';
+                                $status_text = htmlspecialchars($item['delivery_status']);
+                                
+                                if ($item['delivery_status'] == 'キャンセル済み') {
+                                    $card_class .= ' cancelled';
+                                } else if ($item['delivery_status'] == '返却済み') { // レンタル固有
+                                    $card_class .= ' completed';
+                                }
+                            ?>
+                            <a href="G-17_rental-history.php?id=<?php echo $item['tid']; ?>" class="<?php echo $card_class; ?>">
                                 <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                                 <p><?php echo htmlspecialchars($item['product_name']); ?></p>
+                                <p class="history-status"><?php echo $status_text; ?></p>
                             </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
