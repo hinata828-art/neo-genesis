@@ -7,7 +7,7 @@ $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // ===== 商品詳細を取得 =====
 try {
-    $sql = "SELECT product_name, price, product_image, product_id, product_detail 
+    $sql = "SELECT product_name, price, product_image, product_id, product_detail, category_id
             FROM product 
             WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
@@ -25,14 +25,32 @@ if (!$product) {
     exit;
 }
 
+// ===== カテゴリごとのカラー設定 =====
+$category_colors = [
+    'C01' => ['オリジナル', 'イエロー', 'ホワイト'],
+    'C02' => ['オリジナル', 'ブルー', 'グリーン'],
+    'C03' => ['オリジナル', 'ブルー', 'レッド'],
+    'C04' => ['オリジナル', 'ホワイト'],
+    'C05' => ['オリジナル', 'ピンク'],
+    'C06' => ['オリジナル', 'グレー'],
+    'C07' => ['オリジナル', 'ゲーミング'],
+    'C08' => ['オリジナル', 'ブルー'],
+];
+
+// 該当カテゴリのカラーを取得
+$category_id = $product['category_id'] ?? 'C01';
+$colors = $category_colors[$category_id] ?? ['オリジナル'];
+
 // ===== 関連商品を3件取得 =====
 try {
     $sql = "SELECT product_id, product_name, product_image 
             FROM product 
             WHERE product_id != :id 
+            AND category_id = :cat 
             LIMIT 3";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
+    $stmt->bindValue(':cat', $category_id, PDO::PARAM_STR);
     $stmt->execute();
     $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -52,6 +70,7 @@ try {
 
 <body>
     <?php require __DIR__ . '/../common/header.php'; ?>
+
     <?php
     $breadcrumbs = [
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
@@ -75,9 +94,14 @@ try {
 
             <!-- カラー選択 -->
             <div class="color-select">
-                <label><input type="radio" name="color" value="red"> 赤</label>
-                <label><input type="radio" name="color" value="blue"> 青</label>
-                <label><input type="radio" name="color" value="normal" checked> ノーマル</label>
+                <p class="color-label">カラーを選択：</p>
+                <?php foreach ($colors as $i => $color): ?>
+                    <label>
+                        <input type="radio" name="color" value="<?php echo htmlspecialchars($color); ?>" 
+                            <?php if ($i === 0) echo 'checked'; ?>>
+                        <?php echo htmlspecialchars($color); ?>
+                    </label>
+                <?php endforeach; ?>
             </div>
 
             <!-- ボタン -->
@@ -98,12 +122,7 @@ try {
     <!-- ===== 商品説明 ===== -->
     <section class="product-description">
         <h3>詳細</h3>
-        <p>
-            <?php 
-                echo nl2br(htmlspecialchars($product['product_detail'])); 
-                // 改行対応＋XSS防止
-            ?>
-        </p>
+        <p><?php echo nl2br(htmlspecialchars($product['product_detail'])); ?></p>
     </section>
 
     <!-- ===== 関連商品 ===== -->
