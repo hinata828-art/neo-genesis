@@ -13,7 +13,7 @@
         </div>
 
         <div class="header-cart">
-            <a href="#">
+            <a href="G-11_cart.php">
                 <img src="../img/cart.png" alt="カートアイコン">
                 <label>カート</label>
             </a>
