@@ -5,24 +5,22 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 require '../common/db_connect.php';
 
-// 2. ログイン状態の確認（セッションから顧客情報を取得）
+// 2. ログイン状態の確認
 $customer_info = null;
 if (isset($_SESSION['customer'])) {
-    // ログイン済みの場合、セッションから顧客情報を取得
     $customer_info = $_SESSION['customer'];
 } else {
-    // (テスト用にダミー情報を設定)
     $customer_info = ['name' => '（ゲスト）', 'address' => '（住所未登録）'];
 }
 
-
 // 3. URLから商品IDとカラーを取得
 $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'normal';
+// G-9から渡されたファイル名 (例: '青' や 'ピンク' や 'original')
+$color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'original';
 
 // 4. 商品IDを使ってDBから商品情報を取得
 try {
-    // ▼▼▼ 修正点 1：(A) product_image と、(B) color も取得する ▼▼▼
+    // G-9 と同様に product_image と color も取得
     $sql = "SELECT product_name, price, product_image, color FROM product WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
@@ -39,51 +37,64 @@ if (!$product) {
     exit;
 }
 
-// 6. カラー名を取得
-$color_name = $color_value;
+// ▼▼▼ 修正点1：ファイル名 => 表示名 への「逆引きマップ」 ▼▼▼
+$color_display_map = [
+    'original' => 'オリジナル',
+    '白'       => 'ホワイト',
+    '青'       => 'ブルー',
+    'イエロー'   => 'イエロー',
+    'ブラック'   => 'ブラック',
+    'ピンク'     => 'ピンク',
+    'グレー'     => 'グレー',
+    'グリーン'   => 'グリーン',
+    // G-9の $category_colors_list にしかない名前も念のため
+    'red'      => 'レッド', 
+    'green'    => 'グリーン',
+    'gaming'   => 'ゲーミング'
+];
+
+// 6. カラー名を取得 (例: '青' -> 'ブルー')
+$color_name = $color_display_map[$color_value] ?? $color_value;
 
 // 7. ご請求額を計算（小計）
 $total_price = $product['price'];
 
 
-// ▼▼▼ 修正点 2：表示する画像URLを動的に決定するロジック ▼▼▼
+// ▼▼▼ 修正点2：G-12でも、G-9と同じ画像URL生成ロジックを使う ▼▼▼
+$base_image_url_from_db = $product['product_image'] ?? '';
+$base_color_filename = $product['color'] ?? 'original'; // DBのcolor (例: 'オリジナル' や '白')
+$selected_color_filename = $color_value;             // G-9から来たファイル名 (例: '青')
+$image_to_display = '';
+$extension = '.jpg'; // デフォルト
 
-// 7a. データベースから取得した情報
-$base_image_url_from_db = $product['product_image']; // DBのURL (例: .../カメラ1.jpg または .../カメラ1-白.jpg)
-$base_color_from_db = $product['color'];             // DBの色 (例: 'オリジナル' または '白')
-$selected_color = $color_value;                      // G-9で選択された色 (例: 'イエロー' or 'オリジナル' or '白')
-
-$image_to_display; // 最終的に<img>タグで使うURL
-
-if ($selected_color === $base_color_from_db) {
-    // 
-    // ケースA：選択した色が、DBのデフォルト色と同じ場合
-    // (例: G-9で 'オリジナル' を選択 -> $selected_color が 'オリジナル' になる)
-    // (例: G-9で '白' を選択 -> $selected_color が '白' で、DBの $base_color_from_db も '白' だった)
-    // 
-    // → DBに保存されているそのままのURLを使います
-    $image_to_display = $base_image_url_from_db;
-
-} else {
-    //
-    // ケースB：選択した色が、DBのデフォルト色と異なる場合
-    // (例: G-9で 'イエロー' を選択。DBの $base_color_from_db は 'オリジナル' だった)
-    // 
-    // → URLを動的に生成します (例: .../カメラ1-イエロー.jpg)
-
-    // 7b. DBのURLから「拡張子」を取得 (例: .jpg)
-    $extension = substr($base_image_url_from_db, strrpos($base_image_url_from_db, '.')); 
+if (!empty($base_image_url_from_db)) {
+    // 拡張子を取得
+    if (strrpos($base_image_url_from_db, '.') !== false) {
+        $extension = substr($base_image_url_from_db, strrpos($base_image_url_from_db, '.')); 
+        $url_without_extension = substr($base_image_url_from_db, 0, strrpos($base_image_url_from_db, '.'));
+    } else {
+        $url_without_extension = $base_image_url_from_db; // 拡張子がない場合
+    }
     
-    // 7c. DBのURLから「拡張子を除いたURL」を取得 (例: .../カメラ1 or .../カメラ1-白)
-    $url_without_extension = substr($base_image_url_from_db, 0, strrpos($base_image_url_from_db, '.'));
-    
-    // 7d. G-9のロジックを使い、もし色名が付いていたら削除 (例: .../カメラ1-白 -> .../カメラ1)
+    // ベースURLを取得 ( .../カメラ1-白 -> .../カメラ1 )
     $true_base_url = preg_replace('/-[^-]+$/u', '', $url_without_extension);
 
-    // 7e. 新しいURLを構築 (例: .../カメラ1 + - + イエロー + .jpg)
-    $image_to_display = $true_base_url . '-' . $selected_color . $extension;
+    // G-9で 'original' を選んだ場合のファイル名（'original'）
+    $original_color_value = $color_display_map['original'] ?? 'original';
+    
+    if ($selected_color_filename === $original_color_value) {
+        // ケースA: 'original' が選択された
+        $image_to_display = $true_base_url . $extension;
+    } else {
+        // ケースB: '青' や 'ピンク' が選択された
+        $image_to_display = $true_base_url . '-' . $selected_color_filename . $extension;
+    }
+
+} else {
+    // DBに画像URLが登録されていない場合
+    $image_to_display = '../img/no_image.jpg'; // (ダミーのパス)
 }
-// ▲▲▲ 修正ロジックここまで ▲▲▲
+// ▲▲▲ 修正点2 ここまで ▲▲▲
 ?>
 <!DOCTYPE html>
 <html lang="ja">
