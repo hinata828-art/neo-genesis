@@ -68,10 +68,14 @@ if (!empty($base_image_url_from_db)) {
     // ベースURLを取得 ( .../カメラ1-白 -> .../カメラ1 )
     $true_base_url = preg_replace('/-[^-]+$/u', '', $base_image_url_from_db);
 
-    // G-9で 'original' を選んだ場合のファイル名（'original'）
-    $original_color_value = $color_display_map['original'] ?? 'original';
+    // ▼▼▼ バグ修正：G-9から渡ってくる 'original' (英語) と直接比較する ▼▼▼
+
+    // (85行目) $original_color_value = ... (この行は不要なので削除)
     
-    if ($selected_color_filename === $original_color_value) {
+    // (87行目) G-9から渡ってくる「オリジナル」の *値* は 'original' (英語)
+    if ($selected_color_filename === 'original') {
+    // ▲▲▲ バグ修正ここまで ▲▲▲
+
         // ケースA: 'original' が選択された
         $image_to_display = $true_base_url;
     } else {
