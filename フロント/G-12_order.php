@@ -22,8 +22,8 @@ $color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'norma
 
 // 4. 商品IDを使ってDBから商品情報を取得
 try {
-    // ★ G-9 の時と同じように、product_image も取得
-    $sql = "SELECT product_name, price, product_image FROM product WHERE product_id = :id";
+    // ▼▼▼ 修正点 1：(A) product_image と、(B) color も取得する ▼▼▼
+    $sql = "SELECT product_name, price, product_image, color FROM product WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->execute();
@@ -45,6 +45,45 @@ $color_name = $color_value;
 // 7. ご請求額を計算（小計）
 $total_price = $product['price'];
 
+
+// ▼▼▼ 修正点 2：表示する画像URLを動的に決定するロジック ▼▼▼
+
+// 7a. データベースから取得した情報
+$base_image_url_from_db = $product['product_image']; // DBのURL (例: .../カメラ1.jpg または .../カメラ1-白.jpg)
+$base_color_from_db = $product['color'];             // DBの色 (例: 'オリジナル' または '白')
+$selected_color = $color_value;                      // G-9で選択された色 (例: 'イエロー' or 'オリジナル' or '白')
+
+$image_to_display; // 最終的に<img>タグで使うURL
+
+if ($selected_color === $base_color_from_db) {
+    // 
+    // ケースA：選択した色が、DBのデフォルト色と同じ場合
+    // (例: G-9で 'オリジナル' を選択 -> $selected_color が 'オリジナル' になる)
+    // (例: G-9で '白' を選択 -> $selected_color が '白' で、DBの $base_color_from_db も '白' だった)
+    // 
+    // → DBに保存されているそのままのURLを使います
+    $image_to_display = $base_image_url_from_db;
+
+} else {
+    //
+    // ケースB：選択した色が、DBのデフォルト色と異なる場合
+    // (例: G-9で 'イエロー' を選択。DBの $base_color_from_db は 'オリジナル' だった)
+    // 
+    // → URLを動的に生成します (例: .../カメラ1-イエロー.jpg)
+
+    // 7b. DBのURLから「拡張子」を取得 (例: .jpg)
+    $extension = substr($base_image_url_from_db, strrpos($base_image_url_from_db, '.')); 
+    
+    // 7c. DBのURLから「拡張子を除いたURL」を取得 (例: .../カメラ1 or .../カメラ1-白)
+    $url_without_extension = substr($base_image_url_from_db, 0, strrpos($base_image_url_from_db, '.'));
+    
+    // 7d. G-9のロジックを使い、もし色名が付いていたら削除 (例: .../カメラ1-白 -> .../カメラ1)
+    $true_base_url = preg_replace('/-[^-]+$/u', '', $url_without_extension);
+
+    // 7e. 新しいURLを構築 (例: .../カメラ1 + - + イエロー + .jpg)
+    $image_to_display = $true_base_url . '-' . $selected_color . $extension;
+}
+// ▲▲▲ 修正ロジックここまで ▲▲▲
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -63,7 +102,6 @@ $total_price = $product['price'];
     // パンくずリスト
     $breadcrumbs = [
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        // ★ 商品名とG-9へのリンクを正しく表示 (G-12 PHPコードの40行目 $product['product_name'] が必要)
         ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
         ['name' => '注文情報入力']
     ];
@@ -75,7 +113,7 @@ $total_price = $product['price'];
     <hr>
     
     <div class="product-section">
-        <img src="<?php echo htmlspecialchars($product['product_image']); ?>" alt="商品画像" class="product-image">
+        <img src="<?php echo htmlspecialchars($image_to_display); ?>" alt="商品画像" class="product-image">
         <div class="product-info">
             <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
             <div class="product-color-row">
@@ -130,7 +168,7 @@ $total_price = $product['price'];
                     <label>セキュリティコード：</label><br>
                     <input type="text" name="code" class="input-text"><br>
                 </div>
-                </div>
+            </div>
             <div class="payment-box">
                 <label><input type="radio" name="payment" value="bank">銀行振込</label><br>
             </div>
