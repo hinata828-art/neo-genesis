@@ -33,46 +33,71 @@ if (!$product) {
     exit;
 }
 
-// ▼▼▼ 修正点1：カテゴリごとのカラー設定を「連想配列」に変更 ▼▼▼
-// 「表示名」=>「ファイル名に使われる文字列」 の形式にします
-$category_colors = [
-    'C01' => ['オリジナル' => 'original', 'イエロー' => 'yellow', 'ホワイト' => 'white'],
-    'C02' => ['オリジナル' => 'original', 'ブルー' => 'blue', 'グリーン' => 'green'],
-    'C03' => ['オリジナル' => 'original', 'ブルー' => 'blue', 'レッド' => 'red'],
-    'C04' => ['オリジナル' => 'original', 'ホワイト' => 'white'],
-    'C05' => ['オリジナル' => 'original', 'ピンク' => 'pink'], // ★ 'ピンク' => 'pink' に変更
-    'C06' => ['オリジナル' => 'original', 'グレー' => 'gray'],
-    'C07' => ['オリジナル' => 'original', 'ゲーミング' => 'gaming'],
-    'C08' => ['オリジナル' => 'original', 'ブルー' => 'blue'],
+// ▼▼▼ 修正点1：あなたのリストに基づき、連想配列を定義 ▼▼▼
+$color_file_map = [
+    'オリジナル' => 'original', // 'オリジナル' は 'original' というファイル名 (仮)
+    'ホワイト'   => '白',         // 'ホワイト' は '白' というファイル名 (以前の例から)
+    'ブルー'     => '青',         // 'ブルー' は '青' というファイル名 (今回の例から)
+    'イエロー'   => 'イエロー',   // 'イエロー' は 'イエロー' というファイル名 (仮)
+    'ブラック'   => 'ブラック',   // 'ブラック' は 'ブラック' というファイル名 (仮)
+    'ピンク'     => 'ピンク',     // 'ピンク' は 'ピンク' というファイル名 (仮)
+    'グレー'     => 'グレー',     // 'グレー' は 'グレー' というファイル名 (仮)
+    'グリーン'   => 'グリーン',   // 'グリーン' は 'グリーン' というファイル名 (仮)
 ];
-// (※もし 'yellow' ではなく 'kiniro' など、実際のファイル名に合わせて '=>' の右側を修正してください)
+// (※もし 'ピンク' のファイル名が 'pink' なら、'ピンク' => 'pink' のように右側を修正してください)
+
+
+// カテゴリごとのカラー設定
+$category_colors_list = [
+    'C01' => ['オリジナル', 'イエロー', 'ホワイト'],
+    'C02' => ['オリジナル', 'ブルー', 'グリーン'],
+    'C03' => ['オリジナル', 'ブルー', 'レッド'], // ※'レッド' がリストにないため注意
+    'C04' => ['オリジナル', 'ホワイト'],
+    'C05' => ['オリジナル', 'ピンク'],
+    'C06' => ['オリジナル', 'グレー'],
+    'C07' => ['オリジナル', 'ゲーミング'], // ※'ゲーミング' がリストにないため注意
+    'C08' => ['オリジナル', 'ブルー'],
+];
 
 // 該当カテゴリのカラーを取得
 $category_id = $product['category_id'] ?? 'C01';
-// $colors には ['オリジナル' => 'original', 'ピンク' => 'pink'] のような連想配列が入る
-$colors = $category_colors[$category_id] ?? ['オリジナル' => 'original'];
+$color_names_for_category = $category_colors_list[$category_id] ?? ['オリジナル'];
 
-// 実際のDB上のオリジナルカラー（中身は例えば「ブラック」や「オリジナル」）
-// ★ G-9の value 属性ロジックを簡素化するため、'オリジナル'時の value も 'original' (ファイル名) に統一します
-$original_color_value = $colors['オリジナル'] ?? 'original';
+// 
+// 最終的に $colors 配列を生成 (例: ['オリジナル' => 'original', 'ピンク' => 'ピンク'])
+// 
+$colors = [];
+foreach ($color_names_for_category as $display_name) {
+    if (isset($color_file_map[$display_name])) {
+        // マップに存在する (例: 'ブルー' => '青')
+        $colors[$display_name] = $color_file_map[$display_name];
+    } else {
+        // マップにない (例: 'レッド' や 'ゲーミング')
+        $colors[$display_name] = $display_name; // とりあえず表示名と同じファイル名を使う
+    }
+}
+
+// 'オリジナル' が使うファイル名 (例: 'original')
+$original_color_value = $color_file_map['オリジナル'] ?? 'original';
 
 
 // ▼▼▼ 画像切り替えJS用の「ベースURL」と「拡張子」をPHPで生成 (修正なし) ▼▼▼
 $base_image_url_from_db = $product['product_image'] ?? '';
-$js_base_url = '';  // JSに渡す「.../カメラ1」のようなベースURL
-$js_extension = ''; // JSに渡す「.jpg」のような拡張子
+$js_base_url = '';
+$js_extension = '';
 
 if (!empty($base_image_url_from_db)) {
-    // 1. 拡張子を取得 (例: .jpg)
-    $js_extension = substr($base_image_url_from_db, strrpos($base_image_url_from_db, '.')); 
+    // 拡張子 (例: .jpg)
+    if (strrpos($base_image_url_from_db, '.') !== false) {
+        $js_extension = substr($base_image_url_from_db, strrpos($base_image_url_from_db, '.')); 
+        $url_without_extension = substr($base_image_url_from_db, 0, strrpos($base_image_url_from_db, '.'));
+    } else {
+        $url_without_extension = $base_image_url_from_db; // 拡張子がない場合 (例: /カメラ1)
+    }
     
-    // 2. 拡張子を除いたURLを取得 (例: .../カメラ1 or .../カメラ1-白)
-    $url_without_extension = substr($base_image_url_from_db, 0, strrpos($base_image_url_from_db, '.'));
-    
-    // 3. もし色名が付いていたら削除 (例: .../カメラ1-白 -> .../カメラ1)
+    // ベースURL (例: .../カメラ1-白 -> .../カメラ1)
     $js_base_url = preg_replace('/-[^-]+$/u', '', $url_without_extension);
 }
-// ▲▲▲ 修正点1 ここまで ▲▲▲
 
 
 // ===== 関連商品を3件取得 =====
@@ -86,7 +111,7 @@ try {
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->bindValue(':cat', $category_id, PDO::PARAM_STR);
     $stmt->execute();
-    // ▼▼▼ 500エラーの原因だったタイプミスを修正 ▼▼▼
+    // 500エラーのタイプミスを修正済み
     $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $related_products = [];
@@ -105,7 +130,6 @@ try {
 
 <body>
     <?php require __DIR__ . '/../common/header.php'; ?>
-
     <?php
     $breadcrumbs = [
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
@@ -120,8 +144,16 @@ try {
         <h2 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h2>
 
         <div class="product-image-area">
+            <?php
+            // $product['product_image'] に .jpg などが含まれているかチェック
+            $initial_image_src = $product['product_image'] ?? '';
+            if (!empty($initial_image_src) && strpos($initial_image_src, '.') === false) {
+                // .jpg などがURLにない場合、.jpg を追加 (例: .../カメラ1 -> .../カメラ1.jpg)
+                $initial_image_src .= '.jpg';
+            }
+            ?>
             <img id="mainImage"
-                 src="<?php echo htmlspecialchars($product['product_image'] ?? ''); ?>"
+                 src="<?php echo htmlspecialchars($initial_image_src); ?>"
                  alt="<?php echo htmlspecialchars($product['product_name']); ?>">
         </div>
 
@@ -142,11 +174,8 @@ try {
                         <label>
                             <input type="radio" 
                                    name="color" 
-                                   
                                    value="<?php echo htmlspecialchars($file_name); ?>"
-                                   
                                    data-color="<?php echo htmlspecialchars($file_name); ?>"
-                                   
                                    <?php if ($i === 0) echo 'checked'; ?>>
                             
                             <?php echo htmlspecialchars($display_name); ?>
@@ -164,9 +193,7 @@ try {
                     <button type="button" class="btn buy" onclick="goToOrder('G-12_order.php', <?php echo $product['product_id']; ?>)">購入</button>
                     <button type="button" class="btn rental" onclick="goToOrder('G-14_rental.php', <?php echo $product['product_id']; ?>)">レンタル</button>
                 </div>
-
             </form>
-
         </div>
     </div>
 
@@ -177,8 +204,14 @@ try {
                 <p>関連商品はありません。</p>
             <?php else: ?>
                 <?php foreach ($related_products as $related): ?>
+                    <?php
+                    $related_image_src = $related['product_image'] ?? '';
+                    if (!empty($related_image_src) && strpos($related_image_src, '.') === false) {
+                        $related_image_src .= '.jpg';
+                    }
+                    ?>
                     <a href="G-9_product-detail.php?id=<?php echo $related['product_id']; ?>" class="related-item">
-                        <img src="<?php echo htmlspecialchars($related['product_image'] ?? ''); ?>" 
+                        <img src="<?php echo htmlspecialchars($related_image_src); ?>" 
                              alt="<?php echo htmlspecialchars($related['product_name']); ?>">
                         <p><?php echo htmlspecialchars($related['product_name']); ?></p>
                     </a>
@@ -186,7 +219,6 @@ try {
             <?php endif; ?>
         </div>
     </footer>
-
 </main>
 
 <script>
@@ -195,21 +227,25 @@ function goToOrder(pageUrl, productId) {
     const selectedColorInput = document.querySelector('.product-actions-form input[name="color"]:checked');
     let colorValue = 'normal'; 
     if (selectedColorInput) {
-        // ▼▼▼ 修正点3：value (例: 'pink') をそのままG-12に渡す ▼▼▼
-        colorValue = selectedColorInput.value;
+        colorValue = selectedColorInput.value; // (例: '青' や 'ピンク' をG-12に渡す)
     }
     location.href = `${pageUrl}?id=${productId}&color=${encodeURIComponent(colorValue)}`;
 }
 
 
-// ▼▼▼ 修正点4：G-9 画像切り替え用JavaScript (ロジック変更) ▼▼▼
+// ▼▼▼ 修正点5：G-9 画像切り替え用JavaScript (ロジック変更) ▼▼▼
 document.addEventListener('DOMContentLoaded', function() {
     
     // 1. PHPから画像のベース情報を取得
     const trueBaseUrl = <?php echo json_encode($js_base_url); ?>;
-    const extension = <?php echo json_encode($js_extension); ?>;
     
-    // ★ 'original' (ファイル名) を持つラジオボタンの value を取得
+    // PHPから渡された拡張子 (例: .jpg) がない場合、.jpg をデフォルトにする
+    let extension = <?php echo json_encode($js_extension); ?>;
+    if (extension === '') {
+        extension = '.jpg'; 
+    }
+    
+    // 'original' (ファイル名) を持つラジオボタンの value を取得
     const originalColorValue = <?php echo json_encode($original_color_value); ?>; 
 
     // 2. 関連するHTML要素を取得
@@ -220,22 +256,22 @@ document.addEventListener('DOMContentLoaded', function() {
     colorRadios.forEach(function(radio) {
         radio.addEventListener('change', function() {
             
-            // 4. 選択されたラジオの 'data-color' 属性 (例: 'pink' or 'original') を取得
+            // 4. 選択されたラジオの 'data-color' 属性 (例: '青' or 'original') を取得
             const selectedColorName = this.getAttribute('data-color');
 
             if (selectedColorName === originalColorValue) {
-                // 5a. 「オリジナル」が選ばれた場合 (data-color が 'original' だった場合)
-                // → ベースURL + 拡張子 で「オリジナル画像」のURLを構築
+                // 5a. 「オリジナル」が選ばれた場合 (data-color が 'original')
+                // → ベースURL + 拡張子 で「オリジナル画像」のURLを構築 (例: .../カメラ1.jpg)
                 mainImage.src = trueBaseUrl + extension;
             } else {
-                // 5b. 「オリジナル」以外 (例: 'pink') が選ばれた場合
-                // → ベースURL + 色名 + 拡張子 で新しいURLを構築
+                // 5b. 「オリジナル」以外 (例: '青') が選ばれた場合
+                // → ベースURL + 色名 + 拡張子 で新しいURLを構築 (例: .../カメラ1-青.jpg)
                 mainImage.src = trueBaseUrl + '-' + selectedColorName + extension;
             }
         });
     });
 });
-// ▲▲▲ 修正点4 ここまで ▲▲▲
+// ▲▲▲ 修正点5 ここまで ▲▲▲
 </script>
 
 </body>
