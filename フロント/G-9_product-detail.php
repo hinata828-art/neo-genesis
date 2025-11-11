@@ -7,6 +7,7 @@ $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // ===== 商品詳細を取得 =====
 try {
+    // ★ product_description カラムも取得（G-12で使うため）
     $sql = "SELECT product_name, price, product_image, product_id FROM product WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
@@ -57,7 +58,6 @@ try {
 
 <main class="product-detail">
 
-    <!-- ===== 商品詳細 ===== -->
     <div class="product-main">
         <h2 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h2>
 
@@ -68,14 +68,12 @@ try {
         <div class="product-info">
             <p class="price">¥<?php echo number_format($product['price']); ?> <span>（税込み）</span></p>
 
-            <!-- カラー選択 -->
             <div class="color-select">
                 <label><input type="radio" name="color" value="red"> 赤</label>
                 <label><input type="radio" name="color" value="blue"> 青</label>
                 <label><input type="radio" name="color" value="normal" checked> ノーマル</label>
             </div>
 
-            <!-- ボタン -->
             <div class="action-buttons">
                 <form action="G-11_cart.php" method="POST" style="display:inline;">
                     <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
@@ -84,26 +82,32 @@ try {
                     <button type="submit" class="btn cart">カートに追加</button>
                 </form>
 
-                <button class="btn buy" onclick="location.href='G-12_order.php?id=<?php echo $product['product_id']; ?>'">購入</button>
-                <button class="btn rental" onclick="location.href='G-14_rental.php?id=<?php echo $product['product_id']; ?>'">レンタル</button>
+                <button class="btn buy" onclick="goToOrder('G-12_order.php', <?php echo $product['product_id']; ?>)">購入</button>
+                <button class="btn rental" onclick="goToOrder('G-14_rental.php', <?php echo $product['product_id']; ?>)">レンタル</button>
             </div>
         </div>
     </div>
 
-    <!-- ===== 関連商品フッター ===== -->
     <footer class="related-footer">
-        <h3>関連商品</h3>
-        <div class="related-items">
-            <?php foreach ($related_products as $r): ?>
-                <a href="G-9_product-detail.php?id=<?php echo $r['product_id']; ?>" class="related-item">
-                    <img src="<?php echo htmlspecialchars($r['product_image']); ?>" alt="<?php echo htmlspecialchars($r['product_name']); ?>">
-                    <p><?php echo htmlspecialchars($r['product_name']); ?></p>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </footer>
+         </footer>
 
 </main>
+
+<script>
+function goToOrder(pageUrl, productId) {
+    // 1. 選択されているカラーの input 要素を取得
+    const selectedColorInput = document.querySelector('input[name="color"]:checked');
+    
+    // 2. その input の値（value）を取得
+    let colorValue = 'normal'; // デフォルト値
+    if (selectedColorInput) {
+        colorValue = selectedColorInput.value;
+    }
+    
+    // 3. IDとカラーをURLに付けてページ遷移
+    location.href = `${pageUrl}?id=${productId}&color=${colorValue}`;
+}
+</script>
 
 </body>
 </html>
