@@ -7,7 +7,7 @@ $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // ===== 商品詳細を取得 =====
 try {
-    // 必要なカラムを全て取得（修正済み）
+    // 必要なカラムを全て取得
     $sql = "SELECT 
                 product_name, 
                 price, 
@@ -46,13 +46,30 @@ $category_colors = [
 ];
 
 // 該当カテゴリのカラーを取得
-// ★ DBの category_id が NULL だと 'C01' が使われます
 $category_id = $product['category_id'] ?? 'C01';
 $colors = $category_colors[$category_id] ?? ['オリジナル'];
 
 // 実際のDB上のオリジナルカラー（中身は例えば「ブラック」）
-// ★ DBの color が NULL だと '不明' が使われます
 $original_color_value = $product['color'] ?? '不明';
+
+
+// ▼▼▼ 修正点1：画像切り替えJS用の「ベースURL」と「拡張子」をPHPで生成 ▼▼▼
+$base_image_url_from_db = $product['product_image'] ?? '';
+$js_base_url = '';  // JSに渡す「.../カメラ1」のようなベースURL
+$js_extension = ''; // JSに渡す「.jpg」のような拡張子
+
+if (!empty($base_image_url_from_db)) {
+    // 1. 拡張子を取得 (例: .jpg)
+    $js_extension = substr($base_image_url_from_db, strrpos($base_image_url_from_db, '.')); 
+    
+    // 2. 拡張子を除いたURLを取得 (例: .../カメラ1 or .../カメラ1-白)
+    $url_without_extension = substr($base_image_url_from_db, 0, strrpos($base_image_url_from_db, '.'));
+    
+    // 3. もし色名が付いていたら削除 (例: .../カメラ1-白 -> .../カメラ1)
+    $js_base_url = preg_replace('/-[^-]+$/u', '', $url_without_extension);
+}
+// ▲▲▲ 修正点1 ここまで ▲▲▲
+
 
 // ===== 関連商品を3件取得 =====
 try {
@@ -65,7 +82,7 @@ try {
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->bindValue(':cat', $category_id, PDO::PARAM_STR);
     $stmt->execute();
-    $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $related_products = $fetchAll($stmt->(PDO::FETCH_ASSOC));
 } catch (PDOException $e) {
     $related_products = [];
 }
@@ -79,7 +96,7 @@ try {
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/breadcrumb.css">
     <link rel="stylesheet" href="../css/G-9_product-detail.css">
-    </head>
+</head>
 
 <body>
     <?php require __DIR__ . '/../common/header.php'; ?>
@@ -99,7 +116,7 @@ try {
 
         <div class="product-image-area">
             <img id="mainImage"
-                 src="<?php echo htmlspecialchars($product['product_image'] ?? ''); // NULLでもエラーにならないようにする ?>"
+                 src="<?php echo htmlspecialchars($product['product_image'] ?? ''); ?>"
                  alt="<?php echo htmlspecialchars($product['product_name']); ?>">
         </div>
 
@@ -117,8 +134,11 @@ try {
                     <?php foreach ($colors as $i => $color): ?>
                         <label>
                             <input type="radio" 
-                                   name="color" value="<?php echo $color === 'オリジナル' ? htmlspecialchars($original_color_value) : htmlspecialchars($color); ?>"
+                                   name="color" 
+                                   value="<?php echo $color === 'オリジナル' ? htmlspecialchars($original_color_value) : htmlspecialchars($color); ?>"
+                                   
                                    data-color="<?php echo htmlspecialchars($color); ?>"
+                                   
                                    <?php if ($i === 0) echo 'checked'; ?>>
                             <?php echo htmlspecialchars($color); ?>
                         </label>
@@ -136,7 +156,9 @@ try {
                     <button type="button" class="btn rental" onclick="goToOrder('G-14_rental.php', <?php echo $product['product_id']; ?>)">レンタル</button>
                 </div>
 
-            </form> </div>
+            </form>
+
+        </div>
     </div>
 
     <footer class="related-footer">
@@ -159,19 +181,49 @@ try {
 </main>
 
 <script>
+// G-12 / G-14 へのページ遷移（変更なし）
 function goToOrder(pageUrl, productId) {
-    // 1. 選択されているカラーの input 要素を取得 (FORM内のものを指定)
     const selectedColorInput = document.querySelector('.product-actions-form input[name="color"]:checked');
-    
-    // 2. その input の値（value）を取得
-    let colorValue = 'normal'; // デフォルト値
+    let colorValue = 'normal'; 
     if (selectedColorInput) {
         colorValue = selectedColorInput.value;
     }
-    
-    // 3. IDとカラーをURLに付けてページ遷移
     location.href = `${pageUrl}?id=${productId}&color=${encodeURIComponent(colorValue)}`;
 }
+
+
+// ▼▼▼ 修正点2：G-9 画像切り替え用JavaScript (ここから追加) ▼▼▼
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. PHPから画像のベース情報を取得
+    const trueBaseUrl = <?php echo json_encode($js_base_url); ?>;
+    const extension = <?php echo json_encode($js_extension); ?>;
+    const originalDbImage = <?php echo json_encode($product['product_image']); ?>;
+
+    // 2. 関連するHTML要素を取得
+    const mainImage = document.getElementById('mainImage');
+    const colorRadios = document.querySelectorAll('input[name="color"]');
+
+    // 3. 全てのラジオボタンに「変更」イベント監視を追加
+    colorRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            
+            // 4. 選択されたラジオの 'data-color' 属性 (例: 'イエロー' or 'オリジナル') を取得
+            const selectedColorName = this.getAttribute('data-color');
+
+            if (selectedColorName === 'オリジナル') {
+                // 5a. 「オリジナル」が選ばれた場合
+                // → DBに登録されている元の画像URL ( .../camera1.jpg など) に戻す
+                mainImage.src = originalDbImage;
+            } else {
+                // 5b. 「オリジナル」以外 (例: 'イエロー') が選ばれた場合
+                // → ベースURL + 色名 + 拡張子 で新しいURLを構築 (例: .../camera1-イエロー.jpg)
+                mainImage.src = trueBaseUrl + '-' + selectedColorName + extension;
+            }
+        });
+    });
+});
+// ▲▲▲ 修正点2 ここまで ▲▲▲
 </script>
 
 </body>
