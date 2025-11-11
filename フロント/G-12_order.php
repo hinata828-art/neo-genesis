@@ -92,6 +92,6 @@
     </div>
 </div>
 
-    <a href="G_13_order_complete.php" class="confirm-button">購入を確定する</a>
+    <a href="G-13_order_complete.php" class="confirm-button">購入を確定する</a>
 </body>
 </html>
