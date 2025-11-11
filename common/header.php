@@ -27,13 +27,6 @@
             </div>
         </div>
 
-<<<<<<< HEAD
-        <div class="header-cart">
-            <a href="G-11_cart.php">
-                <img src="../img/cart.png" alt="カートアイコン">
-                <label>カート</label>
-            </a>
-=======
         <!-- ★修正：右側（アイコン群）のクラス名を変更 -->
         <div class="header-right-icons">
             <!-- 会員情報 (アイコン) -->
@@ -49,7 +42,6 @@
                     <label>カート</label>
                 </a>
             </div>
->>>>>>> main
         </div>
     </div>
 
