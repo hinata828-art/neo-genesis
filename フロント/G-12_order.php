@@ -91,7 +91,7 @@ $total_price = $product['price'];
 
     <hr>
     
-    <form action="G-13_order_complete.php" method="POST">
+    <form action="G-13_order-complete.php" method="POST">
 
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
         <input type="hidden" name="color" value="<?php echo htmlspecialchars($color_value); ?>">
