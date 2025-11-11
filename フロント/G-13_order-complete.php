@@ -7,15 +7,14 @@ require '../common/db_connect.php';
 // === 処理の前に：G-12からのPOSTデータを受け取る ===
 
 // G-12のフォームから送られた情報をPOSTで受け取ります
-// （G-12からPOST送信されず、直接このURLが叩かれた場合はエラーにします）
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('不正なアクセスです。');
 }
 
-// 顧客IDをセッションから取得
+// 顧客IDをセッションから取得 (G-1のログイン処理に合わせて 'id' を使用)
 $customer_id = $_SESSION['customer']['id'] ?? null; 
 if ($customer_id === null) {
-    // （もし 'id' キーまで無い場合は、本当にログインしていないかセッションが壊れている）
+    // もし 'id' キーまで無い場合は、本当にログインしていないかセッションが壊れている
     exit('ログイン情報（顧客ID）がセッションに見つかりません。');
 }
 
@@ -23,7 +22,7 @@ if ($customer_id === null) {
 $product_id = $_POST['product_id'] ?? 0;
 $total_amount = $_POST['total_amount'] ?? 0;
 $payment_method = $_POST['payment'] ?? '不明';
-$color_value = $_POST['color'] ?? '不明'; // ※1 注意点あり
+$color_value = $_POST['color'] ?? '不明'; 
 
 // オプション（チェックされていれば '500' や '1' が入る）
 $option_warranty = $_POST['option_warranty'] ?? null;
@@ -44,14 +43,11 @@ try {
     $pdo = new PDO($connect, USER, PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // === ここからが重要：データベース書き込み処理 ===
+    // === データベース書き込み処理 ===
     
-    // 2つのテーブルに書き込むため、「トランザクション」を開始します
-    // これにより、どちらかのINSERTが失敗したら、両方とも取り消されます
     $pdo->beginTransaction();
 
     // 1. transaction_table への INSERT
-    // (transaction_type は '購入' と仮定)
     $sql_transaction = "INSERT INTO transaction_table 
                             (customer_id, transaction_type, transaction_date, payment, delivery_status, total_amount)
                         VALUES
@@ -69,7 +65,6 @@ try {
     $order_info['transaction_id'] = $new_transaction_id; // 表示用に保存
 
     // 3. transaction_detail への INSERT
-    // (quantity は 1 と仮定)
     $sql_detail = "INSERT INTO transaction_detail 
                        (transaction_id, product_id, quantity)
                    VALUES
@@ -84,7 +79,7 @@ try {
     // 4. すべて成功したら、トランザクションを「コミット」（確定）
     $pdo->commit();
 
-    // === ここからが、ユーザーさんが書いた「配送日数SELECT」処理 ===
+    // === 配送日数SELECT処理 ===
     // 5. 今 INSERT した $new_transaction_id を使って、配送日数を取得
     
     $sql_delivery = "
@@ -108,15 +103,12 @@ try {
 
 
 } catch (PDOException $e) {
-    // もし途中でエラーが起きたら、「ロールバック」（すべて取り消し）
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    // エラーメッセージを表示
     $order_info['delivery_days'] = '注文処理エラー: ' . $e->getMessage();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -127,16 +119,29 @@ try {
 </head>
 <body>
 
-    <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="logo-image">
+    <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="completion-logo">
 
     <div class="message-area">
         ご購入ありがとうございました！
     </div>
 
-    <div class="order-summary">
-        <p><strong>配送予定日数：</strong>
-        <?= htmlspecialchars($order_info['delivery_days']) ?>日後に発送予定</p>
+    <div class="delivery-date">
+        配送予定日数 : 
+        <span>
+            <?php
+            // エラーや未設定の場合は「日後」の文字を表示しないように制御
+            if (is_numeric($order_info['delivery_days'])) {
+                echo htmlspecialchars($order_info['delivery_days']) . '日後';
+            } else {
+                echo htmlspecialchars($order_info['delivery_days']);
+            }
+            ?>
+        </span>
     </div>
+
+    <?php if ($order_info['transaction_id'] !== '---'): ?>
+        <a href="G-16_order-history.php?id=<?php echo htmlspecialchars($order_info['transaction_id']); ?>" class="detail-button">注文詳細を見る</a>
+    <?php endif; ?>
 
     <a href="G-8_home.php" class="home-button">ホーム画面へ戻る</a>
 
