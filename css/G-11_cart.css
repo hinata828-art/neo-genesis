@@ -1,0 +1,70 @@
+body {
+    font-family: "Segoe UI","メイリオ",sans-serif;
+    background-color: #fafafa;
+    text-align: center;
+}
+.cart {
+    max-width: 480px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 10px #ddd;
+}
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f5f8fc;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+.product-img {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+}
+.name {
+    flex: 1;
+    font-size: 18px;
+    margin: 0 15px;
+    text-align: left;
+}
+.price {
+    color: red;
+    font-weight: bold;
+}
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.delete-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+.buy-btn {
+    background: #e0ecff;
+    color: #000;
+    border: 1px solid #bcd;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+.total {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 20px;
+}
+.checkout-btn {
+    background-color: #bcdcff;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px 0 20px;
+}
