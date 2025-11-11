@@ -1,13 +1,6 @@
 <?php
 // 1. セッションとDB接続
 session_start();
-
-echo '<pre style="background: #f00; color: #fff; padding: 10px; font-weight: bold;">';
-echo '現在のセッション情報（G-12）:';
-var_dump($_SESSION);
-echo '</pre>';
-
-
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 require '../common/db_connect.php';
@@ -107,7 +100,7 @@ $total_price = $product['price'];
 
         <div class="delivery-section">
             <label>お届け先氏名：</label><br>
-            <input type="text" name="name" class="input-text" value="<?php echo htmlspecialchars($customer_info['customer_name'] ?? ''); ?>" required><br>
+            <input type="text" name="name" ... value="<?php echo htmlspecialchars($customer_info['name'] ?? ''); ?>" required><br>
             <label>お届け先住所：</label><br>
             <input type="text" name="address" class="input-text" value="<?php echo htmlspecialchars($customer_info['address'] ?? ''); ?>" required><br>
         </div>
