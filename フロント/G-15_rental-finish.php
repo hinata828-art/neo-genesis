@@ -37,30 +37,25 @@ if (isset($_SESSION['last_transaction_id'])) {
     // セッションにIDがない（直接アクセスしたなど）
     $delivery_days = '（表示不可）';
 }
+// ... PHP処理の最後
+// $last_transaction_id が確定した後
+
 ?>
 <!DOCTYPE html>
-<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>購入完了</title>
-    <link rel="stylesheet" href="../css/G-15_rental-finish.css"> 
-    <link rel="stylesheet" href="../css/header.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>レンタル完了</title>
+    <link rel="stylesheet" href="../css/G-15_rental-finish.css">
 </head>
 <body>
-    
-    <?php require '../common/header.php'; ?>
-
-    <!-- ★修正：クラス名を .logo-image から .completion-logo に変更 -->
-    <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="completion-logo">
-
-    <div class="message-area">
-        レンタルが完了しました！！
-    </div>
-
     <div class="delivery-date">
         お届け日 : <span><?php echo htmlspecialchars($delivery_days); ?>日後</span>
     </div>
+
+    <?php if (isset($last_transaction_id) && $delivery_days !== '（表示不可）' && $delivery_days !== 'エラー'): ?>
+        <a href="G-16_order-history.php?id=<?php echo htmlspecialchars($last_transaction_id); ?>" class="detail-button">注文詳細を見る</a>
+    <?php endif; ?>
 
     <a href="../G-8_home.php" class="home-button">ホーム画面へ</a>
 </body>

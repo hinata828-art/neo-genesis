@@ -191,13 +191,14 @@
 .footer-banner {
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    align-items: stretch; /* ← ✅ これを stretch に変更！ */
     background-color: #f8f8f8;
     padding: 15px 10px;
     border-top: 2px solid #ddd;
     width: 100%;
     margin-top: 40px;
 }
+
 .footer-box {
     text-align: center;
     font-weight: bold;
@@ -209,4 +210,8 @@
     border: 1px solid #ccc;
     flex: 1; 
     margin: 0 5px;
+    display: flex; /* ✅ 追加：中身を中央に配置する */
+    align-items: center; /* ✅ 縦中央揃え */
+    justify-content: center; /* ✅ 横中央揃え */
+    height: 100px;
 }

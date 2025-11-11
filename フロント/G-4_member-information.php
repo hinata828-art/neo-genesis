@@ -60,7 +60,8 @@ try {
 
     
     // 6. SQL 2: 購入履歴の取得 (最新5件)
-    $sql_purchase = "SELECT p.product_name, p.product_image, t.transaction_id
+    // ★★★ 修正点 1: t.transaction_id AS tid に変更 ★★★
+    $sql_purchase = "SELECT p.product_name, p.product_image, t.transaction_id AS tid
                        FROM transaction_table AS t
                        JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
                        JOIN product AS p ON d.product_id = p.product_id
@@ -73,7 +74,8 @@ try {
     $purchase_history = $stmt_purchase->fetchAll(PDO::FETCH_ASSOC);
 
     // 7. SQL 3: レンタル履歴の取得 (最新5件)
-    $sql_rental = "SELECT p.product_name, p.product_image, t.transaction_id
+    // ★★★ 修正点 2: t.transaction_id AS tid に変更 ★★★
+    $sql_rental = "SELECT p.product_name, p.product_image, t.transaction_id AS tid
                        FROM transaction_table AS t
                        JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
                        JOIN product AS p ON d.product_id = p.product_id
@@ -122,7 +124,7 @@ try {
                         <p class="no-history">購入履歴はありません。</p>
                     <?php else: ?>
                         <?php foreach ($purchase_history as $item): ?>
-                            <a href="G-16_order-history.php?id=<?php echo $item['transaction_id']; ?>" class="history-item">
+                            <a href="G-16_order-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
                                 <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                                 <p><?php echo htmlspecialchars($item['product_name']); ?></p>
                             </a>
@@ -138,7 +140,7 @@ try {
                         <p class="no-history">レンタル履歴はありません。</p>
                     <?php else: ?>
                         <?php foreach ($rental_history as $item): ?>
-                            <a href="G-16_order-history.php?id=<?php echo $item['transaction_id']; ?>" class="history-item">
+                            <a href="G-17_rental-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
                                 <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                                 <p><?php echo htmlspecialchars($item['product_name']); ?></p>
                             </a>

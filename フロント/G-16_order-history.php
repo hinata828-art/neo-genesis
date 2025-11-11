@@ -75,33 +75,26 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ご購入履歴</title>
     <link rel="stylesheet" href="../css/header.css">
-    <!-- 外部CSSファイル（G-16_order-history.css）を読み込む -->
     <link rel="stylesheet" href="../css/G-16_order-history.css">
 </head>
 <body>
     <?php require '../common/header.php'; // ヘッダーを読み込む ?>
     <div class="container">
-        <!-- 1. ヘッダー -->
+
         <header class="header">
-        
-        <a href="G-5_member-information.php"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
+        <a href="G-4_member-information.php"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
             <h1 class="header-title">購入履歴</h1>
             <span class="header-dummy"></span>
         </header>
 
-        <!-- メインコンテンツ -->
         <main class="main-content">
 
-            <?php if (isset($error_message)): ?>
-                <!-- エラー表示 -->
+            <?php if (!empty($error_message)): ?>
                 <div class="error-box">
                     <p><?php echo htmlspecialchars($error_message); ?></p>
                 </div>
                 
             <?php elseif (!empty($products)): ?>
-                <!-- 正常表示 -->
-                
-                <!-- 2. 商品カード (★foreachでループ処理に変更★) -->
                 <?php foreach ($products as $product): ?>
                     <section class="product-card">
                         <div class="product-image-container">
@@ -118,19 +111,16 @@ try {
                     </section>
                 <?php endforeach; ?>
 
-                <!-- 3. ご注文の詳細 (共通情報を表示) -->
                 <section class="detail-section">
-                    <h2 class="section-title">ご注文の詳細</h2>
+                    <h2 class="section-title">注文の詳細</h2>
                     <div class="detail-box">
                         <div class="detail-row">
-                            <span class="detail-label">ご購入日時</span>
+                            <span class="detail-label">購入日時</span>
                             <span class="detail-value"><?php echo htmlspecialchars($order_info['purchase_date_formatted']); ?></span>
                         </div>
-                        <!-- 「商品名」は複数あるため、ここでは非表示にするか、代表商品名を表示します -->
-                    </div>
+                        </div>
                 </section>
 
-                <!-- 4. お支払方法 (共通情報を表示) -->
                 <section class="detail-section">
                     <h2 class="section-title">お支払方法</h2>
                     <div class="detail-box">
@@ -138,7 +128,6 @@ try {
                     </div>
                 </section>
                 
-                <!-- 5. 配送状況 (共通情報を表示) -->
                 <section class="delivery-status">
                     <p><?php echo htmlspecialchars($order_info['delivery_status_text']); ?></p>
                 </section>
@@ -147,12 +136,65 @@ try {
 
         </main>
 
-        <!-- 6. フッターリンク -->
-        <footer class="footer">
-            <a href="#" class="footer-link">購入キャンセルはコチラ</a>
+       <footer class="footer">
+            <a href="#" id="open-cancel-modal" class="footer-link">購入キャンセルはコチラ</a>
         </footer>
 
+    </div> <div id="cancel-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            
+            <button id="close-modal" class="modal-close-btn">&times;</button>
+            
+            <div class="modal-icon">
+                <img src="../img/alert.png" alt="" style="width: 60px; height: 60px;">
+            </div>
+
+            <h2>キャンセルしますか？</h2>
+            
+            <div class="modal-buttons">
+                <a href="G-16_order-cancel.php?id=<?php echo htmlspecialchars($transaction_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
+                
+                <button id="confirm-no" class="btn btn-secondary">いいえ</button>
+            </div>
+        </div>
     </div>
+    <script>
+    // ページのHTMLが読み込まれたら実行
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // 必要な部品（HTML要素）を取得
+        const modal = document.getElementById('cancel-modal');
+        const openBtn = document.getElementById('open-cancel-modal');
+        const closeBtn = document.getElementById('close-modal');
+        const noBtn = document.getElementById('confirm-no');
+
+        // 「購入キャンセルはコチラ」リンクがクリックされた時
+        openBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // リンクのデフォルト動作（ページ遷移）を止める
+            modal.style.display = 'flex'; // モーダルを表示する
+        });
+
+        // 「いいえ」ボタンがクリックされた時
+        noBtn.addEventListener('click', function() {
+            modal.style.display = 'none'; // モーダルを非表示にする
+        });
+
+        // 「×」ボタンがクリックされた時
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none'; // モーダルを非表示にする
+        });
+
+        // モーダルの背景（黒い部分）がクリックされた時
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) { // クリックされたのが背景自身か確認
+                modal.style.display = 'none'; // モーダルを非表示にする
+            }
+        });
+
+        // 「はい」ボタンは、通常のリンクとして動作し、
+        // G-16_cancel-order.php にページ遷移します。
+    });
+    </script>
 
 </body>
 </html>

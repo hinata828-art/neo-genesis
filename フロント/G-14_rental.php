@@ -5,7 +5,7 @@
     <!-- スマホ拡大防止 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 固有CSS -->
-    <link rel="stylesheet" href="../css/G-12_order.css">
+    <link rel="stylesheet" href="../css/G-14_rental.css">
 
     <!-- 共通ヘッダーCSS -->
     <link rel="stylesheet" href="../css/header.css">
@@ -27,8 +27,8 @@
     ?>
     <!-- ▲ パンくずリスト -->
      
-<div class="container">
-    <p>注文内容</p>
+    <div class="container">
+    <p>レンタル</p>
     <hr>
     <div class="product-section">
         <img src="imge/camera.png" alt="商品画像" class="product-image">
@@ -41,9 +41,23 @@
         </div>
     </div>
 
+    <div class="rental-section">
+            <label>レンタル期間</label>
+            <select>
+                <option>1週間</option>
+                <option>2週間</option>
+                <option>1ヶ月</option>
+                <option>3ヶ月</option>
+                <option>6ヶ月</option>
+                <option>1年</option>
+            </select>
+    </div>
+
     <div class="price-section">
-            <p>商品の小計：<span class="price">￥12300</span></p>
-            <p>ご請求額：<span class="price">￥12300</span></p>
+        <label>レンタル料金</label><br>
+        <label>小計：<span class="price">￥12300</span></label>
+        <label>オプション代：<span class="price">￥500</span></label>
+        <label>ご請求額：<span class="price">￥12800</span></label>
     </div>
 
     <hr>
@@ -87,11 +101,14 @@
 
     <div class="option-section">
         <p>追加オプション</p>
-        <label><input type="checkbox" name="compensation" value="compensation">補償サービス（+500円/月で破損・水没も補償）</label><br>
-        <label><input type="checkbox" name="delivery" value="delivery">配送・返却サービス（自宅集荷）</label><br>
+        <label><input type="checkbox" name="delivery" value="delivery">配送・返却サービス（自宅集荷）</label>
+        <label><input type="checkbox" name="buyoption" value="buyoption">購入オプション（レンタル料金を購入代金に充当）</label>
+        <label><input type="checkbox" name="compensation" value="compensation" disabled="disabled">補償サービス（+500円/月で破損・水没も補償）</label>
+            <span>補償サービスは必須です</span>
+
     </div>
 </div>
 
-    <a href="G-13_order_complete.php" class="confirm-button">購入を確定する</a>
+    <a href="G-15_rental_finish.php" class="confirm-button">購入を確定する</a>
 </body>
 </html>
