@@ -15,7 +15,7 @@ if (isset($_SESSION['customer'])) {
 
 // 3. URLから商品IDとカラーを取得
 $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-// G-9から渡されたファイル名 (例: '青' や 'ピンク' や 'original')
+// G-9から渡されたファイル名 (例: '白' や '青' や 'original')
 $color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'original';
 
 // 4. 商品IDを使ってDBから商品情報を取得
@@ -47,47 +47,36 @@ $color_display_map = [
     'ピンク'     => 'ピンク',
     'グレー'     => 'グレー',
     'グリーン'   => 'グリーン',
-    // G-9の $category_colors_list にしかない名前も念のため
     'red'      => 'レッド', 
     'green'    => 'グリーン',
     'gaming'   => 'ゲーミング'
 ];
 
-// 6. カラー名を取得 (例: '青' -> 'ブルー')
+// 6. カラー名を取得 (例: '白' -> 'ホワイト')
 $color_name = $color_display_map[$color_value] ?? $color_value;
 
 // 7. ご請求額を計算（小計）
 $total_price = $product['price'];
 
 
-// ▼▼▼ 修正点2：G-12でも、G-9と同じ画像URL生成ロジックを使う ▼▼▼
+// ▼▼▼ 修正点2：拡張子(.jpg) を追加するロジックを「削除」 ▼▼▼
 $base_image_url_from_db = $product['product_image'] ?? '';
-$base_color_filename = $product['color'] ?? 'original'; // DBのcolor (例: 'オリジナル' や '白')
-$selected_color_filename = $color_value;             // G-9から来たファイル名 (例: '青')
+$selected_color_filename = $color_value; 
 $image_to_display = '';
-$extension = '.jpg'; // デフォルト
 
 if (!empty($base_image_url_from_db)) {
-    // 拡張子を取得
-    if (strrpos($base_image_url_from_db, '.') !== false) {
-        $extension = substr($base_image_url_from_db, strrpos($base_image_url_from_db, '.')); 
-        $url_without_extension = substr($base_image_url_from_db, 0, strrpos($base_image_url_from_db, '.'));
-    } else {
-        $url_without_extension = $base_image_url_from_db; // 拡張子がない場合
-    }
-    
     // ベースURLを取得 ( .../カメラ1-白 -> .../カメラ1 )
-    $true_base_url = preg_replace('/-[^-]+$/u', '', $url_without_extension);
+    $true_base_url = preg_replace('/-[^-]+$/u', '', $base_image_url_from_db);
 
     // G-9で 'original' を選んだ場合のファイル名（'original'）
     $original_color_value = $color_display_map['original'] ?? 'original';
     
     if ($selected_color_filename === $original_color_value) {
         // ケースA: 'original' が選択された
-        $image_to_display = $true_base_url . $extension;
+        $image_to_display = $true_base_url;
     } else {
-        // ケースB: '青' や 'ピンク' が選択された
-        $image_to_display = $true_base_url . '-' . $selected_color_filename . $extension;
+        // ケースB: '白' や 'ピンク' が選択された
+        $image_to_display = $true_base_url . '-' . $selected_color_filename;
     }
 
 } else {
