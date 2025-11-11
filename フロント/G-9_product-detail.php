@@ -7,16 +7,14 @@ $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // ===== 商品詳細を取得 =====
 try {
-    // ★ product_description カラムも取得（G-12で使うため）
-    // 7行目
 $sql = "SELECT 
             product_name, 
             price, 
             product_image, 
             product_id, 
-            category_id,  
-            color,        
-            product_description 
+            category_id,  -- ◀ 不足していた
+            color,        -- ◀ 不足していた
+            product_detail -- ◀ これが正しいカラム名
         FROM product 
         WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
