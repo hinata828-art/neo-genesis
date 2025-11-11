@@ -1,94 +1,70 @@
-/* ページ全体 */
 body {
-    font-family: "メイリオ", sans-serif;
-    background-color: #f9f9f9;
-    margin: 20px;
-}
-
-/* メッセージ表示 */
-.message {
+    font-family: "Segoe UI","メイリオ",sans-serif;
+    background-color: #fafafa;
     text-align: center;
-    margin: 15px auto;
-    padding: 10px 15px;
-    border-radius: 8px;
-    width: 80%;
 }
-.success-message {
-    background-color: #dff0d8;
-    color: #3c763d;
+.cart {
+    max-width: 480px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 10px #ddd;
 }
-
-/* カートが空のとき */
-.empty-cart {
-    text-align: center;
-    padding: 50px;
-    font-size: 18px;
-    color: #555;
-}
-
-/* 商品1個ごとのブロック */
-.cart-item {
+.item {
     display: flex;
     align-items: center;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 15px;
-    margin: 15px auto;
-    max-width: 700px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    justify-content: space-between;
+    background-color: #f5f8fc;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
 }
-
-/* 商品画像 */
-.product-image {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 20px;
+.product-img {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
 }
-
-/* 商品情報 */
-.product-info {
+.name {
     flex: 1;
+    font-size: 18px;
+    margin: 0 15px;
+    text-align: left;
 }
-
-/* 商品名と価格 */
-.product-name {
-    font-size: 20px;
-    margin-bottom: 5px;
-}
-.product-price {
-    color: #007b00;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-/* ボタン */
-.button-group {
-    display: flex;
-    gap: 10px;
-}
-
-.btn {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: white;
+.price {
+    color: red;
     font-weight: bold;
 }
-
-.btn-delete {
-    background-color: #dc3545;
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
-.btn-delete:hover {
-    background-color: #a71d2a;
+.delete-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 20px;
 }
-
-.btn-buy {
-    background-color: #28a745;
+.buy-btn {
+    background: #e0ecff;
+    color: #000;
+    border: 1px solid #bcd;
+    border-radius: 20px;
+    padding: 5px 10px;
 }
-.btn-buy:hover {
-    background-color: #1c7c31;
+.total {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 20px;
+}
+.checkout-btn {
+    background-color: #bcdcff;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px 0 20px;
 }

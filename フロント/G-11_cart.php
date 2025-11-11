@@ -5,97 +5,58 @@ session_start();
   require __DIR__ . '/../common/db-connect.php'; 
  
 
-// ログインチェック
-if (!isset($_SESSION['customer_id'])) {
-    header('Location: login.php');
-    exit;
+if (!isset($_SESSION['cart']) || count($_SESSION['cart']) === 0) {
+    $cart_items = [];
+} else {
+    $ids = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
+    $sql = "SELECT product_id, product_name, price, product_image FROM product WHERE product_id IN ($ids)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($_SESSION['cart']);
+    $cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$customer_id = $_SESSION['customer_id'];
-
-// データベース接続（サンプル）
-// $conn = new mysqli($servername, $username, $password, $dbname);
-
-// 削除メッセージの表示
-$message = '';
-if (isset($_GET['deleted']) && $_GET['deleted'] == 'success') {
-    $message = 'カートから商品を削除しました。';
-}
-
-//カート内の商品データを取得（customer_idに紐づく商品）
-// 実際のデータベースクエリ:
-$sql = "SELECT p.product_id, p.product_name, p.price, p.product_image 
-       FROM product p 
-       INNER JOIN cart c ON p.product_id = c.product_id 
-       WHERE c.customer_id = ?";
- $stmt = $conn->prepare($sql);
-  $stmt->bind_param("i", $customer_id);
- $stmt->execute();
- $result = $stmt->get_result();
- $cart_items = $result->fetch_all(MYSQLI_ASSOC);
-
-
+$total = array_sum(array_column($cart_items, 'price'));
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ショッピングカート</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>カート | ニシムラOnline</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<?php require __DIR__ . '/../common/header.php'?>
 
+<div class="cart">
+    <?php if (empty($cart_items)): ?>
+        <p>カートに商品がありません。</p>
+    <?php else: ?>
+        <p class="total">小計 ￥<?= number_format($total) ?></p>
+        <button class="checkout-btn" onckick="location.href='G-12注文情報入力画面>レジに進む（<?= count($cart_items) ?>個の商品）</button>
 
+        <?php foreach ($cart_items as $item): ?>
+            <div class="item">
+                <img src="img/<?= htmlspecialchars($item['product_image']) ?>" 
+                     alt="<?= htmlspecialchars($item['product_name']) ?>" 
+                     class="product-img">
 
-    <?php
-    if ($message) {
-    ?>
-        <div class="message success-message">
-            <?php
-            echo htmlspecialchars($message);
-            ?>
-        </div>
-    <?php
-    }
-    ?>
+                <p class="name"><?= htmlspecialchars($item['product_name']) ?><br>
+                    <span class="price">¥<?= number_format($item['price']) ?></span>
+                </p>
 
-    <?php
-    if (empty($cart_items)) {
-    ?>
-        <div class="empty-cart">
-            <p>カートに商品がありません</p>
-        </div>
-    <?php
-    } else {
-        foreach ($cart_items as $item) {
-    ?>
-            <div class="cart-item">
-                <img src="<?php echo htmlspecialchars($item['product_image']); ?>" 
-                     alt="<?php echo htmlspecialchars($item['product_name']); ?>" 
-                     class="product-image">
-                
-                <div class="product-info">
-                    <h3 class="product-name"><?php echo htmlspecialchars($item['product_name']); ?></h3>
-                    <p class="product-price">¥<?php echo number_format($item['price']); ?></p>
-                    
-                    <div class="button-group">
-                        <form method="POST" action="delete_from_cart.php" style="display: inline;">
-                            <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
-                            <button type="submit" class="btn btn-delete">削除</button>
-                        </form>
-                        
-                        <form method="POST" action="purchase.php" style="display: inline;">
-                            <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
-                            <button type="submit" class="btn btn-buy">買う</button>
-                        </form>
-                    </div>
+                <div class="buttons">
+                    <form action="delete_cart.php" method="POST">
+                        <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
+                        <button type="submit" class="delete-btn">削除</button>
+                    </form>
+                    <form action="add_to_cart.php" method="POST">
+                        <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
+                        <button type="submit" class="buy-btn">買う</button>
+                    </form>
                 </div>
             </div>
-    <?php
-        }
-    }
-    ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 
 </body>
