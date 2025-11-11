@@ -13,9 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 顧客IDをセッションから取得
-$customer_id = $_SESSION['customer']['customer_id'] ?? null; 
+$customer_id = $_SESSION['customer']['id'] ?? null; 
 if ($customer_id === null) {
-    exit('ログイン情報が確認できません。再度ログインしてください。');
+    // （もし 'id' キーまで無い場合は、本当にログインしていないかセッションが壊れている）
+    exit('ログイン情報（顧客ID）がセッションに見つかりません。');
 }
 
 // G-12から送られてきた商品ID、合計金額、支払い方法
