@@ -82,7 +82,7 @@ try {
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->bindValue(':cat', $category_id, PDO::PARAM_STR);
     $stmt->execute();
-    $related_products = $fetchAll($stmt->(PDO::FETCH_ASSOC));
+    $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $related_products = [];
 }
