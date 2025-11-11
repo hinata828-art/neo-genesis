@@ -139,10 +139,6 @@ try {
         </span>
     </div>
 
-    <?php if ($order_info['transaction_id'] !== '---'): ?>
-        <a href="G-16_order-history.php?id=<?php echo htmlspecialchars($order_info['transaction_id']); ?>" class="detail-button">注文詳細を見る</a>
-    <?php endif; ?>
-
     <a href="G-8_home.php" class="home-button">ホーム画面へ戻る</a>
 
 </body>
