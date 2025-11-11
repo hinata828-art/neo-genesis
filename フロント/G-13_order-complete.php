@@ -1,47 +1,65 @@
 <?php
 session_start();
-require 'db-connect.php'; // DB接続定数: SERVER, DBNAME, USER, PASS が定義されているファイル
-
+require '../common/db_connect.php'; 
 // ログイン確認（必要ならコメントを外す）
-if (!isset($_SESSION['customer']['customer_id'])) {
-    exit('ログイン情報が確認できません。');
-}
+// if (!isset($_SESSION['customer']['customer_id'])) {
+//     exit('ログイン情報が確認できません。');
+// }
 
-$customer_id = $_SESSION['customer']['customer_id'];
+$customer_id = $_SESSION['customer']['customer_id'] ?? 1; // テスト用
 
 $connect = 'mysql:host=' . SERVER . ';dbname=' . DBNAME . ';charset=utf8';
 
-// 初期値（取得失敗時用）
 $order_info = [
     'transaction_id' => '---',
     'total_amount' => '---',
     'payment' => '---',
-    'delivery_status' => '---'
+    'delivery_days' => '---'
 ];
 
 try {
     $pdo = new PDO($connect, USER, PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // 最新の購入データを1件取得
-    $sql = "SELECT transaction_id, total_amount, payment, delivery_status
-            FROM transaction
-            WHERE customer_id = ?
-            ORDER BY transaction_id DESC
-            LIMIT 1";
+    // ▼ 最新の取引IDを取得
+    $sql_latest = "SELECT transaction_id, total_amount, payment 
+                   FROM transaction_table 
+                   WHERE customer_id = ?
+                   ORDER BY transaction_id DESC
+                   LIMIT 1";
+    $stmt_latest = $pdo->prepare($sql_latest);
+    $stmt_latest->execute([$customer_id]);
+    $latest = $stmt_latest->fetch(PDO::FETCH_ASSOC);
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$customer_id]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($latest) {
+        $order_info = $latest;
 
-    if ($result) {
-        $order_info = $result;
+        // ▼ category から delivery_days を取得
+        $sql_delivery = "
+            SELECT c.delivery_days
+            FROM transaction_detail td
+            JOIN product p ON td.product_id = p.product_id
+            JOIN category c ON p.category_id = c.category_id
+            WHERE td.transaction_id = ?
+            LIMIT 1
+        ";
+
+        $stmt_delivery = $pdo->prepare($sql_delivery);
+        $stmt_delivery->execute([$order_info['transaction_id']]);
+        $delivery = $stmt_delivery->fetch(PDO::FETCH_ASSOC);
+
+        if ($delivery) {
+            $order_info['delivery_days'] = $delivery['delivery_days'];
+        } else {
+            $order_info['delivery_days'] = '配送情報未設定';
+        }
+
     } else {
-        $order_info['delivery_status'] = '購入履歴がありません';
+        $order_info['delivery_days'] = '購入履歴がありません';
     }
 
 } catch (PDOException $e) {
-    $order_info['delivery_status'] = 'データ取得エラー';
+    $order_info['delivery_days'] = 'データ取得エラー: ' . $e->getMessage();
 }
 ?>
 <!DOCTYPE html>
@@ -50,24 +68,22 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>購入完了</title>
-    <link rel="stylesheet" href="G-13_order-complete.css">
+    <link rel="stylesheet" href="../css/G-13_order-complete.css">
 </head>
 <body>
 
-    <img src="img/NishimuraOnline.png" alt="ニシムラOnline" class="logo-image">
+    <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="logo-image">
 
     <div class="message-area">
         ご購入ありがとうございました！
     </div>
 
     <div class="order-summary">
-        <p><strong>注文番号：</strong> <?= htmlspecialchars($order_info['transaction_id']) ?></p>
-        <p><strong>合計金額：</strong> ¥<?= is_numeric($order_info['total_amount']) ? number_format($order_info['total_amount']) : $order_info['total_amount'] ?></p>
-        <p><strong>支払方法：</strong> <?= htmlspecialchars($order_info['payment']) ?></p>
-        <p><strong>配送状況：</strong> <?= htmlspecialchars($order_info['delivery_status']) ?></p>
+        <p><strong>配送予定日数：</strong>
+        <?= htmlspecialchars($order_info['delivery_days']) ?>日後に発送予定</p>
     </div>
 
-    <a href="index.php" class="home-button">ホーム画面へ戻る</a>
+    <a href="G-8_home.php" class="home-button">ホーム画面へ戻る</a>
 
 </body>
 </html>

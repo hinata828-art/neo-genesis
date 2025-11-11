@@ -4,16 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ログイン</title>
-  <!-- 外部CSSを読み込む -->
   <link rel="stylesheet" href="../css/G-1_customer-form.css">
-
 </head>
 <body>
-     
-  <!-- 🔵 ロゴ画像部分 -->
+      
   <img src="../img/NishimuraOnline.png" alt="企業ロゴ" class="logo">
- 
-  <form method="post" action="/login">
+
+  <!-- ★修正：action属性を、G-8_home.php から G-1_login-process.php に変更 -->
+  <form action="G-1_login-process.php" method="post">
     <h1>ログイン</h1>
     <fieldset>
       <label for="email">メールアドレス</label>
@@ -28,10 +26,19 @@
         アカウントをお持ちでない方は<br>
         <a href="G-2_customer-entry.php">会員登録はこちら</a>
       </p>
+
+      <?php
+      // エラーメッセージの表示
+      if (isset($_GET['error'])) {
+          if ($_GET['error'] == 1) {
+              echo '<p style="color:red;">メールアドレスとパスワードを入力してください。</p>';
+          } else if ($_GET['error'] == 2) {
+              echo '<p style="color:red;">メールアドレスまたはパスワードが間違っています。</p>';
+          }
+      }
+      ?>
     </fieldset>
   </form>
  
 </body>
 </html>
- 
- 

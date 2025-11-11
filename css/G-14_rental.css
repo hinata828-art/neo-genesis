@@ -1,0 +1,291 @@
+/* G14.css */
+
+/* 共通スタイル */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    background-color: #fff;
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+.container > p {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+/* 商品情報 */
+.product-section {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.product-image {
+    width: 120px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.product-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.product-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+.product-color-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.product-color-label {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.product-color {
+    font-size: 14px;
+}
+
+/* レンタル期間 */
+.rental-section {
+    margin-bottom: 20px;
+}
+
+.rental-section label {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.rental-section select {
+    width: 100%;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* レンタル料金 */
+.price-section {
+    margin-bottom: 20px;
+}
+
+.price-section label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    margin: 6px 0;
+}
+
+.price-section > label:first-child {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.price {
+    color: red;
+    font-weight: bold;
+    text-align: right;
+}
+
+/* 入力フィールド */
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+    margin: 5px 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-small {
+    width: 50px;
+    padding: 6px;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.expiry-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+/* セクションラベル */
+.delivery-section label,
+.payment-section > label,
+.option-section > label {
+    text-align: left;
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* 支払い方法の囲み */
+.payment-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+}
+
+.credit-details {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+/* オプション */
+.option-section {
+    margin-top: 20px;
+}
+
+.option-section p {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.option-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+/* 補償サービスの注意文 */
+.option-section span {
+    font-size: 13px;
+    color: #e60000;
+    margin-left: 24px;
+    display: inline-block;
+}
+
+/* ボタン */
+.confirm-button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    margin-top: 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.confirm-button:hover {
+    background-color: #0056b3;
+}
+
+/* 📱 スマートフォン対応 */
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 20px 15px;
+    }
+
+    .product-section {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .product-image {
+        width: 100px;
+        height: auto;
+    }
+
+    .product-name {
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .product-color-label,
+    .product-color {
+        font-size: 13px;
+    }
+
+    .rental-section label {
+        font-size: 15px;
+    }
+
+    .rental-section select {
+        font-size: 14px;
+    }
+
+    .price-section label {
+        font-size: 15px;
+        margin: 4px 0;
+    }
+
+    .price {
+        font-size: 15px;
+    }
+
+    .input-text,
+    input[type="text"],
+    input[type="number"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .expiry-row {
+        flex-direction: row;
+        gap: 4px;
+        margin-bottom: 10px;
+    }
+
+    .input-small {
+        width: 50px;
+        padding: 6px;
+        text-align: center;
+    }
+
+    .option-section span {
+        font-size: 12px;
+        margin-left: 16px;
+    }
+
+    .confirm-button {
+        width: 100%;
+    }
+}

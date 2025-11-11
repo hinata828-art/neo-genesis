@@ -15,31 +15,40 @@
     font-weight: bold;
 }
 
-/* スライダー全体 */
+/* スライダー全体コンテナ */
 .slider-container {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-/* 横スクロール部分 */
+/* ★ 修正：横スクロール部分 */
 .pickapp-items {
-    display: flex;
+    display: flex; 
     overflow-x: auto;
-    gap: 20px;
-    scroll-behavior: smooth;
+    /* ★ 修正：gapを0に。商品幅(100%)で制御するため */
+    gap: 0; 
+    scroll-behavior: smooth; 
     padding: 10px 0;
-    scrollbar-width: none;
+    
+    /* スクロールバー非表示 (PC) */
+    scrollbar-width: none; /* Firefox */
 }
 .pickapp-items::-webkit-scrollbar {
-    display: none;
+    display: none; /* Chrome, Safari */
 }
 
-/* 商品カード */
+/* ★ 修正：商品カード */
 .item {
-    flex: 0 0 380px; /* 横幅 */
-    display: flex; /* ← 画像と情報を横並びに */
-    align-items: center;
+    /* ★ 修正：幅を100%にして、1つだけ表示 */
+    flex: 0 0 100%; 
+    width: 100%;
+    box-sizing: border-box; 
+
+    /* ★ 修正：レイアウトを「横並び」に戻す */
+    display: flex;
+    align-items: center; /* 上下中央揃え */
+
     background: #fafafa;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -50,44 +59,51 @@
     transform: scale(1.03);
 }
 
-/* 商品画像 */
+/* ★ 修正：商品画像 */
 .item img {
-    width: 160px;
-    height: 100px;
+    /* ★ 修正：幅を固定値に戻す */
+    width: 160px; 
+    height: 120px; /* 少し大きく */
     object-fit: cover;
     border-radius: 8px;
+    /* ★ 修正：マージンを右側に戻す */
     margin-right: 15px;
+    margin-bottom: 0;
 }
 
-/* 商品情報 */
+/* ★ 修正：商品情報 */
 .item-info {
     text-align: left;
-    flex: 1;
+    flex: 1; /* ★ 横並びで残りの幅をすべて取る */
 }
 .item-title {
     font-weight: bold;
     margin-bottom: 5px;
-    font-size: 0.95em;
+    font-size: 1.1em; /* ★ 修正：フォントを戻す */
 }
 .item-price {
     color: #e60000;
-    font-size: 1.1em;
-    margin-bottom: 8px;
+    font-size: 1.2em; /* ★ 修正：フォントを戻す */
+    margin-bottom: 10px; /* ★ 修正：ボタンとの隙間 */
 }
 .item-btn {
     background-color: #ffd700;
     border: none;
     border-radius: 6px;
-    padding: 5px 12px;
+    padding: 6px 12px; /* ★ 修正：パディングを戻す */
+    font-size: 1em; /* ★ 修正：フォントを戻す */
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
+    text-decoration: none; 
+    color: #333; 
+    display: inline-block; 
 }
 .item-btn:hover {
     background-color: #ffcc00;
 }
 
-/* スライダーボタン */
+/* スライダーボタン (変更なし) */
 .slider-btn {
     position: absolute;
     top: 50%;
@@ -114,52 +130,88 @@
     right: -10px;
 }
 
-/* ===== カテゴリーボタンエリア ===== */
+
+/* ===== カテゴリーボタンエリア (変更なし) ===== */
 .category-section {
     width: 95%;
     margin: 40px auto;
     text-align: center;
 }
-
+/* (以下、変更ありません) */
 .category-buttons {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+    gap: 15px;
     justify-items: center;
 }
-
-/* aタグもカードとして扱う */
 .category-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     width: 100px;
-    height: 100px;
+    text-decoration: none;
+    background-color: transparent; 
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.category-item:hover {
+    transform: scale(1.08); 
+}
+.category-icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
     border: 2px solid #ccc;
     border-radius: 50%;
-    padding: 10px;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-decoration: none;
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s;
+    overflow: hidden;
 }
-
-.category-item:hover {
-    transform: scale(1.08);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+.category-item:hover .category-icon-circle {
+     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-
 .category-item img {
     width: 50px;
     height: 50px;
     object-fit: contain;
-    margin-bottom: 5px;
+}
+.category-item p {
+    font-size: 0.9em;
+    color: #007b83;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
+.footer-banner {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch; /* ← ✅ これを stretch に変更！ */
+    background-color: #f8f8f8;
+    padding: 15px 10px;
+    border-top: 2px solid #ddd;
+    width: 100%;
+    margin-top: 40px;
 }
 
-.category-item p {
-    font-size: 0.85em;
-    color: #007b83;
-    margin: 0;
+.footer-box {
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9em;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    flex: 1; 
+    margin: 0 5px;
+    display: flex; /* ✅ 追加：中身を中央に配置する */
+    align-items: center; /* ✅ 縦中央揃え */
+    justify-content: center; /* ✅ 横中央揃え */
+    height: 100px;
 }

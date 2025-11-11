@@ -4,130 +4,180 @@
     margin: 0;
     padding: 0;
 }
-
 body {
     font-family: sans-serif;
+    overflow-x: hidden; 
 }
 
 /* ===== ヘッダー全体 ===== */
 header {
-    width: 100vw; /* ← 画面幅いっぱいに */
-    background-color: #c9d6ff;
-    padding: 10px;
-    overflow-x: hidden; /* ← はみ出し防止 */
+    background-color: #a9bcf5;
+    /* ★修正：上下のパディングを少し減らし、左右のパディングを削除 */
+    /* これで「青の面積が横に広く」なります */
+    padding: 8px 0; 
 }
 
-/* ===== 上段：メニュー・アイコン・カート ===== */
-.top {
+/* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
+/* ★追加：ヘッダー内の要素に左右の余白を持たせる */
+.top-row,
+.bottom-row {
+    width: 100%;
+    padding: 0 10px; /* 左右に10pxの余白 */
     display: flex;
     align-items: center;
 }
 
-.header-button {
-    margin-left: auto;
+/* ===== 上段：ロゴ・アイコン・カート ===== */
+.top-row {
+    justify-content: space-between; /* 左グループと右グループを両端に配置 */
+    gap: 10px;
 }
 
-/* カート部分：枠で囲んでボタン風に */
+/* ★追加：左側（ハンバーガーとロゴ） */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* ★ハンバーガーとロゴの隙間を狭くする */
+}
+
+/* ハンバーガーメニュー (Bulmaのnavbar-burgerを流用) */
+.hamburger-menu {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.hamburger-menu span {
+    display: block;
+    height: 4px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+/* ロゴ */
+.header-logo img {
+    height: 80px;
+    width: auto;
+    display: block; /* 余計な隙間を削除 */
+}
+
+/* ★修正：右側のアイコン群（旧 header-icons） */
+.header-right-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ユーザーアイコン */
+.header-user {
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header-user img {
+    width: 100%;
+    height: 100%;
+}
+
+/* カートボタン */
 .header-cart a {
     display: flex;
     align-items: center;
     gap: 5px;
     background-color: #fff;
-    border: 1px solid #aaa;
-    border-radius: 8px;
-    padding: 5px 10px;
+    border: 1px solid #333;
+    border-radius: 9999px;
+    padding: 8px 16px;
     text-decoration: none;
     color: #333;
-    transition: 0.2s;
-}
-
-.header-cart a:hover {
-    background-color: #f1f1f1;
-}
-
-.header-cart img {
-    width: 30px;
-    height: 30px;
-}
-
-.header-cart label {
-    font-size: 16px;
     font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.header-cart img {
+    width: 24px;
+    height: 24px;
 }
 
-/* ===== 下段：セレクトボックス + 検索窓 ===== */
-.bottom {
+/* ===== 下段：検索窓 ===== */
+.bottom-row {
+    /* ★修正：検索バーの上の隙間を減らす (縦長感を解消) */
+    margin-top: 8px; 
+}
+.search-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+}
+.search-container input {
+    width: 100%;
+    padding: 12px 60px 12px 20px;
+    border-radius: 9999px;
+    border: 1px solid #333;
+    font-size: 16px;
+}
+
+/* kensaku.png を使うボタン */
+.search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    height: 80%;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-    width: 100%;
+    justify-content: center;
+}
+.search-button img {
+    height: 100%;
+    width: auto;
+    max-height: 28px;
 }
 
-/* 左3割のセレクトボックス */
-.select-box {
-    flex: 3;
-}
-
-.select-box select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    background-color: #fff; /* 白背景 */
-    font-size: 16px;
-}
-
-/* 右7割の検索窓＋🔍ボタン */
-.search-box {
-    flex: 7;
-    display: flex;
-}
-
-.search-box input {
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 10px 0 0 10px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
-
-/* 🔍ボタン */
-.search-box button {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-left: none;
-    border-radius: 0 10px 10px 0;
-    padding: 0 15px;
-    font-size: 18px;
-    cursor: pointer;
-    filter: grayscale(100%); /* モノクロ化 */
-    transition: 0.2s;
-}
-
-.search-box button:hover {
-    background-color: #f0f0f0;
-}
-
-/* ===== スマホ対応（横並び維持） ===== */
+/* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
-    .bottom {
-        flex-wrap: wrap;
-    }
-
-    .select-box {
-        flex: 3;
-    }
-
-    .search-box {
-        flex: 7;
-    }
-
-    .header-cart a {
-        padding: 5px 8px;
-    }
-
+    /* スマホではカートの文字を非表示 (任意) */
     .header-cart label {
+        display: none;
+    }
+    .header-cart a {
+        padding: 8px 12px;
+    }
+
+    /* ★修正：スマホではアイコンとロゴも少し小さくする (縦長感の解消) */
+    .header-user {
+        width: 40px;
+        height: 40px;
+    }
+    .header-user img {
+        width: 20px;
+        height: 20px;
+    }
+    .header-logo img {
+        height: 80x;
+    }
+    .hamburger-menu {
+        width: 35px;
+        height: 35px;
+    }
+    .hamburger-menu span {
+        height: 3px;
+    }
+    
+    .search-container input {
+        padding-top: 10px;
+        padding-bottom: 10px;
         font-size: 14px;
     }
 }

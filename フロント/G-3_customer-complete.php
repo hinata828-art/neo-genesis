@@ -10,10 +10,9 @@
     <div class="message">
         会員登録が完了しました！<br>
         ニシムラOnlineへようこそ!
-            
         </body>
         </html>
     </div>
-    <a href="G-1_ログインフォーム.php" class="btn">ログイン画面へ</a>
+    <a href="G-1_login-form.php" class="btn">ログイン画面へ</a>
 </body>
 </html>
