@@ -8,7 +8,7 @@ require '../common/db_connect.php';
 
 // ログインチェック（本番では必須）
 if (!isset($_SESSION['customer_id'])) {
-    header('Location: /G-1_login-process.php');
+    header('Location: /G-2_customer-complete.php');
     exit;
 }
 $customer_id = $_SESSION['customer_id'];
