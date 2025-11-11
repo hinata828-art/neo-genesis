@@ -1,6 +1,13 @@
 <?php
 // 1. セッションとDB接続
 session_start();
+
+echo '<pre style="background: #f00; color: #fff; padding: 10px; font-weight: bold;">';
+echo '現在のセッション情報（G-12）:';
+var_dump($_SESSION);
+echo '</pre>';
+
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 require '../common/db_connect.php';
