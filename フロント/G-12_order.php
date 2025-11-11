@@ -134,9 +134,6 @@ $address = $stmt->fetch();
                 <label><input type="checkbox" name="delivery" value="delivery">配送・返却サービス（自宅集荷）</label><br>
             </div>
 
-            <input type="hidden" name="product_id" value="<?= $product_id ?>">
-            <button type="submit" class="confirm-button">購入を確定する</button>
-        </form>
-    </div>
+    <a href="G-13_order_complete.php" class="confirm-button">購入を確定する</a>
 </body>
 </html>
