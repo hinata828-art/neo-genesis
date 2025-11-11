@@ -1,76 +1,113 @@
-body {
-  font-family: "Meiryo", "Segoe UI", sans-serif;
-  background: #f7f7f7;
-  text-align: center;
-  margin: 0;
-  padding: 0;
+/* --- G-13_order-complete.css --- */
+/* G-15 (rental-finish.css) をベースに作成 */
+
+/* --- 基本設定 --- */
+body { 
+    text-align: center; 
+    font-family: sans-serif; 
+    margin: 0; 
+    padding: 20px; 
+    background-color: #f4f4f4; 
 }
 
-.logo-image {
-  width: 250px;
-  margin-top: 30px;
+/* --- 完了画面専用ロゴ画像 --- */
+.completion-logo {
+    max-width: 350px;
+    width: 90%;
+    height: auto;     
+    display: block;   
+    margin: 50px auto 30px; /* ヘッダーとのマージン */
 }
 
-.message-area {
-  font-size: 24px;
-  font-weight: bold;
-  color: #3273dc;
-  margin-top: 30px;
+/* --- メッセージエリア --- */
+.message-area { 
+    font-size: 1.5em; 
+    margin-bottom: 20px; 
+    color: #333;
 }
 
-.order-summary {
-  background: white;
-  display: inline-block;
-  padding: 20px 40px;
-  margin: 30px auto;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  text-align: left;
+/* --- 配送予定日数 --- */
+.delivery-date { 
+    font-size: 1.8em; 
+    margin-bottom: 30px;
+    color: #333;
+}
+.delivery-date span { 
+    /* G-15では青でしたが、G-13では「購入」なので赤色に変えてみます */
+    color: #d9534f; /* 濃い赤色 */
+    font-weight: bold; 
 }
 
-.order-summary p {
-  font-size: 18px;
-  margin: 10px 0;
+/* ▼▼▼ 追加したスタイル ▼▼▼
+   --- 注文詳細ボタン --- 
+*/
+.detail-button {
+    background-color: #007bff; /* G-12の決定ボタンと同じ青 */
+    color: white; 
+    padding: 15px 40px; 
+    font-size: 1.3em; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    text-decoration: none;
+    display: block; /* ◀ home-button との間に改行を入れるため block に */
+    width: 80%;
+    max-width: 300px; /* ◀ ボタンが横に広がりすぎないように */
+    margin: 0 auto 20px; /* ◀ 左右中央揃え＆下に余白 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    transition: background-color 0.3s ease; 
+}
+.detail-button:hover {
+    background-color: #0056b3; 
 }
 
-.home-button {
-  display: inline-block;
-  background: #3273dc;
-  color: white;
-  padding: 10px 25px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 18px;
-  transition: background 0.3s;
-}
 
+/* --- ホームボタン (G-15のスタイルをそのまま利用) --- */
+.home-button { 
+    background-color: #ffc107; 
+    color: black; 
+    padding: 15px 40px; 
+    font-size: 1.3em; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    text-decoration: none;
+    display: block; /* ◀ detail-button と揃えるため block に */
+    width: 80%;
+    max-width: 300px; /* ◀ ボタンが横に広がりすぎないように */
+    margin: 0 auto; /* ◀ 左右中央揃え */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    transition: background-color 0.3s ease; 
+}
 .home-button:hover {
-  background: #255ab8;
+    background-color: #e0a800; 
 }
 
-/* --- レスポンシブ対応（スマホサイズ） --- */
-@media screen and (max-width: 600px) {
-  .logo-image {
-    width: 180px;
-    margin-top: 20px;
-  }
+/* --- レスポンシブ対応 (スマホ向けスタイル) --- */
+@media (max-width: 768px) {
+    body {
+        padding: 15px; 
+    }
+    
+    .completion-logo {
+        max-width: 250px;
+        margin-top: 30px; 
+        margin-bottom: 20px;
+    }
+    .message-area {
+        font-size: 1.2em; 
+        margin-bottom: 15px;
+    }
+    .delivery-date {
+        font-size: 1.5em; 
+        margin-bottom: 20px;
+    }
 
-  .message-area {
-    font-size: 20px;
-    margin-top: 20px;
-  }
-
-  .order-summary {
-    width: 85%;
-    padding: 16px;
-  }
-
-  .order-summary p {
-    font-size: 16px;
-  }
-
-  .home-button {
-    font-size: 16px;
-    padding: 8px 20px;
-  }
+    /* ▼▼▼ ボタンのレスポンシブも調整 ▼▼▼ */
+    .detail-button,
+    .home-button {
+        padding: 12px 20px; 
+        font-size: 1.1em;
+        width: 90%; /* スマホでは幅を広げる */
+    }
 }
