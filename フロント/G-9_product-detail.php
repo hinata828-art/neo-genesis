@@ -33,27 +33,31 @@ if (!$product) {
     exit;
 }
 
-// ===== カテゴリごとのカラー設定 =====
+// ▼▼▼ 修正点1：カテゴリごとのカラー設定を「連想配列」に変更 ▼▼▼
+// 「表示名」=>「ファイル名に使われる文字列」 の形式にします
 $category_colors = [
-    'C01' => ['オリジナル', 'イエロー', 'ホワイト'],
-    'C02' => ['オリジナル', 'ブルー', 'グリーン'],
-    'C03' => ['オリジナル', 'ブルー', 'レッド'],
-    'C04' => ['オリジナル', 'ホワイト'],
-    'C05' => ['オリジナル', 'ピンク'],
-    'C06' => ['オリジナル', 'グレー'],
-    'C07' => ['オリジナル', 'ゲーミング'],
-    'C08' => ['オリジナル', 'ブルー'],
+    'C01' => ['オリジナル' => 'original', 'イエロー' => 'yellow', 'ホワイト' => 'white'],
+    'C02' => ['オリジナル' => 'original', 'ブルー' => 'blue', 'グリーン' => 'green'],
+    'C03' => ['オリジナル' => 'original', 'ブルー' => 'blue', 'レッド' => 'red'],
+    'C04' => ['オリジナル' => 'original', 'ホワイト' => 'white'],
+    'C05' => ['オリジナル' => 'original', 'ピンク' => 'pink'], // ★ 'ピンク' => 'pink' に変更
+    'C06' => ['オリジナル' => 'original', 'グレー' => 'gray'],
+    'C07' => ['オリジナル' => 'original', 'ゲーミング' => 'gaming'],
+    'C08' => ['オリジナル' => 'original', 'ブルー' => 'blue'],
 ];
+// (※もし 'yellow' ではなく 'kiniro' など、実際のファイル名に合わせて '=>' の右側を修正してください)
 
 // 該当カテゴリのカラーを取得
 $category_id = $product['category_id'] ?? 'C01';
-$colors = $category_colors[$category_id] ?? ['オリジナル'];
+// $colors には ['オリジナル' => 'original', 'ピンク' => 'pink'] のような連想配列が入る
+$colors = $category_colors[$category_id] ?? ['オリジナル' => 'original'];
 
-// 実際のDB上のオリジナルカラー（中身は例えば「ブラック」）
-$original_color_value = $product['color'] ?? '不明';
+// 実際のDB上のオリジナルカラー（中身は例えば「ブラック」や「オリジナル」）
+// ★ G-9の value 属性ロジックを簡素化するため、'オリジナル'時の value も 'original' (ファイル名) に統一します
+$original_color_value = $colors['オリジナル'] ?? 'original';
 
 
-// ▼▼▼ 修正点1：画像切り替えJS用の「ベースURL」と「拡張子」をPHPで生成 ▼▼▼
+// ▼▼▼ 画像切り替えJS用の「ベースURL」と「拡張子」をPHPで生成 (修正なし) ▼▼▼
 $base_image_url_from_db = $product['product_image'] ?? '';
 $js_base_url = '';  // JSに渡す「.../カメラ1」のようなベースURL
 $js_extension = ''; // JSに渡す「.jpg」のような拡張子
@@ -82,6 +86,7 @@ try {
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->bindValue(':cat', $category_id, PDO::PARAM_STR);
     $stmt->execute();
+    // ▼▼▼ 500エラーの原因だったタイプミスを修正 ▼▼▼
     $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $related_products = [];
@@ -131,19 +136,24 @@ try {
 
                 <div class="color-select">
                     <p class="color-label">カラーを選択：</p>
-                    <?php foreach ($colors as $i => $color): ?>
+                    
+                    <?php $i = 0; ?>
+                    <?php foreach ($colors as $display_name => $file_name): ?>
                         <label>
                             <input type="radio" 
                                    name="color" 
-                                   value="<?php echo $color === 'オリジナル' ? htmlspecialchars($original_color_value) : htmlspecialchars($color); ?>"
                                    
-                                   data-color="<?php echo htmlspecialchars($color); ?>"
+                                   value="<?php echo htmlspecialchars($file_name); ?>"
+                                   
+                                   data-color="<?php echo htmlspecialchars($file_name); ?>"
                                    
                                    <?php if ($i === 0) echo 'checked'; ?>>
-                            <?php echo htmlspecialchars($color); ?>
+                            
+                            <?php echo htmlspecialchars($display_name); ?>
                         </label>
+                        <?php $i++; ?>
                     <?php endforeach; ?>
-                </div>
+                    </div>
 
                 <div class="action-buttons">
                     <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
@@ -151,7 +161,6 @@ try {
                     <input type="hidden" name="price" value="<?php echo $product['price']; ?>">
                     
                     <button type="submit" class="btn cart">カートに追加</button>
-                    
                     <button type="button" class="btn buy" onclick="goToOrder('G-12_order.php', <?php echo $product['product_id']; ?>)">購入</button>
                     <button type="button" class="btn rental" onclick="goToOrder('G-14_rental.php', <?php echo $product['product_id']; ?>)">レンタル</button>
                 </div>
@@ -186,19 +195,22 @@ function goToOrder(pageUrl, productId) {
     const selectedColorInput = document.querySelector('.product-actions-form input[name="color"]:checked');
     let colorValue = 'normal'; 
     if (selectedColorInput) {
+        // ▼▼▼ 修正点3：value (例: 'pink') をそのままG-12に渡す ▼▼▼
         colorValue = selectedColorInput.value;
     }
     location.href = `${pageUrl}?id=${productId}&color=${encodeURIComponent(colorValue)}`;
 }
 
 
-// ▼▼▼ 修正点2：G-9 画像切り替え用JavaScript (ここから追加) ▼▼▼
+// ▼▼▼ 修正点4：G-9 画像切り替え用JavaScript (ロジック変更) ▼▼▼
 document.addEventListener('DOMContentLoaded', function() {
     
     // 1. PHPから画像のベース情報を取得
     const trueBaseUrl = <?php echo json_encode($js_base_url); ?>;
     const extension = <?php echo json_encode($js_extension); ?>;
-    const originalDbImage = <?php echo json_encode($product['product_image']); ?>;
+    
+    // ★ 'original' (ファイル名) を持つラジオボタンの value を取得
+    const originalColorValue = <?php echo json_encode($original_color_value); ?>; 
 
     // 2. 関連するHTML要素を取得
     const mainImage = document.getElementById('mainImage');
@@ -208,22 +220,22 @@ document.addEventListener('DOMContentLoaded', function() {
     colorRadios.forEach(function(radio) {
         radio.addEventListener('change', function() {
             
-            // 4. 選択されたラジオの 'data-color' 属性 (例: 'イエロー' or 'オリジナル') を取得
+            // 4. 選択されたラジオの 'data-color' 属性 (例: 'pink' or 'original') を取得
             const selectedColorName = this.getAttribute('data-color');
 
-            if (selectedColorName === 'オリジナル') {
-                // 5a. 「オリジナル」が選ばれた場合
-                // → DBに登録されている元の画像URL ( .../camera1.jpg など) に戻す
-                mainImage.src = originalDbImage;
+            if (selectedColorName === originalColorValue) {
+                // 5a. 「オリジナル」が選ばれた場合 (data-color が 'original' だった場合)
+                // → ベースURL + 拡張子 で「オリジナル画像」のURLを構築
+                mainImage.src = trueBaseUrl + extension;
             } else {
-                // 5b. 「オリジナル」以外 (例: 'イエロー') が選ばれた場合
-                // → ベースURL + 色名 + 拡張子 で新しいURLを構築 (例: .../camera1-イエロー.jpg)
+                // 5b. 「オリジナル」以外 (例: 'pink') が選ばれた場合
+                // → ベースURL + 色名 + 拡張子 で新しいURLを構築
                 mainImage.src = trueBaseUrl + '-' + selectedColorName + extension;
             }
         });
     });
 });
-// ▲▲▲ 修正点2 ここまで ▲▲▲
+// ▲▲▲ 修正点4 ここまで ▲▲▲
 </script>
 
 </body>
