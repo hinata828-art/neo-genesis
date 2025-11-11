@@ -27,29 +27,11 @@
             </div>
         </div>
 
-<<<<<<< HEAD
         <div class="header-cart">
             <a href="G-11_cart.php">
                 <img src="../img/cart.png" alt="カートアイコン">
                 <label>カート</label>
             </a>
-=======
-        <!-- ★修正：右側（アイコン群）のクラス名を変更 -->
-        <div class="header-right-icons">
-            <!-- 会員情報 (アイコン) -->
-            <div class="header-user">
-                <a href="../フロント/G-4_member-information.php">
-                    <img src="../img/icon.png" alt="会員情報" class="user-icon-image">
-                </a>
-            </div>
-            <!-- カート -->
-            <div class="header-cart">
-                <a href="../フロント/G-10_cart.php">
-                    <img src="../img/cart.png" alt="カート">
-                    <label>カート</label>
-                </a>
-            </div>
->>>>>>> main
         </div>
     </div>
 
