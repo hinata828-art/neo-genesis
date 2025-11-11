@@ -11,62 +11,68 @@ error_reporting(E_ALL);
 require '../common/db_connect.php'; // $pdo 変数がここで作成されると仮定
 
 // 4. 表示するデータを初期化
-$products = []; // レンタル商品リスト用の配列
-$rental_info = null; // レンタル共通情報用
+$products = []; // ★商品リスト用の配列
+$order_info = null; // ★注文共通情報用 (rental_info から変更)
 $error_message = '';
 
 try {
-    // 5. URLから表示したいレンタルIDを取得（取引IDからレンタルIDに変更）
+    // 5. URLから表示したい「取引ID」を取得
+    // ★ G-16 と同じロジックに戻します
     if (!isset($_GET['id'])) {
-        throw new Exception('レンタルIDが指定されていません。');
+        throw new Exception('取引IDが指定されていません。');
     }
-    $rental_id = $_GET['id'];
+    $transaction_id = $_GET['id']; // ★ rental_id から transaction_id に変更
     
     // 6. データベースからレンタル情報を取得
-    // テーブル名とカラム名をレンタル用に変更
+    // ★★★ SQLクエリを「正しいテーブル構造」に全面的に修正 ★★★
     $sql = "SELECT 
-                r.rental_start_date,    /* レンタル開始日 */
-                r.return_status,        /* 返却ステータス */
-                r.total_amount,         /* 合計金額（レンタル料） */
-                r.payment,              /* 支払い方法 */
-                r.return_date_scheduled, /* 返却予定日を仮定 */
-                p.product_id,           /* 商品ID */
-                p.product_name,         /* 商品名 */
-                p.product_image,        /* 商品画像 */
-                p.price                 /* 商品価格（参考情報） */
-            FROM rental_table AS r
-            JOIN rental_detail AS d ON r.rental_id = d.rental_id
-            JOIN product AS p ON d.product_id = p.product_id
-            WHERE r.rental_id = :id";
+                t.transaction_date,    /* 取引日 (親テーブルから) */
+                t.payment,             /* 支払い方法 (親テーブルから) */
+                t.delivery_status,     /* 配達ステータス (親テーブルから) */
+                t.total_amount,        /* 合計金額 (親テーブルから) */
+                p.product_id,
+                p.product_name, 
+                p.product_image,
+                p.price,
+                r.rental_start,        /* レンタル開始日 (子テーブルから) */
+                r.rental_end           /* レンタル終了日 (子テーブルから) */
+            FROM transaction_table AS t
+            JOIN rental AS r ON t.transaction_id = r.transaction_id /* ★修正★ rental_table -> rental */
+            JOIN product AS p ON r.product_id = p.product_id       /* ★修正★ d.product_id -> r.product_id */
+            WHERE t.transaction_id = :id"; /* ★修正★ r.rental_id -> t.transaction_id */
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':id', $rental_id, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $transaction_id, PDO::PARAM_INT); // ★修正★
     $stmt->execute();
     
-    // すべてのレンタル商品を取得
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($products)) {
         throw new Exception('該当するレンタル履歴が見つかりません。');
     }
     
-    // レンタル共通情報（開始日、ステータスなど）を $products の最初の要素から取得
-    $rental_info = $products[0];
+    // 注文共通情報を $products の最初の要素から取得
+    $order_info = $products[0]; // ★ rental_info から変更
     
     // 日付フォーマットの整形
-    $rental_info['start_date_formatted'] = date('Y/m/d H:i', strtotime($rental_info['rental_start_date']));
-    $rental_info['return_date_formatted'] = date('Y/m/d', strtotime($rental_info['return_date_scheduled']));
+    // ★ カラム名をDBの画像に合わせて修正 ('rental_start', 'rental_end')
+    $order_info['start_date_formatted'] = date('Y/m/d H:i', strtotime($order_info['rental_start']));
+    $order_info['return_date_formatted'] = date('Y/m/d', strtotime($order_info['rental_end']));
     
     // 返却状況のテキストを整形
-    switch ($rental_info['return_status']) {
+    // ★ 'return_status' ではなく 'delivery_status' (親テーブルのステータス) を使うと仮定
+    switch ($order_info['delivery_status']) { 
         case 'レンタル中':
-            $rental_info['return_status_text'] = '返却予定日: ' . $rental_info['return_date_formatted'];
+            $order_info['return_status_text'] = '返却予定日: ' . $order_info['return_date_formatted'];
             break;
         case '返却済み':
-            $rental_info['return_status_text'] = '返却完了済み';
+            $order_info['return_status_text'] = '返却完了済み';
+            break;
+        case '受付完了':
+            $order_info['return_status_text'] = '発送準備中です';
             break;
         default:
-            $rental_info['return_status_text'] = 'ステータス: ' . htmlspecialchars($rental_info['return_status']);
+            $order_info['return_status_text'] = 'ステータス: ' . htmlspecialchars($order_info['delivery_status']);
             break;
     }
 
@@ -124,11 +130,11 @@ try {
                     <div class="detail-box">
                         <div class="detail-row">
                             <span class="detail-label">レンタル開始日時</span>
-                            <span class="detail-value"><?php echo htmlspecialchars($rental_info['start_date_formatted']); ?></span>
+                            <span class="detail-value"><?php echo htmlspecialchars($order_info['start_date_formatted']); ?></span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">返却予定日</span>
-                            <span class="detail-value"><?php echo htmlspecialchars($rental_info['return_date_formatted']); ?></span>
+                            <span class="detail-value"><?php echo htmlspecialchars($order_info['return_date_formatted']); ?></span>
                         </div>
                     </div>
                 </section>
@@ -137,14 +143,14 @@ try {
                     <h2 class="section-title">お支払情報</h2>
                     <div class="detail-box">
                         <p class="payment-info">
-                            <?php echo htmlspecialchars($rental_info['payment']); ?> | 
-                            合計金額: ¥<?php echo number_format($rental_info['total_amount']); ?>
+                            <?php echo htmlspecialchars($order_info['payment']); ?> | 
+                            合計金額: ¥<?php echo number_format($order_info['total_amount']); ?>
                         </p>
                     </div>
                 </section>
                 
                 <section class="delivery-status">
-                    <p><?php echo htmlspecialchars($rental_info['return_status_text']); ?></p>
+                    <p><?php echo htmlspecialchars($order_info['return_status_text']); ?></p>
                 </section>
 
             <?php endif; ?>
@@ -169,47 +175,34 @@ try {
             <h2>レンタルをキャンセルしますか？</h2>
             
             <div class="modal-buttons">
-                <a href="G-17_rental-cancel.php?id=<?php echo htmlspecialchars($rental_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
+                <a href="G-17_rental-cancel.php?id=<?php echo htmlspecialchars($transaction_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
                 
                 <button id="confirm-no" class="btn btn-secondary">いいえ</button>
             </div>
         </div>
     </div>
+    
     <script>
-    // ページのHTMLが読み込まれたら実行
     document.addEventListener('DOMContentLoaded', function() {
-        
-        // 必要な部品（HTML要素）を取得
         const modal = document.getElementById('cancel-modal');
         const openBtn = document.getElementById('open-cancel-modal');
         const closeBtn = document.getElementById('close-modal');
         const noBtn = document.getElementById('confirm-no');
-
-        // 「レンタルキャンセルはコチラ」リンクがクリックされた時
         openBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // リンクのデフォルト動作（ページ遷移）を止める
-            modal.style.display = 'flex'; // モーダルを表示する
+            e.preventDefault(); 
+            modal.style.display = 'flex'; 
         });
-
-        // 「いいえ」ボタンがクリックされた時
         noBtn.addEventListener('click', function() {
-            modal.style.display = 'none'; // モーダルを非表示にする
+            modal.style.display = 'none'; 
         });
-
-        // 「×」ボタンがクリックされた時
         closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none'; // モーダルを非表示にする
+            modal.style.display = 'none'; 
         });
-
-        // モーダルの背景（黒い部分）がクリックされた時
         modal.addEventListener('click', function(e) {
-            if (e.target === modal) { // クリックされたのが背景自身か確認
-                modal.style.display = 'none'; // モーダルを非表示にする
+            if (e.target === modal) { 
+                modal.style.display = 'none'; 
             }
         });
-
-        // 「はい」ボタンは、通常のリンクとして動作し、
-        // G-17_rental-cancel.php にページ遷移します。
     });
     </script>
 
