@@ -45,11 +45,11 @@ $total = array_sum(array_column($cart_items, 'price'));
                 </p>
 
                 <div class="buttons">
-                    <form action="delete_cart.php" method="POST">
+                    <form action="G-11_delete_cart.php" method="POST">
                         <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
                         <button type="submit" class="delete-btn">削除</button>
                     </form>
-                    <form action="add_to_cart.php" method="POST">
+                    <form action="G-11_add_to_cart.php" method="POST">
                         <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
                         <button type="submit" class="buy-btn">買う</button>
                     </form>
