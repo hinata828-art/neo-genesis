@@ -1,25 +1,13 @@
-<?php
-// このファイルが require される前に、
-// session_start() は実行済みであると想定します。
-?>
 <header>
-    <!-- 上段：ロゴ、カート、会員情報 -->
     <div class="top-row">
         
-        <!-- ★修正：左側（ハンバーガーとロゴ）をグループ化 -->
         <div class="header-left">
-            <!-- ハンバーガーメニュー (Bulmaのnavbar-burgerを流用) -->
-            <div 
-                class="hamburger-menu navbar-burger" 
-                :class="{'is-active': isActive}" 
-                @click="toggleButton"
-            >
+            <div class="hamburger-menu navbar-burger" @click="toggleButton">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
-            
-            <!-- ロゴ (ホームへのリンク) -->
+
             <div class="header-logo">
                 <a href="../フロント/G-8_home.php">
                     <img src="../img/NishimuraOnline.png" alt="ロゴ" class="logo-image">
@@ -27,35 +15,43 @@
             </div>
         </div>
 
-        <!-- ★修正：右側（アイコン群）のクラス名を変更 -->
         <div class="header-right-icons">
-            <!-- 会員情報 (アイコン) -->
+            
             <div class="header-user">
                 <a href="../フロント/G-4_member-information.php">
-                    <img src="../img/icon.png" alt="会員情報" class="user-icon-image">
+                    <img src="../img/icon.png" alt="会員情報" class="user-icon"> 
                 </a>
             </div>
-            <!-- カート -->
+
             <div class="header-cart">
-                <a href="../フロント/G-10_cart.php">
-                    <img src="../img/cart.png" alt="カート">
+                <a href="../フロント/G-11_cart.php">
+                    <img src="../img/cart.png" alt="カートアイコン">
                     <label>カート</label>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- 下段：検索フォーム -->
     <form action="../フロント/G-9_search-result.php" method="GET" class="bottom-row">
-        
         <div class="search-container">
-            <input type="text" name="keyword" placeholder="何をお探しですか？">
             
-            <!-- 検索ボタン (kensaku.png を使用) -->
+            <select name="category" class="category-select">
+                <option value="">家電</option>
+                <option value="C01">テレビ</option>
+                <option value="C02">冷蔵庫</option>
+                <option value="C03">電子レンジ</option>
+                <option value="C04">カメラ</option>
+                <option value="C05">ヘッドホン</option>
+                <option value="C06">洗濯機</option>
+                <option value="C07">ノートPC</option>
+                <option value="C08">スマートフォン</option>
+            </select>
+
+            <input type="text" name="keyword" placeholder="何をお探しですか？">
+
             <button type="submit" class="search-button">
                 <img src="../img/kensaku.png" alt="検索">
             </button>
         </div>
-
     </form>
 </header>

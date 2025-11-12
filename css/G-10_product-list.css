@@ -1,0 +1,96 @@
+body {
+    font-family: sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+.top {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.top h1 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* 商品リスト全体 */
+.product-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+}
+
+/* 商品カード */
+.product-card {
+    display: flex;
+    align-items: center;
+    background-color: #f4f7ff;
+    border-radius: 10px;
+    padding: 10px;
+    width: 95%;
+    max-width: 480px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 商品画像 */
+.product-card img.product-image {
+    width: 40%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* 商品情報 */
+.product-info {
+    flex: 1;
+    padding-left: 15px;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.product-price {
+    color: #e60000;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* ボタン */
+.product-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    border: 1.5px solid #000;
+    border-radius: 9999px;
+    text-decoration: none;
+    padding: 5px 14px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn.detail {
+    background-color: #fff;
+    color: #000;
+}
+
+.btn.buy {
+    background-color: #dce8ff;
+    color: #000;
+}
+
+/* 検索結果なし */
+.no-result {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 16px;
+}

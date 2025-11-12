@@ -3,7 +3,7 @@ session_start();
 
 // 商品IDを受け取る
 if (!isset($_POST['product_id'])) {
-    header('Location: G-8_home.php');
+    header('Location: G-9_product-detail.php');
     exit;
 }
 
@@ -14,12 +14,14 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// すでにカートにある商品は重複させない（1つだけ）
-if (!in_array($product_id, $_SESSION['cart'], true)) {
-    $_SESSION['cart'][] = $product_id;
+// 商品ごとに数量を管理
+if (isset($_SESSION['cart'][$product_id])) {
+    $_SESSION['cart'][$product_id] += 1; // 同じ商品なら数量を増やす
+} else {
+    $_SESSION['cart'][$product_id] = 1;  // 初めてなら数量1
 }
 
-// カートページに移動
+// カートページへ移動
 header('Location: G-11_cart.php');
 exit;
 ?>

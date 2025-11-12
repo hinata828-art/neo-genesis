@@ -33,12 +33,11 @@ if (!$product) {
     exit;
 }
 
-// ▼▼▼ 修正点1：「表示名」=>「ファイル名」の辞書を定義 ▼▼▼
-// ▼▼▼ ここを完成させてください ▼▼▼
+// ▼▼▼ 「表示名」=>「ファイル名」の辞書を定義 ▼▼▼
 $color_file_map = [
     // --- 判明しているもの ---
     'オリジナル' => 'original',
-    'ホワイト'   => '白',         // ★「ホワイト」は「白」に統一（これでOK）
+    'ホワイト'   => '白色',
     'ブルー'     => '青',
     'ゲーミング' => 'ゲーミング',
     'イエロー'   => '黄色',
@@ -68,12 +67,12 @@ $category_id = $product['category_id'] ?? 'C01';
 $color_names_for_category = $category_colors_list[$category_id] ?? ['オリジナル'];
 
 // 
-// 最終的に $colors 配列を生成 (例: ['オリジナル' => 'original', 'ホワイト' => '白'])
+// 最終的に $colors 配列を生成 (例: ['オリジナル' => 'original', 'ホワイト' => '白色'])
 // 
 $colors = [];
 foreach ($color_names_for_category as $display_name) {
     if (isset($color_file_map[$display_name])) {
-        // マップに存在する (例: 'ホワイト' => '白')
+        // マップに存在する (例: 'ホワイト' => '白色')
         $colors[$display_name] = $color_file_map[$display_name];
     } else {
         // マップにない (例: 'レッド' や 'ゲーミング')
@@ -85,7 +84,7 @@ foreach ($color_names_for_category as $display_name) {
 $original_color_value = $color_file_map['オリジナル'] ?? 'original';
 
 
-// ▼▼▼ 修正点2：拡張子(.jpg) を追加するロジックを「削除」 ▼▼▼
+// ▼▼▼ 拡張子(.jpg) を追加するロジックを「削除」 ▼▼▼
 $base_image_url_from_db = $product['product_image'] ?? '';
 $js_base_url = '';
 
@@ -94,7 +93,7 @@ if (!empty($base_image_url_from_db)) {
     // (例: .../カメラ1 -> .../カメラ1 のまま)
     $js_base_url = preg_replace('/-[^-]+$/u', '', $base_image_url_from_db);
 }
-// ▲▲▲ 修正点2 ここまで ▲▲▲
+// ▲▲▲ ここまで ▲▲▲
 
 
 // ===== 関連商品を3件取得 =====
@@ -103,6 +102,7 @@ try {
             FROM product 
             WHERE product_id != :id 
             AND category_id = :cat 
+            AND color = 'オリジナル'  -- ◀ (C) オリジナルのみに絞り込み
             LIMIT 3";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
@@ -171,7 +171,7 @@ try {
                         </label>
                         <?php $i++; ?>
                     <?php endforeach; ?>
-                    </div>
+                </div>
 
                 <div class="action-buttons">
                     <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
@@ -182,11 +182,8 @@ try {
                     <button type="button" class="btn buy" onclick="goToOrder('G-12_order.php', <?php echo $product['product_id']; ?>)">購入</button>
                     <button type="button" class="btn rental" onclick="goToOrder('G-14_rental.php', <?php echo $product['product_id']; ?>)">レンタル</button>
                 </div>
-            </form>
-        </div>
-    </div>
 
-    <footer class="related-footer">
+            </form> </div> </div> <footer class="related-footer">
         <h3>関連商品</h3>
         <div class="related-items">
             <?php if (empty($related_products)): ?>
@@ -216,7 +213,7 @@ function goToOrder(pageUrl, productId) {
 }
 
 
-// ▼▼▼ 修正点6：JavaScript (拡張子 .jpg を追加するロジックを削除) ▼▼▼
+// ▼▼▼ JavaScript (変更なし・動作確認済み) ▼▼▼
 document.addEventListener('DOMContentLoaded', function() {
     
     // 1. PHPから画像のベース情報を取得
@@ -248,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-// ▲▲▲ 修正点6 ここまで ▲▲▲
+// ▲▲▲ ここまで ▲▲▲
 </script>
 
 </body>
