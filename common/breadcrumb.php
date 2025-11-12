@@ -1,23 +1,63 @@
-<?php
-// パンくずリストの配列を受け取る（存在しない場合は空配列）
-$breadcrumbs = $breadcrumbs ?? [];
+<header>
+    <!-- 上段：ロゴ、カート、会員情報 -->
+    <div class="top-row">
+        
+        <!-- 左側：ハンバーガー＋ロゴ -->
+        <div class="header-left">
+            <div class="hamburger-menu navbar-burger" @click="toggleButton">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 
-// ホームは必ず先頭に追加
-array_unshift($breadcrumbs, ['name' => 'ホーム', 'url' => '../フロント/G-8_home.php']);
-?>
+            <div class="header-logo">
+                <a href="../フロント/G-8_home.php">
+                    <img src="../img/NishimuraOnline.png" alt="ロゴ" class="logo-image">
+                </a>
+            </div>
+        </div>
 
-<nav class="breadcrumb">
-    <ul>
-        <?php foreach ($breadcrumbs as $index => $crumb): ?>
-            <li>
-                <?php if (!empty($crumb['url']) && $index !== array_key_last($breadcrumbs)): ?>
-                    <a href="<?= htmlspecialchars($crumb['url'], ENT_QUOTES, 'UTF-8') ?>">
-                        <?= htmlspecialchars($crumb['name'], ENT_QUOTES, 'UTF-8') ?>
-                    </a>
-                <?php else: ?>
-                    <?= htmlspecialchars($crumb['name'], ENT_QUOTES, 'UTF-8') ?>
-                <?php endif; ?>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-</nav>
+        <!-- 右側：ユーザー・カート -->
+        <div class="header-right-icons">
+            <div class="header-user">
+                <a href="../フロント/G-4_member-information.php">
+                    <img src="../img/user.png" alt="会員情報" class="user-icon">
+                </a>
+            </div>
+
+            <div class="header-cart">
+                <a href="../フロント/G-10_cart.php">
+                    <img src="../img/cart.png" alt="カート" class="cart-icon">
+                    <label>カート</label>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下段：カテゴリプルダウン＋検索フォーム -->
+    <form action="../フロント/G-9_search-result.php" method="GET" class="bottom-row">
+        <div class="search-container">
+            
+            <!-- カテゴリプルダウン -->
+            <select name="category" class="category-select">
+                <option value="">家電</option>
+                <option value="C01">テレビ</option>
+                <option value="C02">冷蔵庫</option>
+                <option value="C03">電子レンジ</option>
+                <option value="C04">カメラ</option>
+                <option value="C05">ヘッドホン</option>
+                <option value="C06">洗濯機</option>
+                <option value="C07">ノートPC</option>
+                <option value="C08">スマートフォン</option>
+            </select>
+
+            <!-- 検索入力 -->
+            <input type="text" name="keyword" placeholder="何をお探しですか？">
+
+            <!-- 検索ボタン -->
+            <button type="submit" class="search-button">
+                <img src="../img/kensaku.png" alt="検索">
+            </button>
+        </div>
+    </form>
+</header>
