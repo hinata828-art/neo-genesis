@@ -21,7 +21,10 @@ $total = array_sum(array_column($cart_items, 'price'));
 <head>
 <meta charset="UTF-8">
 <title>カート | ニシムラOnline</title>
-<link rel="stylesheet" href="G-11_cart.csscss">
+ <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/breadcrumb.css">
+<link rel="stylesheet" href="G-11_cart.css">
+
 </head>
 <body>
 <?php require __DIR__ . '/../common/header.php'?>
@@ -31,11 +34,11 @@ $total = array_sum(array_column($cart_items, 'price'));
         <p>カートに商品がありません。</p>
     <?php else: ?>
         <p class="total">小計 ￥<?= number_format($total) ?></p>
-        <button class="checkout-btn" onckick="location.href='G-12注文情報入力画面>レジに進む（<?= count($cart_items) ?>個の商品）</button>
+        <button class="checkout-btn" onclick="location.href='G-12注文情報入力画面>レジに進む（<?= count($cart_items) ?>個の商品）</button>
 
         <?php foreach ($cart_items as $item): ?>
             <div class="item">
-                <img src="img/<?= htmlspecialchars($item['product_image']) ?>" 
+                <img src="../img/<?= htmlspecialchars($item['product_image']) ?>" 
                      alt="<?= htmlspecialchars($item['product_name']) ?>" 
                      class="product-img">
 

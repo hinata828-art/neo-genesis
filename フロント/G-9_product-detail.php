@@ -128,7 +128,7 @@ try {
 
             <!-- ボタン -->
             <div class="action-buttons">
-                <form action="G-11_cart.php" method="POST" style="display:inline;">
+                <form action="G-11_add_to_cart.php" method="POST" style="display:inline;">
                     <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
                     <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>">
                     <input type="hidden" name="price" value="<?php echo $product['price']; ?>">
