@@ -103,6 +103,7 @@ try {
             FROM product 
             WHERE product_id != :id 
             AND category_id = :cat 
+            AND color = 'オリジナル'  -- ◀▼▼ この1行を追加 ▼▼▼
             LIMIT 3";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
