@@ -7,6 +7,7 @@ try {
     // ランダムで8件取得
     $sql = "SELECT product_name, price, product_image, product_id 
             FROM product 
+            WHERE color = 'オリジナル'  -- ◀▼▼ この1行を追加 ▼▼▼
             ORDER BY RAND() 
             LIMIT 8";
     $stmt = $pdo->query($sql);
@@ -28,7 +29,7 @@ try {
 </head>
 
 <body>
-    <?php require __DIR__ . '/../common/header.php'; ?>
+    <?php require_once __DIR__ . '/../common/header.php'; ?>
     <?php
     $breadcrumbs = [
         ['name' => '現在のページ']
