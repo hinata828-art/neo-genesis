@@ -167,6 +167,12 @@ header {
 
 /* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
+    /* 左右の余白を少し調整 */
+    .top-row,
+    .bottom-row {
+        padding: 0 5px; 
+    }
+
     /* スマホではカートの文字を非表示 (任意) */
     .header-cart label {
         display: none;
@@ -192,16 +198,28 @@ header {
         height: 3px;
     }
     
-    /* スマホではカテゴリ選択を隠す */
+    /* カテゴリ選択の幅をスマホ用に調整し、表示を維持 */
     .category-select {
-        display: none; 
+        /* display: none;  <-- これを削除 */
+        width: 80px; /* PC版120pxから縮小 */
+        padding: 10px 5px; /* パディングを調整 */
+        font-size: 14px; /* フォントサイズを小さく */
+        /* PC版の設定を維持: border-right: none; */
+        border-top-left-radius: 9999px;
+        border-bottom-left-radius: 9999px;
+        border: 1px solid #333;
     }
-    /* 検索窓を角丸にする */
+    
+    /* 検索窓のスタイルを調整（プルダウンと連続させるため） */
     .search-container input {
-        padding-top: 10px;
-        padding-bottom: 10px;
+        width: 100%;
+        padding: 10px 60px 10px 10px; /* 左パディングを調整 */
         font-size: 14px;
+        /* PC版の設定を元に戻す（カテゴリ選択と連続させる） */
         border-radius: 9999px;
-        border-left: 1px solid #333; /* 境界線を元に戻す */
+        border: 1px solid #333;
+        border-left: none; 
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
 }
