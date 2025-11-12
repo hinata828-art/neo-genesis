@@ -82,14 +82,9 @@ header {
     width: 48px; 
     height: 48px; 
 }
-
-/* ★★★ アイコン画像（.user-icon）の最終スタイル定義 ★★★ */
-/* 優先度の高いセレクタで、アイコンが枠いっぱいに収まるようにする */
-.header-user .user-icon { 
-    width: 100%; 
-    height: 100%;
-    object-fit: contain; 
-    padding: 5px; 
+.header-user img {
+    width: 150%;
+    height: 150%;
 }
 /* ★★★ 修正箇所 終わり ★★★ */
 
