@@ -46,22 +46,17 @@ try {
 }
 
 // ===== パンくず設定 =====
+$breadcrumbs = [
+    ['name' => 'ホーム', 'url' => 'G-8_home.php']
+];
+
 if ($keyword !== '') {
-    $breadcrumbs = [
-        ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        ['name' => '検索結果：「' . htmlspecialchars($keyword) . '」']
-    ];
+    $breadcrumbs[] = ['name' => '検索結果：「' . htmlspecialchars($keyword) . '」'];
 } elseif ($category !== '') {
     $category_name = $category_names[$category] ?? '商品一覧';
-    $breadcrumbs = [
-        ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        ['name' => $category_name]
-    ];
+    $breadcrumbs[] = ['name' => $category_name];
 } else {
-    $breadcrumbs = [
-        ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        ['name' => '商品一覧']
-    ];
+    $breadcrumbs[] = ['name' => '商品一覧'];
 }
 ?>
 <!DOCTYPE html>
