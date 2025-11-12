@@ -18,12 +18,10 @@
         </div>
 
         <!-- 右側：ユーザー・カート -->
-        <div class="header-right-icons">
-            <div class="header-user">
-                <a href="../フロント/G-4_member-information.php">
-                    <img src="../img/icon.png" alt="会員情報" class="user-icon">
-                </a>
-            </div>
+        <div class="header-user">
+            <a href="../フロント/G-4_member-information.php">
+                <img src="../img/icon.png" alt="会員情報" class="user-icon"> 
+            </a>
 
             <div class="header-cart">
                 <a href="../フロント/G-10_cart.php">
