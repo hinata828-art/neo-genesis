@@ -21,6 +21,19 @@ h1 {
     color: #333;
 }
 
+/* ▼▼▼ 追加 ▼▼▼
+   ページのメインチタイトル（「注文内容」）のスタイル
+   .container の直下にある最初の <p> タグを対象にします
+*/
+.container > p:first-child {
+    font-size: 22px;    /* 大きく */
+    font-weight: bold;
+    text-align: center; /* センター揃え */
+    margin-bottom: 20px;
+}
+/* ▲▲▲ 追加 ▲▲▲ */
+
+
 hr {
     margin: 20px 0;
     border: none;
@@ -117,14 +130,22 @@ input[type="number"] {
 }
 
 /* セクションラベル */
+/* ▼▼▼ 修正 ▼▼▼
+   .payment-section と .option-section のタイトル（<p>タグ）も
+   スタイル対象に含め、フォントサイズを 18px に指定します
+*/
 .delivery-section label,
-.payment-section > label,
-.option-section > label {
+.payment-section > p,
+.option-section > p {
     text-align: left;
     display: block;
     font-weight: bold;
     margin-top: 10px;
+    font-size: 18px; /* ◀ 大きく */
+    margin-bottom: 10px; /* ◀ pタグの場合、下の要素との間隔を追加 */
 }
+/* ▲▲▲ 修正 ▲▲▲ */
+
 
 /* 支払い方法の囲み */
 .payment-box {

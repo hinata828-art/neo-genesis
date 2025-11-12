@@ -82,8 +82,9 @@ header {
     align-items: center;
     justify-content: center;
 }
-.header-user img {
-    width: 100%;
+/* header.css の一部 */
+.header-user img { 
+    width: 100%; 
     height: 100%;
 }
 
@@ -161,11 +162,11 @@ header {
         height: 40px;
     }
     .header-user img {
-        width: 20px;
-        height: 20px;
+        /* 修正：グローバルで100%に設定されたため、ここでは個別の縮小指定を削除 */
+        /* アイコンは親要素の40pxの枠いっぱいに広がります。 */
     }
     .header-logo img {
-        height: 80x;
+        height: 80px; /* ★修正：80x のタイポを 80px に修正 */
     }
     .hamburger-menu {
         width: 35px;
