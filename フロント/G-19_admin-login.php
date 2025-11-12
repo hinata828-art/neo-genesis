@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理者ログイン</title>
+  <link rel="stylesheet" href="../css/admin_login.css">
+  <style>
+    /* 見た目だけ少し差別化 */
+    h1 {
+      color: #d32f2f; /* 管理者＝赤系 */
+    }
+    body {
+      background-color: #f8f8f8;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="../img/NishimuraOnline.png" alt="企業ロゴ" class="logo">
+
+  <form action="G-19_admin-login-process.php" method="post">
+    <h1>管理者ログイン</h1>
+    <fieldset>
+      <label for="email">メールアドレス</label>
+      <input id="email" name="email" type="email" required placeholder="admin@example.com">
+ 
+      <label for="password">パスワード</label>
+      <input id="password" name="password" type="password" required placeholder="パスワードを入力">
+ 
+      <button type="submit">ログイン</button>
+
+      <?php
+      // エラーメッセージ
+      if (isset($_GET['error'])) {
+          if ($_GET['error'] == 1) {
+              echo '<p style="color:red;">メールアドレスとパスワードを入力してください。</p>';
+          } else if ($_GET['error'] == 2) {
+              echo '<p style="color:red;">メールアドレスまたはパスワードが間違っています。</p>';
+          }
+      }
+      ?>
+    </fieldset>
+  </form>
+
+</body>
+</html>
