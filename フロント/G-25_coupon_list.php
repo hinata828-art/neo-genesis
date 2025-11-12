@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-require_once 'db_connect.php'; // DB接続ファイル
+require '../common/db_connect.php'; // DB接続ファイル
 
 if (isset($_SESSION['customer']['id'])) {
     $customer_id = $_SESSION['customer']['id'];
