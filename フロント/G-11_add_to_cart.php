@@ -3,7 +3,7 @@ session_start();
 
 // 商品IDを受け取る
 if (!isset($_POST['product_id'])) {
-    header('Location: G-8_home.php');
+    header('Location: G-9_product-detail.php');
     exit;
 }
 
