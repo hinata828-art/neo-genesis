@@ -69,7 +69,7 @@ $coupons = $stmt->fetchAll();
           <h3><?= htmlspecialchars($coupon['category_name']) ?>製品</h3>
           <p class="discount"><?= htmlspecialchars($coupon['discount_rate']) ?>% OFF！！</p>
           <p class="note">※購入時のみ適用可能</p>
-          <a href="G-10_product_list.php?category_id=<?= $coupon['category_id'] ?>" class="coupon-link">対象商品一覧へ</a>
+          <a href="G-10_product-list.php?category_id=<?= $coupon['category_id'] ?>" class="coupon-link">対象商品一覧へ</a>
         </div>
       </div>
     <?php endforeach; ?>
