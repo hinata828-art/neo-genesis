@@ -1,96 +1,71 @@
-body {
-    font-family: sans-serif;
-    background-color: #fff;
-    margin: 0;
-    padding: 0;
-}
-
-.top {
-    text-align: center;
-    margin-top: 10px;
+main {
+    padding: 16px;
 }
 
 .top h1 {
     font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 5px;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
-/* 商品リスト全体 */
 .product-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 10px;
+    gap: 20px;
 }
 
-/* 商品カード */
-.product-card {
+.product-item {
     display: flex;
     align-items: center;
-    background-color: #f4f7ff;
-    border-radius: 10px;
+    background-color: #f4f8ff;
     padding: 10px;
-    width: 95%;
-    max-width: 480px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 10px;
 }
 
-/* 商品画像 */
-.product-card img.product-image {
-    width: 40%;
+.product-image img {
+    width: 120px;
     height: auto;
     border-radius: 8px;
 }
 
-/* 商品情報 */
 .product-info {
     flex: 1;
-    padding-left: 15px;
+    margin-left: 15px;
 }
 
-.product-name {
+.price {
+    color: red;
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 6px;
+    margin: 5px 0;
 }
 
-.product-price {
-    color: #e60000;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-/* ボタン */
-.product-buttons {
+.buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
 }
 
-.btn {
-    border: 1.5px solid #000;
-    border-radius: 9999px;
+.detail-btn, .buy-btn {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
     text-decoration: none;
-    padding: 5px 14px;
-    font-size: 14px;
     font-weight: bold;
+    border: 1px solid #333;
 }
 
-.btn.detail {
+.detail-btn {
     background-color: #fff;
+    color: #333;
+}
+
+.buy-btn {
+    background-color: #a9bcf5;
     color: #000;
 }
 
-.btn.buy {
-    background-color: #dce8ff;
-    color: #000;
-}
-
-/* 検索結果なし */
 .no-result {
     text-align: center;
-    margin-top: 30px;
-    font-size: 16px;
+    margin-top: 40px;
+    color: #888;
 }
