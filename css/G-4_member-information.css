@@ -187,3 +187,24 @@ body {
 .btn-edit:hover {
     background-color: #eab308;
 }
+
+.status-processing {
+    /* 「注文受付」など (青) */
+    color: #007bff !important; /* !important で既存の指定（#4b5563）を上書き */
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.status-delivered {
+    /* 「配達完了」 (緑) */
+    color: #28a745 !important;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.status-cancelled {
+    /* 「キャンセル済み」 (赤) */
+    color: #dc3545 !important;
+    font-weight: bold;
+    font-size: 1.1em;
+}
