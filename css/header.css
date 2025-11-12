@@ -68,7 +68,7 @@ header {
 .header-right-icons {
     display: flex;
     align-items: center;
-    gap: 10px; /* アイコンとカートの隙間 */
+    gap: 3px; /* アイコンとカートの隙間 */
 }
 
 /* ユーザーアイコン（親要素：グレーの丸） */
@@ -79,12 +79,13 @@ header {
     align-items: center;
     justify-content: center;
     /* 標準サイズを設定 */
-    width: 48px; 
-    height: 48px; 
+    width: 56px; 
+    height: 56px; 
 }
 .header-user img {
-    width: 150%;
-    height: 150%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 /* ★★★ 修正箇所 終わり ★★★ */
 
