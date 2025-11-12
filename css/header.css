@@ -117,6 +117,8 @@ header {
     position: relative;
     width: 100%;
     display: flex;
+    /* 【追加】フレックスアイテムが小さくなりすぎるのを防ぐ */
+    min-width: 0; 
 }
 /* カテゴリプルダウン（検索窓の左側） */
 .category-select {
@@ -200,10 +202,11 @@ header {
     
     /* カテゴリ選択の幅をスマホ用に調整し、表示を維持 */
     .category-select {
-        /* display: none;  <-- これを削除 */
-        width: 80px; /* PC版120pxから縮小 */
-        padding: 10px 5px; /* パディングを調整 */
-        font-size: 14px; /* フォントサイズを小さく */
+        /* 幅を固定 (Chromeで崩れにくいように min-width も指定) */
+        width: 80px; 
+        min-width: 80px; 
+        padding: 10px 5px;
+        font-size: 14px;
         /* PC版の設定を維持: border-right: none; */
         border-top-left-radius: 9999px;
         border-bottom-left-radius: 9999px;
@@ -213,7 +216,7 @@ header {
     /* 検索窓のスタイルを調整（プルダウンと連続させるため） */
     .search-container input {
         width: 100%;
-        padding: 10px 60px 10px 10px; /* 左パディングを調整 */
+        padding: 10px 60px 10px 10px;
         font-size: 14px;
         /* PC版の設定を元に戻す（カテゴリ選択と連続させる） */
         border-radius: 9999px;
