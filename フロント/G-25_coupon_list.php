@@ -54,7 +54,7 @@ $coupons = $stmt->fetchAll();
     <?php require __DIR__ . '/../common/header.php'; ?>
     <?php
     $breadcrumbs = [
-        ['name' => '現在のページ']
+        ['name' => '所持クーポン']
     ];
     require __DIR__ . '/../common/breadcrumb.php';
     ?>
@@ -64,6 +64,7 @@ $coupons = $stmt->fetchAll();
 
     <?php foreach ($coupons as $coupon): ?>
       <div class="coupon-card">
+
         <img src="<?= htmlspecialchars($coupon['product_image']) ?>" alt="商品画像">
         <div class="coupon-info">
           <h3><?= htmlspecialchars($coupon['category_name']) ?>製品</h3>
