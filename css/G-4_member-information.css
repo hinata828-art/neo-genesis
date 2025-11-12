@@ -26,16 +26,12 @@ body {
 }
 
 .back-link {
-    /* font-size: 2px; */ /* ★ 修正 (削除) */
     font-weight: bold;
-    /* color: #ffffff; */ /* ★ 修正 (削除 - 画像のため) */
     text-decoration: none;
-    /* width: 2px; */ /* ★ 修正 (削除) */
     width: 24px; /* ★ 修正 (適切なアイコンサイズを指定) */
     height: 24px; /* ★ 修正 (適切なアイコンサイズを指定) */
     display: block; /* ★ 追加 (サイズ指定のため) */
 }
-/* ★ 追加：戻るボタンの画像サイズを制御 */
 .back-link img {
     width: 100%;
     height: 100%;
@@ -45,18 +41,8 @@ body {
 .header-title {
     font-size: 20px;
     font-weight: 700;
-    text-align: left; /* ★ 修正：元のコードに合わせて left に戻しました（中央揃えの場合は center） */
+    text-align: left; 
     flex-grow: 1;
-    /* ★ 補足：もし「マイページ」を中央揃えにしたい場合、
-       text-align: center; を指定し、
-       .header の padding-left と .back-link の width を
-       .header-dummy の width (24px) + .header の padding-right (16px) と
-       うまくバランスさせる必要があります。
-       
-       現状の space-between と flex-grow: 1 でも、
-       .back-link (24px) と .header-dummy (24px) の幅が同じため、
-       タイトルは中央に配置されやすくなっています。
-    */
 }
 .header-dummy {
     width: 24px;
@@ -127,16 +113,21 @@ body {
     background-color: #f3f4f6;
     border-bottom: 1px solid #e5e7eb;
 }
+
+/* ▼▼▼ ここを修正 ▼▼▼ */
 .history-item p {
     font-size: 14px;
     font-weight: 500;
-    padding: 8px;
+    padding: 8px 8px 0 8px; /* ★ 修正：下パディングを削除 */
     margin: 0;
     /* 1行で省略表示 */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 4px; /* ★ 追加：ステータスとの間に余白 */
 }
+/* ▲▲▲ 修正ここまで ▲▲▲ */
+
 
 /* --- 会員情報セクション --- */
 .info-section {
@@ -188,23 +179,28 @@ body {
     background-color: #eab308;
 }
 
+
+/*
+==============================
+履歴カードのステータス表示 (ここから追加)
+==============================
+*/
+.history-status {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 0 8px 8px 8px; /* 下に余白を持たせる */
+    text-align: center;
+}
+
+/* ステータスごとの色分け */
 .status-processing {
-    /* 「注文受付」など (青) */
-    color: #007bff !important; /* !important で既存の指定（#4b5563）を上書き */
-    font-weight: bold;
-    font-size: 1.1em;
+    color: #007bff; /* 注文受付 (青) */
 }
-
 .status-delivered {
-    /* 「配達完了」 (緑) */
-    color: #28a745 !important;
-    font-weight: bold;
-    font-size: 1.1em;
+    color: #28a745; /* 配達完了 (緑) */
 }
-
 .status-cancelled {
-    /* 「キャンセル済み」 (赤) */
-    color: #dc3545 !important;
-    font-weight: bold;
-    font-size: 1.1em;
+    color: #dc3545; /* キャンセル済み (赤) */
 }
+/* （ここまで追加） */
