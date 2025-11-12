@@ -1,4 +1,3 @@
-<header>
     <!-- 上段：ロゴ、カート、会員情報 -->
     <div class="top-row">
         
@@ -8,7 +7,7 @@
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </div>header
 
             <div class="header-logo">
                 <a href="../フロント/G-8_home.php">
@@ -60,4 +59,3 @@
             </button>
         </div>
     </form>
-</header>
