@@ -121,11 +121,7 @@ if (!empty($base_image_url_from_db)) {
     <div class="product-section">
         <img src="<?php echo htmlspecialchars($image_to_display); ?>" alt="商品画像" class="product-image">
         <div class="product-section">
-        <img src="<?php echo htmlspecialchars($image_to_display); ?>" alt="商品画像" class="product-image">
-        
         <?php echo ""; ?>
-        <div class="product-info">
-            <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
         <div class="product-info">
             <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
             <div class="product-color-row">
