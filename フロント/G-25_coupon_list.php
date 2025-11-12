@@ -47,7 +47,7 @@ $coupons = $stmt->fetchAll();
   <title>所持クーポン一覧</title>
   <link rel="stylesheet" href="../css/header.css">
   <link rel="stylesheet" href="../css/breadcrumb.css">
-  <link rel="stylesheet" href="G-25_coupon_list.css">
+  <link rel="stylesheet" href="../css/G-25_coupon_list.css">
 </head>
 <body>
 
