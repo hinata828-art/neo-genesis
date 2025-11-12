@@ -85,6 +85,7 @@ header {
 .header-user img {
     width: 130%;
     height: 130%;
+    object-fit: cover;
 }
 /* ★★★ 修正箇所 終わり ★★★ */
 
