@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-  require __DIR__ . '/../common/header.php'; 
   require __DIR__ . '/../common/db-connect.php'; 
  
 
@@ -22,7 +21,7 @@ $total = array_sum(array_column($cart_items, 'price'));
 <head>
 <meta charset="UTF-8">
 <title>カート | ニシムラOnline</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="G-11_cart.csscss">
 </head>
 <body>
 <?php require __DIR__ . '/../common/header.php'?>
