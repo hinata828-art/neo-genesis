@@ -17,17 +17,17 @@
             </div>
         </div>
 
-        <!-- 右側：ユーザー・カート -->
+<!-- 右側：ユーザー・カート -->
         <div class="header-user">
             <a href="../フロント/G-4_member-information.php">
                 <img src="../img/icon.png" alt="会員情報" class="user-icon"> 
             </a>
 
-            <div class="header-cart">
-                <a href="../フロント/G-10_cart.php">
-                    <img src="../img/cart.png" alt="カート" class="cart-icon">
-                    <label>カート</label>
-                </a>
+                    <div class="header-cart">
+            <a href="../フロント/G-11_cart.php">
+                <img src="../img/cart.png" alt="カートアイコン">
+                <label>カート</label>
+            </a>
             </div>
         </div>
     </div>
