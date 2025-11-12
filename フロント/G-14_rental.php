@@ -109,6 +109,6 @@
     </div>
 </div>
 
-    <a href="G-15_rental_finish.php" class="confirm-button">購入を確定する</a>
+    <a href="G-15_rental-finish.php" class="confirm-button">購入を確定する</a>
 </body>
 </html>
