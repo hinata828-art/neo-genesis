@@ -10,19 +10,18 @@ if (!isset($_POST['product_id'])) {
 $product_id = (int)$_POST['product_id'];
 
 // カートがまだない場合は作成
-if (!isset($_SESSION['cart'][$product_id])) {
-    $_SESSION['cart'][$product_id] = 1;
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+// 商品ごとに数量を管理
+if (isset($_SESSION['cart'][$product_id])) {
+    $_SESSION['cart'][$product_id] += 1; // 同じ商品なら数量を増やす
 } else {
-    $_SESSION['cart'][$product_id] += 1;
+    $_SESSION['cart'][$product_id] = 1;  // 初めてなら数量1
 }
 
-
-// すでにカートにある商品は重複させない（1つだけ）
-if (!in_array($product_id, $_SESSION['cart'], true)) {
-    $_SESSION['cart'][] = $product_id;
-}
-
-// カートページに移動
+// カートページへ移動
 header('Location: G-11_cart.php');
 exit;
 ?>
