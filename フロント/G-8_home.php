@@ -28,7 +28,7 @@ try {
 </head>
 
 <body>
-    <?php require __DIR__ . '/../common/header.php'; ?>
+    <?php require_once __DIR__ . '/../common/header.php'; ?>
     <?php
     $breadcrumbs = [
         ['name' => '現在のページ']
