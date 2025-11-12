@@ -2,61 +2,46 @@
 // ===== データベース接続 =====
 require '../common/db_connect.php';
 
-// ===== パラメータ取得 =====
-$category_id = isset($_GET['category']) ? $_GET['category'] : '';
-$keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+// ===== 商品ID取得 =====
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// ===== SQL生成 =====
+// ===== 商品詳細を取得（オリジナルカラー限定） =====
 try {
-    $sql = "SELECT product_id, product_name, price, product_image, category_id 
-            FROM product 
-            WHERE 1";
-
-    // カテゴリが指定されている場合
-    if ($category_id !== '') {
-        $sql .= " AND category_id = :category_id";
-    }
-
-    // キーワード検索がある場合（部分一致）
-    if ($keyword !== '') {
-        $sql .= " AND product_name LIKE :keyword";
-    }
-
-    $sql .= " ORDER BY product_id ASC";
-
+    $sql = "SELECT product_name, price, product_image, product_id, product_detail, category_id
+            FROM product
+            WHERE product_id = :id
+              AND color = 'オリジナル'";
     $stmt = $pdo->prepare($sql);
-
-    // バインド
-    if ($category_id !== '') {
-        $stmt->bindValue(':category_id', $category_id, PDO::PARAM_STR);
-    }
-    if ($keyword !== '') {
-        $stmt->bindValue(':keyword', "%$keyword%", PDO::PARAM_STR);
-    }
-
+    $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->execute();
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo '商品データ取得エラー: ' . $e->getMessage();
-    $products = [];
+    exit;
 }
 
-// ===== カテゴリ名（C01など→日本語） =====
-$category_names = [
-    'C01' => 'テレビ',
-    'C02' => '冷蔵庫',
-    'C03' => '電子レンジ',
-    'C04' => 'カメラ',
-    'C05' => 'ヘッドホン',
-    'C06' => '洗濯機',
-    'C07' => 'ノートPC',
-    'C08' => 'スマートフォン'
-];
+// 商品が存在しない場合
+if (!$product) {
+    echo "<p>商品が見つかりません。</p>";
+    exit;
+}
 
-// タイトル名
-$page_title = '商品一覧';
-if ($category_id && isset($category_names[$category_id])) {
-    $page_title = $category_names[$category_id] . '一覧';
+// ===== 関連商品をカテゴリ単位で3件取得（オリジナルカラー限定） =====
+try {
+    $sql = "SELECT product_id, product_name, product_image
+            FROM product
+            WHERE category_id = :category_id
+              AND color = 'オリジナル'
+              AND product_id != :id
+            ORDER BY RAND()
+            LIMIT 3";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':category_id', $product['category_id'], PDO::PARAM_STR);
+    $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $related_products = [];
 }
 ?>
 <!DOCTYPE html>
@@ -64,51 +49,92 @@ if ($category_id && isset($category_names[$category_id])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <title><?php echo htmlspecialchars($product['product_name']); ?> | 商品詳細</title>
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/breadcrumb.css">
-    <link rel="stylesheet" href="../css/G-10_product-list.css">
+    <link rel="stylesheet" href="../css/G-9_product-detail.css">
 </head>
 
 <body>
-    <?php require_once __DIR__ . '/../common/header.php'; ?>
+    <?php require __DIR__ . '/../common/header.php'; ?>
     <?php
     $breadcrumbs = [
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        ['name' => htmlspecialchars($page_title)]
+        ['name' => htmlspecialchars($product['product_name'])]
     ];
     require __DIR__ . '/../common/breadcrumb.php';
     ?>
 
-<main>
-    <div class="top">
-        <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    </div>
-    <hr>
+<main class="product-detail">
 
-    <?php if (!empty($products)): ?>
-        <div class="product-list">
-            <?php foreach ($products as $p): ?>
-                <div class="product-card">
-                    <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
-                        <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
-                             alt="<?php echo htmlspecialchars($p['product_name']); ?>" 
-                             class="product-image">
-                    </a>
-                    <div class="product-info">
-                        <h2 class="product-name"><?php echo htmlspecialchars($p['product_name']); ?></h2>
-                        <p class="product-price">¥<?php echo number_format($p['price']); ?></p>
-                        <div class="product-buttons">
-                            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="btn detail">詳細</a>
-                            <a href="G-12_order.php?id=<?php echo $p['product_id']; ?>" class="btn buy">購入</a>
-                        </div>
-                    </div>
-                </div>
+    <!-- ===== 商品詳細 ===== -->
+    <div class="product-main">
+        <h2 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h2>
+
+        <div class="product-image-area">
+            <img src="<?php echo htmlspecialchars($product['product_image']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+        </div>
+
+        <div class="product-info">
+            <p class="price">¥<?php echo number_format($product['price']); ?> <span>（税込）</span></p>
+
+            <!-- カラー選択（カテゴリに応じて表示変更） -->
+            <?php
+            $colors = [
+                'C01' => ['イエロー', 'ホワイト'],
+                'C02' => ['ブルー', 'グリーン'],
+                'C03' => ['ブルー', 'レッド'],
+                'C04' => ['ホワイト'],
+                'C05' => ['ピンク'],
+                'C06' => ['グレー'],
+                'C07' => ['ゲーミング'],
+                'C08' => ['ブルー'],
+            ];
+            $category_id = $product['category_id'];
+            $color_options = isset($colors[$category_id]) ? $colors[$category_id] : [];
+            ?>
+
+            <div class="color-select">
+                <label><input type="radio" name="color" value="オリジナル" checked> オリジナル</label>
+                <?php foreach ($color_options as $c): ?>
+                    <label><input type="radio" name="color" value="<?php echo $c; ?>"> <?php echo $c; ?></label>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- ボタン -->
+            <div class="action-buttons">
+                <form action="G-11_cart.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                    <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>">
+                    <input type="hidden" name="price" value="<?php echo $product['price']; ?>">
+                    <button type="submit" class="btn cart">カートに追加</button>
+                </form>
+
+                <button class="btn buy" onclick="location.href='G-12_order.php?id=<?php echo $product['product_id']; ?>'">購入</button>
+                <button class="btn rental" onclick="location.href='G-14_rental.php?id=<?php echo $product['product_id']; ?>'">レンタル</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 商品説明 ===== -->
+    <section class="product-description">
+        <h3>詳細</h3>
+        <p><?php echo nl2br(htmlspecialchars($product['product_detail'])); ?></p>
+    </section>
+
+    <!-- ===== 関連商品 ===== -->
+    <footer class="related-footer">
+        <h3>関連商品</h3>
+        <div class="related-items">
+            <?php foreach ($related_products as $r): ?>
+                <a href="G-9_product-detail.php?id=<?php echo $r['product_id']; ?>" class="related-item">
+                    <img src="<?php echo htmlspecialchars($r['product_image']); ?>" alt="<?php echo htmlspecialchars($r['product_name']); ?>">
+                    <p><?php echo htmlspecialchars($r['product_name']); ?></p>
+                </a>
             <?php endforeach; ?>
         </div>
-    <?php else: ?>
-        <p class="no-result">該当する商品がありません。</p>
-    <?php endif; ?>
+    </footer>
+
 </main>
 
 </body>
