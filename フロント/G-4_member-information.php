@@ -47,7 +47,7 @@ try {
 
     
     // 6. SQL 2: 購入履歴の取得 (最新5件)
-    // ★★★ 修正点 1: t.delivery_status を SELECT に追加 ★★★
+    // ▼▼▼ 修正点 1: t.delivery_status を SELECT に追加 ▼▼▼
     $sql_purchase = "SELECT p.product_name, p.product_image, t.transaction_id AS tid, t.delivery_status
                        FROM transaction_table AS t
                        JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
@@ -61,14 +61,14 @@ try {
     $purchase_history = $stmt_purchase->fetchAll(PDO::FETCH_ASSOC);
 
     // 7. SQL 3: レンタル履歴の取得 (最新5件)
-    // ★★★ 修正点 2: SQL全体を「rental」テーブルを使うように修正 ★★★
+    // ▼▼▼ 修正点 2: t.delivery_status を SELECT に追加 ▼▼▼
     $sql_rental = "SELECT p.product_name, p.product_image, t.transaction_id AS tid, t.delivery_status
-                     FROM transaction_table AS t
-                     JOIN rental AS r ON t.transaction_id = r.transaction_id
-                     JOIN product AS p ON r.product_id = p.product_id
-                     WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
-                     ORDER BY t.transaction_date DESC
-                     LIMIT 5"; // 最新5件のみ表示
+                       FROM transaction_table AS t
+                       JOIN rental AS r ON t.transaction_id = r.transaction_id
+                       JOIN product AS p ON r.product_id = p.product_id
+                       WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
+                       ORDER BY t.transaction_date DESC
+                       LIMIT 5"; // 最新5件のみ表示
     $stmt_rental = $pdo->prepare($sql_rental);
     $stmt_rental->bindValue(':id', $customer_id, PDO::PARAM_INT);
     $stmt_rental->execute();
@@ -76,6 +76,13 @@ try {
 
 } catch (Exception $e) {
     $error_message = $e->getMessage();
+}
+
+// ▼▼▼ 修正点 3: G-16と同じヘルパー関数を追加 ▼▼▼
+function getStatusClass($status) {
+    if ($status == 'キャンセル済み') return 'status-cancelled';
+    if ($status == '配達完了' || $status == '返却済み') return 'status-delivered';
+    return 'status-processing'; // 注文受付、レンタル中 など
 }
 ?>
 <!DOCTYPE html>
@@ -112,20 +119,14 @@ try {
                     <?php else: ?>
                         <?php foreach ($purchase_history as $item): ?>
                             <?php
-                                // ★★★ ステータスに応じてCSSクラスを準備 ★★★
-                                $card_class = 'history-item';
+                                // ▼▼▼ 修正点 4: ステータスに応じてCSSクラスを準備 ▼▼▼
+                                $status_class = getStatusClass($item['delivery_status']);
                                 $status_text = htmlspecialchars($item['delivery_status']);
-                                
-                                if ($item['delivery_status'] == 'キャンセル済み') {
-                                    $card_class .= ' cancelled';
-                                } else if ($item['delivery_status'] == '配達完了') {
-                                    $card_class .= ' completed';
-                                }
                             ?>
-                            <a href="G-16_order-history.php?id=<?php echo $item['tid']; ?>" class="<?php echo $card_class; ?>">
+                            <a href="G-16_order-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
                                 <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                                 <p><?php echo htmlspecialchars($item['product_name']); ?></p>
-                                <p class="history-status"><?php echo $status_text; ?></p>
+                                <p class="history-status <?php echo $status_class; ?>"><?php echo $status_text; ?></p>
                             </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -140,20 +141,14 @@ try {
                     <?php else: ?>
                         <?php foreach ($rental_history as $item): ?>
                             <?php
-                                // ★★★ ステータスに応じてCSSクラスを準備 ★★★
-                                $card_class = 'history-item';
+                                // ▼▼▼ 修正点 5: ステータスに応じてCSSクラスを準備 ▼▼▼
+                                $status_class = getStatusClass($item['delivery_status']);
                                 $status_text = htmlspecialchars($item['delivery_status']);
-                                
-                                if ($item['delivery_status'] == 'キャンセル済み') {
-                                    $card_class .= ' cancelled';
-                                } else if ($item['delivery_status'] == '返却済み') { // レンタル固有
-                                    $card_class .= ' completed';
-                                }
                             ?>
-                            <a href="G-17_rental-history.php?id=<?php echo $item['tid']; ?>" class="<?php echo $card_class; ?>">
+                            <a href="G-17_rental-history.php?id=<?php echo $item['tid']; ?>" class="history-item">
                                 <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                                 <p><?php echo htmlspecialchars($item['product_name']); ?></p>
-                                <p class="history-status"><?php echo $status_text; ?></p>
+                                <p class="history-status <?php echo $status_class; ?>"><?php echo $status_text; ?></p>
                             </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
