@@ -8,7 +8,7 @@ body {
     font-family: sans-serif;
     overflow-x: hidden; 
     /* 【追記】固定ヘッダー分の余白 */
-    padding-top: 150px;
+    padding-top: 300px;
 }
 
 /* ===== ヘッダー全体 ===== */
