@@ -79,8 +79,6 @@ header {
     align-items: center;
     justify-content: center;
     /* 標準サイズを設定 */
-    width: 56px; 
-    height: 56px; 
 }
 .header-user img {
     width: 130%;
