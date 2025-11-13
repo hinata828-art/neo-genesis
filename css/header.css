@@ -73,7 +73,6 @@ header {
 
 /* ユーザーアイコン（親要素：グレーの丸） */
 .header-user {
-    background-color: #ddd;
     border-radius: 50%;
     display: flex;
     align-items: center;
