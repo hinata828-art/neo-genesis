@@ -27,7 +27,7 @@ header {
 /* ===== 上段：ロゴ・アイコン・カート ===== */
 .top-row {
     justify-content: space-between; 
-    gap: 10px;
+    gap: 2px;
 }
 
 /* 左側（ハンバーガーとロゴ） */
@@ -109,7 +109,7 @@ header {
 
 /* ===== 下段：検索窓 ===== */
 .bottom-row {
-    margin-top: 8px; 
+    margin-top: 2px; 
 }
 .search-container {
     position: relative;
