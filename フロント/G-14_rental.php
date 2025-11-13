@@ -75,8 +75,28 @@ if (!empty($base_image_url_from_db)) {
     $image_to_display = '../img/no_image.jpg'; 
 }
 
-// レンタル料金（月額など）
-$rental_price = $product['rental_price'] ?? 0;
+
+// ▼▼▼ 修正点1：JSで使う変数をPHPで準備 ▼▼▼
+
+// レンタル料金（1ヶ月あたり）
+$rental_price_base = $product['rental_price'] ?? 0;
+// 補償サービス料（必須）
+$compensation_price = 500;
+
+// レンタル期間の倍率
+$term_multipliers = [
+    '1week'   => 0.5,
+    '2weeks'  => 0.7,
+    '1month'  => 1.0,
+    '3months' => 1.5,
+    '6months' => 2.0,
+    '1year'   => 3.0
+];
+
+// 初期値（1ヶ月）で計算
+$initial_subtotal = $rental_price_base * $term_multipliers['1month'];
+$initial_total_price = $initial_subtotal + $compensation_price;
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -84,7 +104,6 @@ $rental_price = $product['rental_price'] ?? 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="../css/G-14_rental.css">
-
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/breadcrumb.css">
     <title>レンタル申し込み</title>
@@ -116,11 +135,13 @@ $rental_price = $product['rental_price'] ?? 0;
     <form action="G-15_rental-finish.php" method="POST">
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
         <input type="hidden" name="color" value="<?php echo htmlspecialchars($color_value); ?>">
-        <input type="hidden" name="rental_price" value="<?php echo $rental_price; ?>">
+        
+        <input type="hidden" name="total_amount" id="total_amount_hidden" value="<?php echo $initial_total_price; ?>">
+        
 
     <div class="rental-section">
             <label>レンタル期間</label>
-            <select name="rental_term">
+            <select name="rental_term" id="rental_term_select">
                 <option value="1week">1週間</option>
                 <option value="2weeks">2週間</option>
                 <option value="1month" selected>1ヶ月</option>
@@ -131,10 +152,10 @@ $rental_price = $product['rental_price'] ?? 0;
     </div>
 
     <div class="price-section">
-        <label>レンタル料金 (月額目安)</label><br>
-        <label>基本料金：<span class="price">￥<?php echo number_format($rental_price); ?></span></label>
-        <label>オプション代：<span class="price" id="option_price_display">￥500</span></label>
-        <label>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($rental_price + 500); ?></span></label>
+        <label>レンタル料金 (1ヶ月あたり):<span class="price">￥<?php echo number_format($rental_price_base); ?></span></label><br>
+        <label>小計：<span class="price" id="subtotal_display">￥<?php echo number_format($initial_subtotal); ?></span></label>
+        <label>オプション代：<span class="price" id="option_price_display">￥<?php echo number_format($compensation_price); ?></span></label>
+        <label>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($initial_total_price); ?></span></label>
     </div>
 
     <hr>
@@ -189,6 +210,49 @@ $rental_price = $product['rental_price'] ?? 0;
     </div>
 </div>
 
-    <button type="submit" class="confirm-button">購入を確定する</button>
-    </form> </body>
+    <button type="submit" class="confirm-button">レンタルを確定する</button>
+    </form> <script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. PHPから計算に必要な情報を取得
+    const baseRentalPrice = <?php echo $rental_price_base; ?>;
+    const compensationPrice = <?php echo $compensation_price; ?>;
+    const multipliers = <?php echo json_encode($term_multipliers); ?>;
+
+    // 2. 必要なHTML要素を取得
+    const termSelect = document.getElementById('rental_term_select');
+    const subtotalDisplay = document.getElementById('subtotal_display');
+    const totalPriceDisplay = document.getElementById('total_price_display');
+    const totalAmountHidden = document.getElementById('total_amount_hidden');
+
+    // 3. 金額を更新する関数
+    function updatePrice() {
+        // 3a. 選択された期間 (例: '1month') を取得
+        const selectedTerm = termSelect.value;
+        
+        // 3b. 倍率 (例: 1.0) を取得
+        const multiplier = multipliers[selectedTerm];
+        
+        // 3c. 料金を計算
+        const newSubtotal = baseRentalPrice * multiplier;
+        const newTotalPrice = newSubtotal + compensationPrice;
+
+        // 3d. 画面表示を更新 (カンマ区切り)
+        subtotalDisplay.innerText = '￥' + newSubtotal.toLocaleString();
+        totalPriceDisplay.innerText = '￥' + newTotalPrice.toLocaleString();
+        
+        // 3e. G-15に送る hidden フィールドの値を更新
+        totalAmountHidden.value = newTotalPrice;
+    }
+
+    // 4. レンタル期間(select)が変更されたら、updatePrice関数を実行
+    termSelect.addEventListener('change', updatePrice);
+
+    // 5. ページ読み込み時にも一度実行 (初期金額を正しく表示するため)
+    // (※PHP側で初期値を計算済みの場合は厳密には不要だが、念のため)
+    updatePrice(); 
+});
+</script>
+    
+</body>
 </html>
