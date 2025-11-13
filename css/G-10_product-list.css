@@ -3,8 +3,11 @@ body {
     margin: 0;
     padding: 0;
     background: #f7f7f7;
-    /* 【追記】固定ヘッダー分の余白 */
-    padding-top: 500px!important; /* ★PC画面で適切な高さに調整してください★ */
+    
+    /* 【修正！】padding-top から margin-top に変更します */
+    /* このファイルはヘッダー分の余白設定を担うため、margin-topを使用します */
+    margin-top: 150px; /* ★ヘッダーの実際の高さに合わせて調整してください★ */
+    /* 補足: header.css の padding-top: 145px を上書きします */
 }
 
 .top {
@@ -81,10 +84,10 @@ hr {
     font-size: 1.1rem;
     color: #777;
 }
-/* ===== 固定ヘッダーの高さ調整 (スマホ用) ===== */
 @media screen and (max-width: 600px) {
     body {
         /* スマホでのヘッダーの高さに合わせて調整 */
-        padding-top: 500px !important; /* ★スマホ画面で適切な高さに調整してください★ */
+        margin-top: 120px; /* ★スマホ画面で適切な高さに調整してください★ */
+        /* padding-top から margin-top に変更 */
     }
 }
