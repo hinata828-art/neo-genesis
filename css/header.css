@@ -68,7 +68,7 @@ header {
 .header-right-icons {
     display: flex;
     align-items: center;
-    gap: 3px; /* アイコンとカートの隙間 */
+    gap: 50px; /* アイコンとカートの隙間 */
 }
 
 /* ユーザーアイコン（親要素：グレーの丸） */
