@@ -4,7 +4,7 @@ body {
     padding: 0;
     background: #f7f7f7;
     /* 【追記】固定ヘッダー分の余白 */
-    padding-top: 150px; /* ★PC画面で適切な高さに調整してください★ */
+    padding-top: 500px; /* ★PC画面で適切な高さに調整してください★ */
 }
 
 .top {
@@ -85,6 +85,6 @@ hr {
 @media screen and (max-width: 600px) {
     body {
         /* スマホでのヘッダーの高さに合わせて調整 */
-        padding-top: 120px; /* ★スマホ画面で適切な高さに調整してください★ */
+        padding-top: 500px; /* ★スマホ画面で適切な高さに調整してください★ */
     }
 }
