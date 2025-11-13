@@ -7,22 +7,12 @@
 body {
     font-family: sans-serif;
     overflow-x: hidden; 
-    /* 修正: ヘッダーとパンくずリストの総高さに合わせてパディングを増やす */
-    padding-top: 200px; 
 }
-/* ... (header, .top-row, .bottom-row のスタイルはそのまま維持) ... */
 
 /* ===== ヘッダー全体 ===== */
 header {
     background-color: #a9bcf5;
-    /* 修正1: 上下パディングを減らして隙間を詰める (8px -> 4px) */
-    padding: 4px 0; 
-    
-    /* 修正2: ヘッダーを画面上部に固定 */
-    position: fixed;
-    top: 0;
-    width: 100%; 
-    z-index: 100; /* 他の要素より手前に表示 */
+    padding: 8px 0; 
 }
 
 /* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
@@ -119,7 +109,6 @@ header {
 
 /* ===== 下段：検索窓 ===== */
 .bottom-row {
-    /* 隙間を完全に埋めるため、0pxに維持 */
     margin-top: 0px; 
 }
 .search-container {
