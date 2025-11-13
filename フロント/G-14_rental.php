@@ -1,72 +1,149 @@
+<?php
+// 1. セッションとDB接続
+session_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require '../common/db_connect.php';
+
+// 2. ログイン状態の確認
+$customer_info = null;
+if (isset($_SESSION['customer'])) {
+    $customer_info = $_SESSION['customer'];
+} else {
+    // (テスト用)
+    $customer_info = ['name' => '（ゲスト）', 'address' => '（住所未登録）'];
+}
+
+// 3. URLから商品IDとカラーを取得
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'original';
+
+// 4. 商品IDを使ってDBから商品情報を取得
+try {
+    // rental_price も取得する
+    $sql = "SELECT p.product_name, p.product_image, p.color, c.rental_price 
+            FROM product p
+            JOIN category c ON p.category_id = c.category_id
+            WHERE p.product_id = :id";
+            
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo '商品データ取得エラー: ' . $e->getMessage();
+    exit;
+}
+
+// 5. 商品が存在しない場合
+if (!$product) {
+    echo "<p>商品が見つかりません。</p>";
+    exit;
+}
+
+// ▼▼▼ 辞書ロジック (G-12と同じ) ▼▼▼
+$color_display_map = [
+    'original' => 'オリジナル',
+    '白'       => 'ホワイト',
+    '青'       => 'ブルー',
+    'ゲーミング' => 'ゲーミング',
+    '黄色'     => 'イエロー',
+    '赤'       => 'レッド',
+    '緑'       => 'グリーン',
+    'ブラック'   => 'ブラック',
+    'ピンク'     => 'ピンク',
+    'グレー'     => 'グレー'
+];
+
+// カラー名を取得
+$color_name = $color_display_map[$color_value] ?? $color_value;
+
+// ▼▼▼ 画像URL生成ロジック (G-12と同じ) ▼▼▼
+$base_image_url_from_db = $product['product_image'] ?? '';
+$selected_color_filename = $color_value; 
+$image_to_display = '';
+
+if (!empty($base_image_url_from_db)) {
+    $true_base_url = preg_replace('/-[^-]+$/u', '', $base_image_url_from_db);
+
+    if ($selected_color_filename === 'original') {
+        $image_to_display = $true_base_url;
+    } else {
+        $image_to_display = $true_base_url . '-' . $selected_color_filename;
+    }
+} else {
+    $image_to_display = '../img/no_image.jpg'; 
+}
+
+// レンタル料金（月額など）
+$rental_price = $product['rental_price'] ?? 0;
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <!-- スマホ拡大防止 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- 固有CSS -->
     <link rel="stylesheet" href="../css/G-14_rental.css">
 
-    <!-- 共通ヘッダーCSS -->
     <link rel="stylesheet" href="../css/header.css">
-    <!-- パンくずCSS -->
     <link rel="stylesheet" href="../css/breadcrumb.css">
-    <title>注文情報入力</title>
+    <title>レンタル申し込み</title>
 </head>
 <body>
-    <!-- ▼ 共通ヘッダー -->
     <?php require __DIR__ . '/../common/header.php'; ?>
-    <!-- ▲ 共通ヘッダー -->
-
-    <!-- ▼ パンくずリスト -->
     <?php
     $breadcrumbs = [
-        ['name' => '現在のページ']
+        ['name' => 'ホーム', 'url' => 'G-8_home.php'],
+        ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
+        ['name' => 'レンタル申し込み']
     ];
     require __DIR__ . '/../common/breadcrumb.php';
     ?>
-    <!-- ▲ パンくずリスト -->
-     
     <div class="container">
     <p>レンタル</p>
     <hr>
     <div class="product-section">
-        <img src="imge/camera.png" alt="商品画像" class="product-image">
+        <img src="<?php echo htmlspecialchars($image_to_display); ?>" alt="商品画像" class="product-image">
         <div class="product-info">
-            <label class="product-name">kamera</label>
+            <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
             <div class="product-color-row">
                 <label class="product-color-label">商品カラー：</label>
-                <label class="product-color">kuro</label>
+                <label class="product-color"><?php echo htmlspecialchars($color_name); ?></label>
             </div>
         </div>
     </div>
 
+    <form action="G-15_rental-finish.php" method="POST">
+        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+        <input type="hidden" name="color" value="<?php echo htmlspecialchars($color_value); ?>">
+        <input type="hidden" name="rental_price" value="<?php echo $rental_price; ?>">
+
     <div class="rental-section">
             <label>レンタル期間</label>
-            <select>
-                <option>1週間</option>
-                <option>2週間</option>
-                <option>1ヶ月</option>
-                <option>3ヶ月</option>
-                <option>6ヶ月</option>
-                <option>1年</option>
+            <select name="rental_term">
+                <option value="1week">1週間</option>
+                <option value="2weeks">2週間</option>
+                <option value="1month" selected>1ヶ月</option>
+                <option value="3months">3ヶ月</option>
+                <option value="6months">6ヶ月</option>
+                <option value="1year">1年</option>
             </select>
     </div>
 
     <div class="price-section">
-        <label>レンタル料金</label><br>
-        <label>小計：<span class="price">￥12300</span></label>
-        <label>オプション代：<span class="price">￥500</span></label>
-        <label>ご請求額：<span class="price">￥12800</span></label>
+        <label>レンタル料金 (月額目安)</label><br>
+        <label>基本料金：<span class="price">￥<?php echo number_format($rental_price); ?></span></label>
+        <label>オプション代：<span class="price" id="option_price_display">￥500</span></label>
+        <label>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($rental_price + 500); ?></span></label>
     </div>
 
     <hr>
 
     <div class="delivery-section">
         <label>お届け先氏名：</label><br>
-        <input type="text" name="name" class="input-text"><br>
+        <input type="text" name="name" class="input-text" value="<?php echo htmlspecialchars($customer_info['name'] ?? ''); ?>" required><br>
         <label>お届け先住所：</label><br>
-        <input type="text" name="address" class="input-text"><br>
+        <input type="text" name="address" class="input-text" value="<?php echo htmlspecialchars($customer_info['address'] ?? ''); ?>" required><br>
     </div>
 
     <hr>
@@ -78,7 +155,7 @@
         </div>
 
         <div class="payment-box">
-            <label><input type="radio" name="payment" value="credit">クレジットカード決済</label><br>
+            <label><input type="radio" name="payment" value="credit" checked>クレジットカード決済</label><br>
 
             <div class="credit-details">
                 <label>カード名義：</label><br>
@@ -101,14 +178,17 @@
 
     <div class="option-section">
         <p>追加オプション</p>
-        <label><input type="checkbox" name="delivery" value="delivery">配送・返却サービス（自宅集荷）</label>
-        <label><input type="checkbox" name="buyoption" value="buyoption">購入オプション（レンタル料金を購入代金に充当）</label>
-        <label><input type="checkbox" name="compensation" value="compensation" disabled="disabled">補償サービス（+500円/月で破損・水没も補償）</label>
-            <span>補償サービスは必須です</span>
-
+        <label><input type="checkbox" name="option_delivery" value="1">配送・返却サービス（自宅集荷）</label>
+        <label><input type="checkbox" name="option_buy" value="1">購入オプション（レンタル料金を購入代金に充当）</label>
+        <label>
+            <input type="checkbox" checked disabled>
+            補償サービス（+500円/月で破損・水没も補償）
+        </label>
+        <span>補償サービスは必須です</span>
+        <input type="hidden" name="option_warranty" value="500">
     </div>
 </div>
 
-    <a href="G-15_rental-finish.php" class="confirm-button">購入を確定する</a>
-</body>
+    <button type="submit" class="confirm-button">購入を確定する</button>
+    </form> </body>
 </html>
