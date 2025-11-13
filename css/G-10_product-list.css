@@ -1,10 +1,9 @@
+/* G-10_product-list.css (完全置き換え用) */
+
 body {
     font-family: sans-serif;
-    /* margin: 0; と padding: 0; を削除 */
+    /* margin: 0; と padding: 0; は削除しました */
     background: #f7f7f7;
-    
-    /* ヘッダー固定用。このページに必要なのはこれだけです。 */
-    margin-top: 150px; /* ★ PC画面で適切な高さに調整してください ★ */
 }
 
 .top {
@@ -81,9 +80,17 @@ hr {
     font-size: 1.1rem;
     color: #777;
 }
+
+/* ===== 【最終解決策】メインコンテンツ (main) の余白調整 ===== */
+/* bodyではなく、ヘッダー直後のメイン要素に余白を設定することで確実に押し下げます。 */
+main {
+    margin-top: 150px; /* ★ PC画面でのヘッダーの高さに合わせて調整してください (150px推奨) ★ */
+}
+
+/* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
-    body {
-        /* スマホでのヘッダーの高さに合わせて調整 */
-        margin-top: 120px; /* ★ スマホ画面で適切な高さに調整してください ★ */
+    /* メインコンテンツ (main) の余白調整 */
+    main {
+        margin-top: 120px; /* ★ スマホ画面で適切な高さに調整してください (120px推奨) ★ */
     }
 }
