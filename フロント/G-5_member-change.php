@@ -51,13 +51,10 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>会員情報変更</title>
-    <link rel="stylesheet" href="../css/header.css"> 
     <link rel="stylesheet" href="../css/G-5_member-change.css">
 </head>
 <body>
     
-    <?php require '../common/header.php'; ?><hr>
-
     <div class="container">
 
         <header class="header">

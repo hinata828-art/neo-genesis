@@ -91,13 +91,10 @@ function getStatusClass($status) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>マイページ</title>
-    <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-4_member-information.css">
 </head>
 <body>
     
-    <?php require '../common/header.php'; ?><hr>
-
     <div class="container">
 
         <header class="header">
