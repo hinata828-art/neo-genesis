@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <form action="../フロント/G-10_product-list.php" method="GET" class="bottom-row">
+    <form action="../フロント/G-10_product_list.php" method="GET" class="bottom-row">
         <div class="search-container">
             
             <select name="category" class="category-select">
