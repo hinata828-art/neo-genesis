@@ -4,111 +4,105 @@
     margin: 0;
     padding: 0;
 }
+
 body {
     font-family: sans-serif;
     overflow-x: hidden;
-    padding-top: 50px;
+    padding-top: 100px; /* 固定ヘッダーのぶん余白を取る */
 }
 
-/* ===== ヘッダー ===== */
+/* ===== ヘッダー全体 ===== */
 header {
     background-color: #a9bcf5;
-    padding: 8px 0;
+    padding: 6px 0 4px;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
 }
 
-/* コンテナ */
-.top-row,
-.bottom-row {
+/* ===== 上段レイアウト ===== */
+.top-row {
     width: 100%;
     padding: 0 10px;
     display: flex;
     align-items: center;
-}
-
-/* 上段 */
-.top-row {
     justify-content: space-between;
-    gap: 2px;
-    position: relative; /* ← 中央テキスト配置に必要 */
+    position: relative;
 }
 
-/* 左側 */
+/* 左側（ハンバーガー＋ロゴ） */
 .header-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 /* ハンバーガー */
 .hamburger-menu {
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
 .hamburger-menu span {
-    display: block;
-    height: 4px;
-    width: 100%;
-    background-color: #ffffff;
+    height: 3px;
+    background: #fff;
     border-radius: 2px;
 }
 
 /* ロゴ */
 .header-logo img {
-    height: 80px;
+    height: 55px;
     width: auto;
 }
 
-/* 右側アイコン */
+/* ===== 中央 Welcome メッセージ ===== */
+.welcome-message {
+    position: absolute;
+    left: 50%;
+    top: 28px;         /* PC 基準の高さ */
+    transform: translateX(-50%);
+    color: #fff;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-name {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.login-link {
+    color: #fff;
+    font-size: 13px;
+    text-decoration: underline;
+}
+
+/* ===== 右側（ユーザアイコン＋カート） ===== */
 .header-right-icons {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* ★ 中央ウェルカムメッセージ */
-.welcome-message {
-    position: absolute;
-    left: 50%;
-    top: 10px;
-    transform: translateX(-50%);
-
-    text-align: center;
-    color: #fff;
-    font-size: 14px;
-    line-height: 1.2;
-    display: flex;
-    flex-direction: column;
-}
-.customer-name {
-    font-weight: bold;
-    font-size: 16px;
-}
-.login-link {
-    color: #fff;
-    text-decoration: underline;
-}
-
-/* ユーザーアイコン */
+/* ユーザーアイコン（丸背景に合わせる） */
 .header-user {
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
+    background: #fff;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .header-user img {
-    width: 130%;
-    height: 130%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
@@ -117,105 +111,102 @@ header {
     display: flex;
     align-items: center;
     gap: 5px;
+    padding: 8px 16px;
     background: #fff;
-    border: 1px solid #333;
     border-radius: 9999px;
-    padding: 8px 32px;
+    border: 1px solid #333;
     text-decoration: none;
     color: #333;
-    font-weight: bold;
+    font-weight: 600;
 }
 .header-cart img {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
 }
 
-/* ===== 下段 検索窓 ===== */
+/* ===== 下段（検索欄） ===== */
+.bottom-row {
+    width: 100%;
+    padding: 0 10px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+}
+
 .search-container {
-    position: relative;
     width: 100%;
     display: flex;
-    min-width: 0;
+    position: relative;
 }
+
+/* カテゴリ選択 */
 .category-select {
-    padding: 12px 10px;
-    border-right: none;
-    border-top-left-radius: 9999px;
-    border-bottom-left-radius: 9999px;
+    width: 110px;
+    border-radius: 20px 0 0 20px;
     border: 1px solid #333;
-    width: 120px;
-    flex-shrink: 0;
+    border-right: none;
+    padding: 10px 10px;
+    background: #fff;
 }
+
+/* 検索窓 */
 .search-container input {
     width: 100%;
-    padding: 12px 60px 12px 20px;
-    border-radius: 9999px;
+    padding: 10px 50px 10px 15px;
+    border-radius: 0 20px 20px 0;
     border: 1px solid #333;
     border-left: none;
+    font-size: 16px;
 }
+
+/* 検索ボタン */
 .search-button {
     position: absolute;
-    right: 5px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    cursor: pointer;
+    padding: 0;
 }
 .search-button img {
-    max-height: 28px;
+    width: 24px;
+    height: 24px;
 }
 
 /* ===== スマホ対応 ===== */
-@media screen and (max-width: 600px) {
+@media (max-width: 600px) {
 
-    .top-row,
-    .bottom-row {
-        padding: 0 5px;
+    body {
+        padding-top: 120px;
     }
 
-    .header-cart label {
-        display: none;
-    }
-    .header-cart a {
-        padding: 8px 24px;
-    }
-
-    .header-user {
-        width: 40px;
-        height: 40px;
-    }
-
+    /* ロゴ小さく */
     .header-logo img {
-        height: 80px;
+        height: 50px;
     }
 
-    .hamburger-menu {
-        width: 35px;
-        height: 35px;
-    }
-    .hamburger-menu span {
-        height: 3px;
-    }
-
-    .category-select {
-        width: 80px;
-        min-width: 80px;
-        padding: 10px 5px;
-        font-size: 14px;
-    }
-
-    .search-container input {
-        padding: 10px 60px 10px 10px;
-        font-size: 14px;
-    }
-
-    /* ★ 中央メッセージを縮小 & 上へ調整 */
+    /* Welcomeメッセージを下へずらして衝突回避 */
     .welcome-message {
-        font-size: 12px;
-        top: 5px;
+        top: 60px;
+        font-size: 13px;
     }
-    .customer-name {
-        font-size: 14px;
+
+    /* ユーザーアイコン縮小（消失対策） */
+    .header-user {
+        width: 36px;
+        height: 36px;
+    }
+    .header-user img {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* カート縮小 */
+    .header-cart a {
+        padding: 6px 14px;
+    }
+    .header-cart label {
+        display: none; /* スマホは文字消し */
     }
 }
