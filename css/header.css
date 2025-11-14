@@ -7,22 +7,19 @@
 body {
     font-family: sans-serif;
     overflow-x: hidden; 
-    /* 【重要】固定ヘッダーの総高さに合わせてパディングを設定。
-       他の画面でコンテンツが隠れる場合は、この値 (200px) を増やしてください。 */
-    padding-top: 200px; 
+    /* 【追記】固定ヘッダー分の余白 */
+    padding-top: 50px;
 }
 
 /* ===== ヘッダー全体 ===== */
 header {
     background-color: #a9bcf5;
-    /* 上下の隙間を最小限に詰める */
-    padding: 4px 0; 
-    
-    /* ヘッダーを画面上部に固定 */
-    position: fixed;
+    padding: 8px 0; 
+    /* 【追加】ヘッダーを画面上部に固定 */
+    position: fixed; 
     top: 0;
     width: 100%; 
-    z-index: 100; /* 他の要素より手前に表示 */
+    z-index: 1000; /* 他の要素より手前に表示 */
 }
 
 /* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
@@ -38,8 +35,6 @@ header {
 .top-row {
     justify-content: space-between; 
     gap: 2px;
-    /* モバイルでウェルカムメッセージを絶対配置する際の基準にする */
-    position: relative; 
 }
 
 /* 左側（ハンバーガーとロゴ） */
@@ -83,26 +78,33 @@ header {
     gap: 30px; /* アイコンとカートの隙間 */
 }
 
-/* ★★★ PC版 ウェルカムメッセージのスタイル ★★★ */
+/* 右側のアイコン群 */
+.header-right-icons {
+    display: flex;
+    align-items: center;
+    /* 修正: 全体の要素が増えたため、アイコンとカートの隙間を調整 (例: 10px) */
+    gap: 10px; 
+}
+
+/* ★★★ 追加: ウェルカムメッセージのスタイル ★★★ */
 .welcome-message {
-    /* PCではアイコン群の中で一番左に配置 */
-    order: -1; 
+    /* 中央寄せ */
     text-align: right; 
+    /* フォントサイズの調整 */
     font-size: 14px; 
     line-height: 1.2;
-    color: #fff; 
+    color: #fff; /* 背景が青なので白に */
     
+    /* 他のアイコンとの位置を揃える */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 100%; 
-    padding-right: 20px; /* ユーザーアイコンとの間に隙間を空ける */
+    height: 100%; /* 親要素の高さに合わせる */
 }
 .welcome-message .customer-name {
     font-weight: bold;
-    font-size: 16px; 
+    font-size: 16px; /* 名前を目立たせる */
 }
-
 
 /* ユーザーアイコン（親要素：グレーの丸） */
 .header-user {
@@ -110,14 +112,14 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 56px; 
-    height: 56px; 
+    /* 標準サイズを設定 */
 }
 .header-user img {
     width: 130%;
     height: 130%;
     object-fit: cover;
 }
+/* ★★★ 修正箇所 終わり ★★★ */
 
 
 /* カートボタン */
@@ -128,6 +130,7 @@ header {
     background-color: #fff;
     border: 1px solid #333;
     border-radius: 9999px;
+    /* 修正: 左右のパディングを増やして横幅を倍程度にする (16px -> 32px) */
     padding: 8px 32px; 
     text-decoration: none;
     color: #333;
@@ -141,13 +144,13 @@ header {
 
 /* ===== 下段：検索窓 ===== */
 .bottom-row {
-    /* 上段との隙間を完全に埋める */
     margin-top: 0px; 
 }
 .search-container {
     position: relative;
     width: 100%;
     display: flex;
+    /* 【追加】フレックスアイテムが小さくなりすぎるのを防ぐ */
     min-width: 0; 
 }
 /* カテゴリプルダウン（検索窓の左側） */
@@ -197,35 +200,6 @@ header {
     max-height: 28px;
 }
 
-/* ==================================== */
-/* パンくずリストのスタイル */
-/* ==================================== */
-.breadcrumb {
-    width: 100%;
-    padding: 5px 10px; 
-    background-color: #f0f0f0; 
-    border-top: 1px solid #ddd;
-}
-.breadcrumb ul {
-    list-style: none;
-    display: flex;
-    font-size: 14px;
-    margin: 0; 
-    padding: 0;
-}
-.breadcrumb li:not(:last-child)::after {
-    content: ">";
-    margin: 0 5px;
-    color: #666;
-}
-.breadcrumb a {
-    color: #333;
-    text-decoration: none;
-}
-.breadcrumb a:hover {
-    text-decoration: underline;
-}
-
 /* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
     /* 左右の余白を少し調整 */
@@ -234,44 +208,12 @@ header {
         padding: 0 5px; 
     }
 
-    /* ★★★ スマホ版 ウェルカムメッセージのスタイル (中央絶対配置) ★★★ */
-    .welcome-message {
-        /* 中央配置のため、PC版のflex設定を上書きし絶対配置 */
-        order: initial;
-        display: block; 
-        
-        position: absolute;
-        top: 50%; /* 縦方向中央 */
-        left: 50%; /* 横方向中央 */
-        transform: translate(-50%, -50%); /* 自身のサイズを考慮して完全中央寄せ */
-        
-        z-index: 10; 
-
-        text-align: center;
-        /* フォントを小さくして、ロゴとアイコンの間に収まりやすくする */
-        font-size: 12px;
-        color: #fff;
-        padding-right: 0; /* PC版のパディングをリセット */
-    }
-    .welcome-message .customer-name {
-        font-size: 14px; 
-    }
-    
-    /* 左右の要素がメッセージと重ならないように、z-indexを高く維持 */
-    .header-left,
-    .header-right-icons {
-        z-index: 20; 
-    }
-    .header-right-icons {
-        gap: 15px; /* アイコン間の隙間を調整 */
-    }
-
     /* スマホではカートの文字を非表示 (任意) */
     .header-cart label {
         display: none;
     }
     .header-cart a {
-        /* 横幅を調整 */
+        /* 修正: スマホ表示でも左右のパディングを増やして横幅を調整 (12px -> 24px) */
         padding: 8px 24px; 
     }
 
@@ -294,10 +236,12 @@ header {
     
     /* カテゴリ選択の幅をスマホ用に調整し、表示を維持 */
     .category-select {
+        /* 幅を固定 (Chromeで崩れにくいように min-width も指定) */
         width: 80px; 
         min-width: 80px; 
         padding: 10px 5px;
         font-size: 14px;
+        /* PC版の設定を維持: border-right: none; */
         border-top-left-radius: 9999px;
         border-bottom-left-radius: 9999px;
         border: 1px solid #333;
@@ -308,6 +252,7 @@ header {
         width: 100%;
         padding: 10px 60px 10px 10px;
         font-size: 14px;
+        /* PC版の設定を元に戻す（カテゴリ選択と連続させる） */
         border-radius: 9999px;
         border: 1px solid #333;
         border-left: none; 
