@@ -185,7 +185,7 @@ function getStatusClass($status) {
             spinButton.disabled = true;
             resultP.textContent = "抽選中...";
 
-            fetch('G-17_spin_roulette.php', {
+            fetch('G-17_spin-roulette.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ transaction_id: transactionId })
