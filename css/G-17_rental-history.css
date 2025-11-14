@@ -284,3 +284,127 @@ body {
 .btn-secondary:hover {
     opacity: 0.8;
 }
+
+.status-processing {
+    /* 「注文受付」など (青) */
+    color: #007bff !important; 
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.status-delivered {
+    /* 「配達完了」「返却済み」 (緑) */
+    color: #28a745 !important; 
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.status-cancelled {
+    /* 「キャンセル済み」 (赤) */
+    color: #dc3545 !important; 
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+
+/*
+==============================
+G-17 ルーレット用スタイル（ここから追加）
+==============================
+*/
+
+/* G-17 履歴詳細ページ の「ルーレットへ進む」ボタン */
+.roulette-link-section {
+    margin-top: 24px;
+}
+.btn-roulette {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background-color: #28a745; /* スピンボタンと同じ緑 */
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s;
+}
+.btn-roulette:hover {
+    background-color: #218838;
+}
+
+/* G-17 ルーレットページ の「戻る」ボタン */
+.btn-roulette-back {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #6c757d;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+/* ルーレット本体のラッパー */
+#roulette-container {
+    margin: 30px auto;
+    text-align: center;
+    padding: 16px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+/* ルーレット（矢印とキャンバス） */
+#roulette {
+    position: relative;
+    margin: 20px auto 50px auto; /* 矢印の分、下に余白 */
+}
+#pointer {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 40px solid red;
+    position: absolute;
+    top: -40px; /* canvasの上端に合わせる */
+    left: calc(50% - 20px);
+    z-index: 10; /* canvasより手前 */
+}
+#canvas {
+    display: block;
+    margin: 0 auto;
+}
+
+/* スピンボタン */
+#spin {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#spin:hover {
+    background-color: #218838;
+}
+#spin:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+/* 結果表示 */
+#result {
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #d9534f; /* 赤色 */
+}
+
+/* （ここまで追加） */
