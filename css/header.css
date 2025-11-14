@@ -7,19 +7,22 @@
 body {
     font-family: sans-serif;
     overflow-x: hidden; 
-    /* 【追記】固定ヘッダー分の余白 */
-    padding-top: 145px;
+    /* 【重要】ヘッダーとパンくずリストの総高さに合わせてパディングを設定します。
+       他の画面でコンテンツが隠れる場合は、この値を増やしてください。 */
+    padding-top: 200px; 
 }
 
 /* ===== ヘッダー全体 ===== */
 header {
     background-color: #a9bcf5;
-    padding: 8px 0; 
-    /* 【追加】ヘッダーを画面上部に固定 */
-    position: fixed; 
+    /* 隙間を詰める */
+    padding: 4px 0; 
+    
+    /* ヘッダーを画面上部に固定 */
+    position: fixed;
     top: 0;
     width: 100%; 
-    z-index: 1000; /* 他の要素より手前に表示 */
+    z-index: 100; /* 他の要素より手前に表示 */
 }
 
 /* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
@@ -35,6 +38,8 @@ header {
 .top-row {
     justify-content: space-between; 
     gap: 2px;
+    /* モバイルで絶対配置の基準にする */
+    position: relative; 
 }
 
 /* 左側（ハンバーガーとロゴ） */
@@ -78,6 +83,27 @@ header {
     gap: 30px; /* アイコンとカートの隙間 */
 }
 
+/* ★★★ PC版 ウェルカムメッセージのスタイル ★★★ */
+.welcome-message {
+    /* PCではアイコン群の中で一番左に配置 */
+    order: -1; 
+    text-align: right; 
+    font-size: 14px; 
+    line-height: 1.2;
+    color: #fff; /* 背景が青なので白に */
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%; 
+    padding-right: 20px; /* ユーザーアイコンとの間に隙間を空ける */
+}
+.welcome-message .customer-name {
+    font-weight: bold;
+    font-size: 16px; 
+}
+
+
 /* ユーザーアイコン（親要素：グレーの丸） */
 .header-user {
     border-radius: 50%;
@@ -85,13 +111,14 @@ header {
     align-items: center;
     justify-content: center;
     /* 標準サイズを設定 */
+    width: 56px; 
+    height: 56px; 
 }
 .header-user img {
     width: 130%;
     height: 130%;
     object-fit: cover;
 }
-/* ★★★ 修正箇所 終わり ★★★ */
 
 
 /* カートボタン */
@@ -116,6 +143,7 @@ header {
 
 /* ===== 下段：検索窓 ===== */
 .bottom-row {
+    /* 隙間を完全に埋めるため、0pxに維持 */
     margin-top: 0px; 
 }
 .search-container {
@@ -172,12 +200,72 @@ header {
     max-height: 28px;
 }
 
+/* ==================================== */
+/* パンくずリストのスタイル */
+/* ==================================== */
+.breadcrumb {
+    width: 100%;
+    padding: 5px 10px; 
+    background-color: #f0f0f0; 
+    border-top: 1px solid #ddd;
+}
+.breadcrumb ul {
+    list-style: none;
+    display: flex;
+    font-size: 14px;
+    margin: 0; 
+    padding: 0;
+}
+.breadcrumb li:not(:last-child)::after {
+    content: ">";
+    margin: 0 5px;
+    color: #666;
+}
+.breadcrumb a {
+    color: #333;
+    text-decoration: none;
+}
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
 /* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
     /* 左右の余白を少し調整 */
     .top-row,
     .bottom-row {
         padding: 0 5px; 
+    }
+
+    /* ★★★ スマホ版 ウェルカムメッセージのスタイル (中央配置) ★★★ */
+    .welcome-message {
+        /* 中央配置のため、PC版のflex設定を上書きし絶対配置 */
+        order: initial;
+        display: block; 
+        
+        position: absolute;
+        top: 50%; /* 縦方向中央 */
+        left: 50%; /* 横方向中央 */
+        transform: translate(-50%, -50%); /* 自身のサイズを考慮して完全中央寄せ */
+        
+        z-index: 10; 
+
+        text-align: center;
+        /* フォントを小さくして、ロゴとアイコンの間に収まりやすくする */
+        font-size: 12px;
+        padding-right: 0; /* PC版のパディングをリセット */
+    }
+    .welcome-message .customer-name {
+        font-size: 14px; 
+    }
+    
+    /* 左右の要素がメッセージと重ならないように、z-indexを高く維持 */
+    .header-left {
+        z-index: 20; 
+    }
+    .header-right-icons {
+        z-index: 20; 
+        gap: 15px; /* アイコン間の隙間を調整 */
     }
 
     /* スマホではカートの文字を非表示 (任意) */
