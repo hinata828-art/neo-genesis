@@ -191,7 +191,7 @@ try {
                     <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>">
                     <input type="hidden" name="price" value="<?php echo $product['price']; ?>">
     <div class="action-buttons">     
-                    <button type="button" class="btn cart" onclick="goToOrder('G-11_cart.php', <?php echo $product['product_id']; ?>)">カートに追加</button>
+                    <button type="submit" class="btn cart"> カートに追加</button>
                     <button type="button" class="btn buy" onclick="goToOrder('G-12_order.php', <?php echo $product['product_id']; ?>)">購入</button>
                     <button type="button" class="btn rental" onclick="goToOrder('G-14_rental.php', <?php echo $product['product_id']; ?>)">レンタル</button>
                 </div>
