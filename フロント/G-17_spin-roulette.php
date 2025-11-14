@@ -1,4 +1,9 @@
 <?php
+if (isset($_GET['test'])) {
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'debug_ok', 'message' => 'PHPファイルは生きています']);
+    exit;
+}
 // G-17_spin_roulette.php
 // (ルーレットの抽選とDB保存を行う、裏方のファイル)
 
@@ -66,9 +71,11 @@ try {
 
     // 5. 景品リストをDBから取得
     // ★ あなたがDB準備 (ステップ2) でINSERTした景品を取得
+    // 5. 景品リストをDBから取得
+    // ★ G-17.phpのJSが期待するリストを確実に取得するため、coupon_idで絞り込みます。
     $sql_prizes = "SELECT coupon_id, coupon_name, discount_rate FROM coupon 
-                   WHERE discount_rate > 0 AND category_id IS NULL
-                   ORDER BY discount_rate ASC"; // (0.5% から 10% の順で)
+                WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
+                ORDER BY discount_rate ASC";
     
     $stmt_prizes = $pdo->prepare($sql_prizes);
     $stmt_prizes->execute();
