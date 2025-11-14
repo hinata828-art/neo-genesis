@@ -4,46 +4,97 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 require '../common/db_connect.php'; 
 
-// === 処理の前に：G-12からのPOSTデータを受け取る ===
+// === 1. G-12からのPOSTデータを受け取る ===
 
-// G-12のフォームから送られた情報をPOSTで受け取ります
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('不正なアクセスです。');
 }
 
-// 顧客IDをセッションから取得 (G-1のログイン処理に合わせて 'id' を使用)
+// 顧客ID (G-1のログイン処理に合わせて 'id' を使用)
 $customer_id = $_SESSION['customer']['id'] ?? null; 
 if ($customer_id === null) {
-    // もし 'id' キーまで無い場合は、本当にログインしていないかセッションが壊れている
     exit('ログイン情報（顧客ID）がセッションに見つかりません。');
 }
 
-// G-12から送られてきた商品ID、合計金額、支払い方法
-$product_id = $_POST['product_id'] ?? 0;
+// G-12から送られてきた「ベース」の商品ID、「選択された」色、「合計金額」
+$base_product_id = $_POST['product_id'] ?? 0;   // (例: 14)
+$selected_color_file_name = $_POST['color'] ?? 'original'; // (例: '白色' や 'original')
 $total_amount = $_POST['total_amount'] ?? 0;
 $payment_method = $_POST['payment'] ?? '不明';
-$color_value = $_POST['color'] ?? '不明'; 
 
-// オプション（チェックされていれば '500' や '1' が入る）
+// オプション
 $option_warranty = $_POST['option_warranty'] ?? null;
 $option_delivery = $_POST['option_delivery'] ?? null;
 
 
-// === DB接続と初期化 ===
+// === 2. G-12と同じ「逆引き辞書」を定義 ===
+$color_display_map = [
+    'original' => 'オリジナル',
+    '白色'     => 'ホワイト',
+    '青'       => 'ブルー',
+    'ゲーミング' => 'ゲーミング',
+    '黄色'     => 'イエロー',
+    '赤'       => 'レッド',
+    '緑'       => 'グリーン',
+    'ブラック'   => 'ブラック',
+    'ピンク'     => 'ピンク',
+    'グレー'     => 'グレー'
+];
+
+// 選択された色の「表示名」(DBのcolorカラムと一致する名前) (例: '白色' -> 'ホワイト')
+$selected_color_display_name = $color_display_map[$selected_color_file_name] ?? $selected_color_file_name;
+
+
+// === 3. DB接続と初期化 ===
 $connect = 'mysql:host=' . SERVER . ';dbname=' . DBNAME . ';charset=utf8';
 $order_info = [
     'transaction_id' => '---',
-    'total_amount' => $total_amount, // POSTされた金額を先に入れる
-    'payment' => $payment_method,   // POSTされた支払い方法を先に入れる
+    'total_amount' => $total_amount,
+    'payment' => $payment_method,
     'delivery_days' => '---'
 ];
+$final_product_id = $base_product_id; // ひとまずベースIDをセット
 
 
 try {
     $pdo = new PDO($connect, USER, PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // === データベース書き込み処理 ===
+    // === 4. ▼▼▼ ここからが最重要：正しい商品IDを検索する ▼▼▼ ===
+
+    if ($selected_color_display_name !== 'オリジナル') {
+        // (A) 色が選択された場合 (例: 'ホワイト')
+
+        // 1. ベース商品の「商品名」を取得 (例: '8K液晶テレビ 70インチ')
+        $sql_get_name = "SELECT product_name FROM product WHERE product_id = ?";
+        $stmt_get_name = $pdo->prepare($sql_get_name);
+        $stmt_get_name->execute([$base_product_id]);
+        $base_product = $stmt_get_name->fetch(PDO::FETCH_ASSOC);
+        
+        if ($base_product) {
+            $base_product_name = $base_product['product_name'];
+
+            // 2. 「商品名」と「選択された色」が一致する商品IDを検索
+            $sql_find_variant = "SELECT product_id FROM product WHERE product_name = ? AND color = ?";
+            $stmt_find_variant = $pdo->prepare($sql_find_variant);
+            $stmt_find_variant->execute([$base_product_name, $selected_color_display_name]);
+            $variant_product = $stmt_find_variant->fetch(PDO::FETCH_ASSOC);
+
+            if ($variant_product) {
+                // 3. 正しい商品ID (例: 16) が見つかった
+                $final_product_id = $variant_product['product_id'];
+            }
+            // (もし見つからなくても、$final_product_id はベースID(14)のまま進む)
+        }
+
+    } else {
+        // (B) 'オリジナル' が選択された場合
+        // $final_product_id は $base_product_id (例: 14) のままでOK
+    }
+    // === ▲▲▲ 商品ID検索ロジックここまで ▲▲▲ ===
+
+
+    // === 5. データベース書き込み処理 ===
     
     $pdo->beginTransaction();
 
@@ -62,7 +113,7 @@ try {
 
     // 2. 今 INSERT した取引の「transaction_id」を取得
     $new_transaction_id = $pdo->lastInsertId();
-    $order_info['transaction_id'] = $new_transaction_id; // 表示用に保存
+    $order_info['transaction_id'] = $new_transaction_id;
 
     // 3. transaction_detail への INSERT
     $sql_detail = "INSERT INTO transaction_detail 
@@ -71,17 +122,16 @@ try {
                        (?, ?, 1)";
     
     $stmt_detail = $pdo->prepare($sql_detail);
+    // ▼▼▼ 修正点：$final_product_id (例: 16) をINSERTする ▼▼▼
     $stmt_detail->execute([
         $new_transaction_id,
-        $product_id
+        $final_product_id 
     ]);
 
     // 4. すべて成功したら、トランザクションを「コミット」（確定）
     $pdo->commit();
 
-    // === 配送日数SELECT処理 ===
-    // 5. 今 INSERT した $new_transaction_id を使って、配送日数を取得
-    
+    // === 6. 配送日数SELECT処理 ===
     $sql_delivery = "
         SELECT c.delivery_days
         FROM transaction_detail td
@@ -90,9 +140,8 @@ try {
         WHERE td.transaction_id = ?
         LIMIT 1
     ";
-
     $stmt_delivery = $pdo->prepare($sql_delivery);
-    $stmt_delivery->execute([$new_transaction_id]); // ◀ 取得したてのIDを使う
+    $stmt_delivery->execute([$new_transaction_id]);
     $delivery = $stmt_delivery->fetch(PDO::FETCH_ASSOC);
 
     if ($delivery) {
@@ -100,7 +149,6 @@ try {
     } else {
         $order_info['delivery_days'] = '配送情報未設定';
     }
-
 
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {
@@ -125,19 +173,22 @@ try {
         ご購入ありがとうございました！
     </div>
 
-    <div class="delivery-date">
-        配送予定日数 : 
-        <span>
-            <?php
+    <div class="order-summary">
+        <p><strong>配送予定日数：</strong>
+        <?php
             // エラーや未設定の場合は「日後」の文字を表示しないように制御
             if (is_numeric($order_info['delivery_days'])) {
-                echo htmlspecialchars($order_info['delivery_days']) . '日後';
+                echo htmlspecialchars($order_info['delivery_days']) . '日後に発送予定';
             } else {
                 echo htmlspecialchars($order_info['delivery_days']);
             }
-            ?>
-        </span>
+        ?>
+        </p>
     </div>
+
+    <?php if ($order_info['transaction_id'] !== '---'): ?>
+        <a href="G-16_order-history.php?id=<?php echo htmlspecialchars($order_info['transaction_id']); ?>" class="detail-button">注文詳細を見る</a>
+    <?php endif; ?>
 
     <a href="G-8_home.php" class="home-button">ホーム画面へ戻る</a>
 
