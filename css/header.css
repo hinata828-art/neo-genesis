@@ -6,45 +6,44 @@
 }
 body {
     font-family: sans-serif;
-    overflow-x: hidden; 
-    /* 【追記】固定ヘッダー分の余白 */
+    overflow-x: hidden;
     padding-top: 50px;
 }
 
-/* ===== ヘッダー全体 ===== */
+/* ===== ヘッダー ===== */
 header {
     background-color: #a9bcf5;
-    padding: 8px 0; 
-    /* 【追加】ヘッダーを画面上部に固定 */
-    position: fixed; 
+    padding: 8px 0;
+    position: fixed;
     top: 0;
-    width: 100%; 
-    z-index: 1000; /* 他の要素より手前に表示 */
+    width: 100%;
+    z-index: 1000;
 }
 
-/* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
+/* コンテナ */
 .top-row,
 .bottom-row {
     width: 100%;
-    padding: 0 10px; /* 左右に10pxの余白 */
+    padding: 0 10px;
     display: flex;
     align-items: center;
 }
 
-/* ===== 上段：ロゴ・アイコン・カート ===== */
+/* 上段 */
 .top-row {
-    justify-content: space-between; 
+    justify-content: space-between;
     gap: 2px;
+    position: relative; /* ← 中央テキスト配置に必要 */
 }
 
-/* 左側（ハンバーガーとロゴ） */
+/* 左側 */
 .header-left {
     display: flex;
     align-items: center;
-    gap: 8px; 
+    gap: 8px;
 }
 
-/* ハンバーガーメニュー */
+/* ハンバーガー */
 .hamburger-menu {
     border: none;
     background: none;
@@ -68,118 +67,92 @@ header {
 .header-logo img {
     height: 80px;
     width: auto;
-    display: block; 
 }
 
-/* 右側のアイコン群 */
+/* 右側アイコン */
 .header-right-icons {
     display: flex;
     align-items: center;
-    gap: 30px; /* アイコンとカートの隙間 */
+    gap: 10px;
 }
 
-/* 右側のアイコン群 */
-.header-right-icons {
-    display: flex;
-    align-items: center;
-    /* 修正: 全体の要素が増えたため、アイコンとカートの隙間を調整 (例: 10px) */
-    gap: 10px; 
-}
-
-/* ★★★ 追加: ウェルカムメッセージのスタイル ★★★ */
+/* ★ 中央ウェルカムメッセージ */
 .welcome-message {
-    /* 中央寄せ */
-    text-align: right; 
-    /* フォントサイズの調整 */
-    font-size: 14px; 
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    transform: translateX(-50%);
+
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
     line-height: 1.2;
-    color: #fff; /* 背景が青なので白に */
-    
-    /* 他のアイコンとの位置を揃える */
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    height: 100%; /* 親要素の高さに合わせる */
 }
-.welcome-message .customer-name {
+.customer-name {
     font-weight: bold;
-    font-size: 16px; /* 名前を目立たせる */
+    font-size: 16px;
+}
+.login-link {
+    color: #fff;
+    text-decoration: underline;
 }
 
-/* ユーザーアイコン（親要素：グレーの丸） */
+/* ユーザーアイコン */
 .header-user {
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* 標準サイズを設定 */
 }
 .header-user img {
     width: 130%;
     height: 130%;
     object-fit: cover;
 }
-/* ★★★ 修正箇所 終わり ★★★ */
 
-
-/* カートボタン */
+/* カート */
 .header-cart a {
     display: flex;
     align-items: center;
     gap: 5px;
-    background-color: #fff;
+    background: #fff;
     border: 1px solid #333;
     border-radius: 9999px;
-    /* 修正: 左右のパディングを増やして横幅を倍程度にする (16px -> 32px) */
-    padding: 8px 32px; 
+    padding: 8px 32px;
     text-decoration: none;
     color: #333;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .header-cart img {
     width: 24px;
     height: 24px;
 }
 
-/* ===== 下段：検索窓 ===== */
-.bottom-row {
-    margin-top: 0px; 
-}
+/* ===== 下段 検索窓 ===== */
 .search-container {
     position: relative;
     width: 100%;
     display: flex;
-    /* 【追加】フレックスアイテムが小さくなりすぎるのを防ぐ */
-    min-width: 0; 
+    min-width: 0;
 }
-/* カテゴリプルダウン（検索窓の左側） */
 .category-select {
     padding: 12px 10px;
     border-right: none;
     border-top-left-radius: 9999px;
     border-bottom-left-radius: 9999px;
     border: 1px solid #333;
-    font-size: 16px;
-    background-color: #fff;
-    cursor: pointer;
-    width: 120px; 
+    width: 120px;
     flex-shrink: 0;
 }
-/* 検索窓のスタイルを調整（プルダウンと連続させるため） */
 .search-container input {
     width: 100%;
     padding: 12px 60px 12px 20px;
     border-radius: 9999px;
     border: 1px solid #333;
-    font-size: 16px;
-    border-left: none; /* プルダウンと境界線を結合 */
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-left: none;
 }
-
-
-/* kensaku.png を使うボタン */
 .search-button {
     position: absolute;
     right: 5px;
@@ -187,45 +160,36 @@ header {
     transform: translateY(-50%);
     background: none;
     border: none;
-    padding: 5px;
     cursor: pointer;
-    height: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 .search-button img {
-    height: 100%;
-    width: auto;
     max-height: 28px;
 }
 
-/* ===== スマホ対応（600px以下） ===== */
+/* ===== スマホ対応 ===== */
 @media screen and (max-width: 600px) {
-    /* 左右の余白を少し調整 */
+
     .top-row,
     .bottom-row {
-        padding: 0 5px; 
+        padding: 0 5px;
     }
 
-    /* スマホではカートの文字を非表示 (任意) */
     .header-cart label {
         display: none;
     }
     .header-cart a {
-        /* 修正: スマホ表示でも左右のパディングを増やして横幅を調整 (12px -> 24px) */
-        padding: 8px 24px; 
+        padding: 8px 24px;
     }
 
-    /* アイコンの枠サイズをスマホ用に調整 */
     .header-user {
         width: 40px;
         height: 40px;
     }
-    
+
     .header-logo img {
-        height: 80px; 
+        height: 80px;
     }
+
     .hamburger-menu {
         width: 35px;
         height: 35px;
@@ -233,30 +197,25 @@ header {
     .hamburger-menu span {
         height: 3px;
     }
-    
-    /* カテゴリ選択の幅をスマホ用に調整し、表示を維持 */
+
     .category-select {
-        /* 幅を固定 (Chromeで崩れにくいように min-width も指定) */
-        width: 80px; 
-        min-width: 80px; 
+        width: 80px;
+        min-width: 80px;
         padding: 10px 5px;
         font-size: 14px;
-        /* PC版の設定を維持: border-right: none; */
-        border-top-left-radius: 9999px;
-        border-bottom-left-radius: 9999px;
-        border: 1px solid #333;
     }
-    
-    /* 検索窓のスタイルを調整（プルダウンと連続させるため） */
+
     .search-container input {
-        width: 100%;
         padding: 10px 60px 10px 10px;
         font-size: 14px;
-        /* PC版の設定を元に戻す（カテゴリ選択と連続させる） */
-        border-radius: 9999px;
-        border: 1px solid #333;
-        border-left: none; 
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+    }
+
+    /* ★ 中央メッセージを縮小 & 上へ調整 */
+    .welcome-message {
+        font-size: 12px;
+        top: 5px;
+    }
+    .customer-name {
+        font-size: 14px;
     }
 }
