@@ -104,7 +104,7 @@ function getStatusClass($status) {
 
             <?php elseif ($show_roulette && !empty($prizes_for_js)): ?>
                 <section id="roulette-container">
-                    <h2 class="section-title">返却ありがとうルーレット！</h2>
+                    <h2 class="section-title">割引クーポンルーレット！</h2>
                     <p>次回使える購入クーポンが当たります！</p>
                     
                     <div id="roulette">
@@ -185,7 +185,7 @@ function getStatusClass($status) {
             spinButton.disabled = true;
             resultP.textContent = "抽選中...";
 
-            fetch('G-17_spin_roulette.php', {
+            fetch('G-17_spin-roulette.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ transaction_id: transactionId })
@@ -236,7 +236,7 @@ function getStatusClass($status) {
                     angle = targetAngle % (2 * Math.PI);
                     drawRoulette(); 
                     
-                    resultP.textContent = `おめでとうございます！ ${prizeName} をゲットしました！`;
+                    resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
                     spinButton.style.display = 'none'; 
                 }
             }
