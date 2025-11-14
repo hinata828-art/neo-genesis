@@ -73,10 +73,11 @@ try {
     // ★ あなたがDB準備 (ステップ2) でINSERTした景品を取得
     // 5. 景品リストをDBから取得
     // ★ G-17.phpのJSが期待するリストを確実に取得するため、coupon_idで絞り込みます。
+    // 5. 景品リストをDBから取得
     $sql_prizes = "SELECT coupon_id, coupon_name, discount_rate FROM coupon 
                 WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
-                ORDER BY discount_rate ASC";
-    
+                ORDER BY coupon_id ASC"; // ★ discount_rate ではなく coupon_id で固定
+
     $stmt_prizes = $pdo->prepare($sql_prizes);
     $stmt_prizes->execute();
     $prizes = $stmt_prizes->fetchAll(PDO::FETCH_ASSOC);
@@ -86,9 +87,27 @@ try {
     }
 
     // 6. 抽選 (PHPの array_rand で安全に実行)
-    // $prizes 配列 (0〜5) から、ランダムで1つの添字(index)を選ぶ
-    $prize_index = array_rand($prizes);
-    $won_prize = $prizes[$prize_index]; // 当選した景品
+    // ★ 景品配列をシャッフルして、その中からランダムで1つ選ぶ
+    $shuffled_prizes = $prizes;
+    shuffle($shuffled_prizes); // 配列の順番をランダムにシャッフル
+
+    // シャッフル後の配列からランダムで1つ選ぶ（どの景品に当たったか）
+    $won_prize = $shuffled_prizes[array_rand($shuffled_prizes)]; 
+
+    // ★ 重要な処理: 当選した景品が、元の $prizes 配列（ルーレットの描画順）の何番目にあるかを検索する
+    $prize_index = -1;
+    foreach ($prizes as $index => $prize) {
+        if ($prize['coupon_id'] === $won_prize['coupon_id']) {
+            $prize_index = $index;
+            break;
+        }
+    }
+
+    if ($prize_index === -1) {
+        sendError('抽選結果の照合に失敗しました。');
+    }
+
+    $won_coupon_id = $won_prize['coupon_id'];
     $won_coupon_id = $won_prize['coupon_id']; // (例: 7)
 
     // 7. (A) customer_coupon テーブルに「当選結果」を INSERT
