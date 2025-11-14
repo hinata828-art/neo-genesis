@@ -76,6 +76,11 @@ header {
     text-decoration: underline;
 }
 
+.login-text {
+    color: #fff;
+    font-size: 14px;
+}
+
 /* --------------- 右：アイコン群 --------------- */
 .header-right-icons {
     display: flex;

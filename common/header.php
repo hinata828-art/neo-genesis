@@ -4,12 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// DB接続（ユーザ名取得に必要なら）
-require_once __DIR__ . '/db_connect.php';
+// ログインしているか判定
+$login = isset($_SESSION['user_id']);
 
-// ★ ログイン判定
-$login = isset($_SESSION['user_id']);   // ← ログイン時は user_id などで判断（任意）
-$user_name = $login ? ($_SESSION['user_name'] ?? 'ユーザー') : '';
+// ユーザ名（無ければ空）
+$user_name = $login ? ($_SESSION['user_name'] ?? '') : '';
 ?>
 
 <header>
@@ -30,14 +29,16 @@ $user_name = $login ? ($_SESSION['user_name'] ?? 'ユーザー') : '';
             </div>
         </div>
 
-        <!-- ★★★ 中央メッセージ（追加部分） ★★★ -->
+        <!-- ★★★ 中央メッセージ（修正版） ★★★ -->
         <div class="welcome-message">
             <?php if ($login): ?>
                 <span>いらっしゃいませ</span>
-                <span class="customer-name"><?php echo htmlspecialchars($user_name); ?> 様</span>
+                <span class="customer-name">
+                    <?php echo htmlspecialchars($user_name); ?> 様
+                </span>
             <?php else: ?>
                 <span>いらっしゃいませ</span>
-                <a href="../フロント/G-1_customer-form.php" class="login-link">ログインはこちら →</a>
+                <span class="login-text">ログインはコチラ →</span>
             <?php endif; ?>
         </div>
 
@@ -46,7 +47,7 @@ $user_name = $login ? ($_SESSION['user_name'] ?? 'ユーザー') : '';
 
             <div class="header-user">
                 <a href="../フロント/G-4_member-information.php">
-                    <img src="../img/icon.png" alt="会員情報" class="user-icon">
+                    <img src="../img/user.png" alt="会員情報" class="user-icon">
                 </a>
             </div>
 
