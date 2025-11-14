@@ -14,22 +14,21 @@ require '../common/db_connect.php'; // $pdo 変数がここで作成されると
 $products = []; // ★商品リスト用の配列に変更
 $order_info = null; // 注文共通情報用
 $error_message = '';
+$transaction_id = $_GET['id'] ?? 0; // ★ transaction_id を初期化
 
 try {
     // 5. URLから表示したい取引IDを取得
-    if (!isset($_GET['id'])) {
+    if (empty($transaction_id)) {
         throw new Exception('取引IDが指定されていません。');
     }
-    $transaction_id = $_GET['id'];
     
     // 6. データベースから注文情報を取得
-    // (SQLを修正：商品情報(p)と取引情報(t)を両方取得)
     $sql = "SELECT 
                 t.transaction_date, 
                 t.payment,
                 t.delivery_status,
                 t.total_amount,
-                p.product_id, /* ★追加 */
+                p.product_id,
                 p.product_name, 
                 p.product_image,
                 p.price
@@ -37,13 +36,11 @@ try {
             JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
             JOIN product AS p ON d.product_id = p.product_id
             WHERE t.transaction_id = :id";
-            /* ★ LIMIT 1 を削除 ★ */
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $transaction_id, PDO::PARAM_INT);
     $stmt->execute();
     
-    // ★ fetchAll に変更し、すべての商品を取得
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($products)) {
@@ -56,12 +53,23 @@ try {
     // 日付フォーマットの整形
     $order_info['purchase_date_formatted'] = date('Y/m/d H:i', strtotime($order_info['transaction_date']));
     
-    // 配達状況のテキスト（例）
+    
+    // ▼▼▼ ここから修正 ▼▼▼
+    // 62行目あたり
+    // 配達状況のテキストとCSSクラスを決定
     if ($order_info['delivery_status'] == '配達完了') {
          $order_info['delivery_status_text'] = date('Y/m/d', strtotime('+5 days', strtotime($order_info['transaction_date']))) . 'に配達済み';
+         $order_info['status_class'] = 'status-delivered'; // (緑色)
+
+    } else if ($order_info['delivery_status'] == 'キャンセル済み') {
+         $order_info['delivery_status_text'] = 'この注文はキャンセル済みです';
+         $order_info['status_class'] = 'status-cancelled'; // (★ 赤色)
+
     } else {
-         $order_info['delivery_status_text'] = '配達ステータス: ' . htmlspecialchars($order_info['delivery_status']);
+         $order_info['delivery_status_text'] = '配達ステータス: ' . htmlspecialchars($order_info['delivery_status']); // (例: 注文受付)
+         $order_info['status_class'] = 'status-processing'; // (青色)
     }
+    // ▲▲▲ 修正ここまで ▲▲▲
 
 
 } catch (Exception $e) {
@@ -74,11 +82,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ご購入履歴</title>
-    <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-16_order-history.css">
 </head>
 <body>
-    <?php require '../common/header.php'; // ヘッダーを読み込む ?>
     <div class="container">
 
         <header class="header">
@@ -105,7 +111,7 @@ try {
                             <p class="product-price">¥<?php echo number_format($product['price']); ?></p>
                         </div>
                         <div class="button-group">
-                            <a href="G-5_product-detail.php?id=<?php echo $product['product_id']; ?>" class="btn btn-detail">詳細</a>
+                            <a href="G-9_product-detail.php?id=<?php echo $product['product_id']; ?>" class="btn btn-detail">詳細</a>
                             <a href="G-10_cart-insert.php?id=<?php echo $product['product_id']; ?>" class="btn btn-purchase">再度購入</a>
                         </div>
                     </section>
@@ -129,10 +135,11 @@ try {
                 </section>
                 
                 <section class="delivery-status">
-                    <p><?php echo htmlspecialchars($order_info['delivery_status_text']); ?></p>
+                    <p class="<?php echo htmlspecialchars($order_info['status_class']); ?>">
+                        <?php echo htmlspecialchars($order_info['delivery_status_text']); ?>
+                    </p>
                 </section>
-
-            <?php endif; ?>
+                <?php endif; ?>
 
         </main>
 
@@ -158,6 +165,7 @@ try {
             </div>
         </div>
     </div>
+    
     <script>
     // ページのHTMLが読み込まれたら実行
     document.addEventListener('DOMContentLoaded', function() {
@@ -169,30 +177,36 @@ try {
         const noBtn = document.getElementById('confirm-no');
 
         // 「購入キャンセルはコチラ」リンクがクリックされた時
-        openBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // リンクのデフォルト動作（ページ遷移）を止める
-            modal.style.display = 'flex'; // モーダルを表示する
-        });
+        // ★ openBtn が null でないか（要素が存在するか）確認
+        if (openBtn) {
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault(); // リンクのデフォルト動作（ページ遷移）を止める
+                modal.style.display = 'flex'; // モーダルを表示する
+            });
+        }
 
         // 「いいえ」ボタンがクリックされた時
-        noBtn.addEventListener('click', function() {
-            modal.style.display = 'none'; // モーダルを非表示にする
-        });
+        if (noBtn) {
+            noBtn.addEventListener('click', function() {
+                modal.style.display = 'none'; // モーダルを非表示にする
+            });
+        }
 
         // 「×」ボタンがクリックされた時
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none'; // モーダルを非表示にする
-        });
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none'; // モーダルを非表示にする
+            });
+        }
 
         // モーダルの背景（黒い部分）がクリックされた時
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) { // クリックされたのが背景自身か確認
-                modal.style.display = 'none'; // モーダルを非表示にする
-            }
-        });
-
-        // 「はい」ボタンは、通常のリンクとして動作し、
-        // G-16_cancel-order.php にページ遷移します。
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) { // クリックされたのが背景自身か確認
+                    modal.style.display = 'none'; // モーダルを非表示にする
+                }
+            });
+        }
     });
     </script>
 
