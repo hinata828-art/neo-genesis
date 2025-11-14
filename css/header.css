@@ -7,12 +7,19 @@
 body {
     font-family: sans-serif;
     overflow-x: hidden; 
+    /* 【追記】固定ヘッダー分の余白 */
+    padding-top: 50px;
 }
 
 /* ===== ヘッダー全体 ===== */
 header {
     background-color: #a9bcf5;
     padding: 8px 0; 
+    /* 【追加】ヘッダーを画面上部に固定 */
+    position: fixed; 
+    top: 0;
+    width: 100%; 
+    z-index: 1000; /* 他の要素より手前に表示 */
 }
 
 /* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
@@ -27,7 +34,7 @@ header {
 /* ===== 上段：ロゴ・アイコン・カート ===== */
 .top-row {
     justify-content: space-between; 
-    gap: 10px;
+    gap: 2px;
 }
 
 /* 左側（ハンバーガーとロゴ） */
@@ -68,19 +75,44 @@ header {
 .header-right-icons {
     display: flex;
     align-items: center;
-    gap: 3px; /* アイコンとカートの隙間 */
+    gap: 30px; /* アイコンとカートの隙間 */
+}
+
+/* 右側のアイコン群 */
+.header-right-icons {
+    display: flex;
+    align-items: center;
+    /* 修正: 全体の要素が増えたため、アイコンとカートの隙間を調整 (例: 10px) */
+    gap: 10px; 
+}
+
+/* ★★★ 追加: ウェルカムメッセージのスタイル ★★★ */
+.welcome-message {
+    /* 中央寄せ */
+    text-align: right; 
+    /* フォントサイズの調整 */
+    font-size: 14px; 
+    line-height: 1.2;
+    color: #fff; /* 背景が青なので白に */
+    
+    /* 他のアイコンとの位置を揃える */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%; /* 親要素の高さに合わせる */
+}
+.welcome-message .customer-name {
+    font-weight: bold;
+    font-size: 16px; /* 名前を目立たせる */
 }
 
 /* ユーザーアイコン（親要素：グレーの丸） */
 .header-user {
-    background-color: #ddd;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     /* 標準サイズを設定 */
-    width: 56px; 
-    height: 56px; 
 }
 .header-user img {
     width: 130%;
@@ -98,7 +130,8 @@ header {
     background-color: #fff;
     border: 1px solid #333;
     border-radius: 9999px;
-    padding: 8px 16px;
+    /* 修正: 左右のパディングを増やして横幅を倍程度にする (16px -> 32px) */
+    padding: 8px 32px; 
     text-decoration: none;
     color: #333;
     font-weight: bold;
@@ -111,12 +144,14 @@ header {
 
 /* ===== 下段：検索窓 ===== */
 .bottom-row {
-    margin-top: 8px; 
+    margin-top: 0px; 
 }
 .search-container {
     position: relative;
     width: 100%;
     display: flex;
+    /* 【追加】フレックスアイテムが小さくなりすぎるのを防ぐ */
+    min-width: 0; 
 }
 /* カテゴリプルダウン（検索窓の左側） */
 .category-select {
@@ -167,12 +202,19 @@ header {
 
 /* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
+    /* 左右の余白を少し調整 */
+    .top-row,
+    .bottom-row {
+        padding: 0 5px; 
+    }
+
     /* スマホではカートの文字を非表示 (任意) */
     .header-cart label {
         display: none;
     }
     .header-cart a {
-        padding: 8px 12px;
+        /* 修正: スマホ表示でも左右のパディングを増やして横幅を調整 (12px -> 24px) */
+        padding: 8px 24px; 
     }
 
     /* アイコンの枠サイズをスマホ用に調整 */
@@ -192,16 +234,29 @@ header {
         height: 3px;
     }
     
-    /* スマホではカテゴリ選択を隠す */
+    /* カテゴリ選択の幅をスマホ用に調整し、表示を維持 */
     .category-select {
-        display: none; 
-    }
-    /* 検索窓を角丸にする */
-    .search-container input {
-        padding-top: 10px;
-        padding-bottom: 10px;
+        /* 幅を固定 (Chromeで崩れにくいように min-width も指定) */
+        width: 80px; 
+        min-width: 80px; 
+        padding: 10px 5px;
         font-size: 14px;
+        /* PC版の設定を維持: border-right: none; */
+        border-top-left-radius: 9999px;
+        border-bottom-left-radius: 9999px;
+        border: 1px solid #333;
+    }
+    
+    /* 検索窓のスタイルを調整（プルダウンと連続させるため） */
+    .search-container input {
+        width: 100%;
+        padding: 10px 60px 10px 10px;
+        font-size: 14px;
+        /* PC版の設定を元に戻す（カテゴリ選択と連続させる） */
         border-radius: 9999px;
-        border-left: 1px solid #333; /* 境界線を元に戻す */
+        border: 1px solid #333;
+        border-left: none; 
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
 }

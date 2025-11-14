@@ -3,45 +3,10 @@
 require '../common/db_connect.php';
 
 // ===== パラメータ取得 =====
-$category_id = isset($_GET['category']) ? $_GET['category'] : '';
-$keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+$category = $_GET['category'] ?? '';
+$keyword = $_GET['keyword'] ?? '';
 
-// ===== SQL生成 =====
-try {
-    $sql = "SELECT product_id, product_name, price, product_image, category_id 
-            FROM product 
-            WHERE 1";
-
-    // カテゴリが指定されている場合
-    if ($category_id !== '') {
-        $sql .= " AND category_id = :category_id";
-    }
-
-    // キーワード検索がある場合（部分一致）
-    if ($keyword !== '') {
-        $sql .= " AND product_name LIKE :keyword";
-    }
-
-    $sql .= " ORDER BY product_id ASC";
-
-    $stmt = $pdo->prepare($sql);
-
-    // バインド
-    if ($category_id !== '') {
-        $stmt->bindValue(':category_id', $category_id, PDO::PARAM_STR);
-    }
-    if ($keyword !== '') {
-        $stmt->bindValue(':keyword', "%$keyword%", PDO::PARAM_STR);
-    }
-
-    $stmt->execute();
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo '商品データ取得エラー: ' . $e->getMessage();
-    $products = [];
-}
-
-// ===== カテゴリ名（C01など→日本語） =====
+// ===== カテゴリ名リスト =====
 $category_names = [
     'C01' => 'テレビ',
     'C02' => '冷蔵庫',
@@ -53,10 +18,45 @@ $category_names = [
     'C08' => 'スマートフォン'
 ];
 
-// タイトル名
-$page_title = '商品一覧';
-if ($category_id && isset($category_names[$category_id])) {
-    $page_title = $category_names[$category_id] . '一覧';
+// ===== SQL組み立て =====
+$sql = "SELECT product_id, product_name, price, product_image 
+        FROM product 
+        WHERE color = 'オリジナル'";
+$params = [];
+
+if ($category !== '') {
+    $sql .= " AND category_id = :category";
+    $params[':category'] = $category;
+}
+if ($keyword !== '') {
+    $sql .= " AND product_name LIKE :keyword";
+    $params[':keyword'] = "%{$keyword}%";
+}
+
+// 並び順（後で並べ替え機能追加も可）
+$sql .= " ORDER BY product_id DESC";
+
+try {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "商品データ取得エラー: " . $e->getMessage();
+    $products = [];
+}
+
+// ===== パンくず設定 =====
+$breadcrumbs = [
+    ['name' => 'ホーム', 'url' => 'G-8_home.php']
+];
+
+if ($keyword !== '') {
+    $breadcrumbs[] = ['name' => '検索結果：「' . htmlspecialchars($keyword) . '」'];
+} elseif ($category !== '') {
+    $category_name = $category_names[$category] ?? '商品一覧';
+    $breadcrumbs[] = ['name' => $category_name];
+} else {
+    $breadcrumbs[] = ['name' => '商品一覧'];
 }
 ?>
 <!DOCTYPE html>
@@ -64,7 +64,13 @@ if ($category_id && isset($category_names[$category_id])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <title>
+        <?php 
+            if ($keyword !== '') echo "検索結果：" . htmlspecialchars($keyword);
+            elseif ($category !== '') echo $category_names[$category] ?? "商品一覧";
+            else echo "商品一覧";
+        ?>
+    </title>
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/breadcrumb.css">
     <link rel="stylesheet" href="../css/G-10_product-list.css">
@@ -72,42 +78,36 @@ if ($category_id && isset($category_names[$category_id])) {
 
 <body>
     <?php require_once __DIR__ . '/../common/header.php'; ?>
-    <?php
-    $breadcrumbs = [
-        ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        ['name' => htmlspecialchars($page_title)]
-    ];
-    require __DIR__ . '/../common/breadcrumb.php';
-    ?>
+    <?php require __DIR__ . '/../common/breadcrumb.php'; ?>
 
 <main>
     <div class="top">
-        <h1><?php echo htmlspecialchars($page_title); ?></h1>
+        <h1>
+            <?php 
+                if ($keyword !== '') echo "検索結果：「" . htmlspecialchars($keyword) . "」";
+                elseif ($category !== '') echo htmlspecialchars($category_names[$category] ?? '商品一覧');
+                else echo "商品一覧";
+            ?>
+        </h1>
     </div>
     <hr>
 
-    <?php if (!empty($products)): ?>
+    <?php if (empty($products)): ?>
+        <p class="no-result">該当する商品は見つかりませんでした。</p>
+    <?php else: ?>
         <div class="product-list">
             <?php foreach ($products as $p): ?>
                 <div class="product-card">
-                    <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>">
-                        <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
-                             alt="<?php echo htmlspecialchars($p['product_name']); ?>" 
-                             class="product-image">
-                    </a>
+                    <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
+                         alt="<?php echo htmlspecialchars($p['product_name']); ?>" class="product-img">
                     <div class="product-info">
-                        <h2 class="product-name"><?php echo htmlspecialchars($p['product_name']); ?></h2>
-                        <p class="product-price">¥<?php echo number_format($p['price']); ?></p>
-                        <div class="product-buttons">
-                            <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="btn detail">詳細</a>
-                            <a href="G-12_order.php?id=<?php echo $p['product_id']; ?>" class="btn buy">購入</a>
-                        </div>
+                        <h2><?php echo htmlspecialchars($p['product_name']); ?></h2>
+                        <p class="price">¥<?php echo number_format($p['price']); ?></p>
+                        <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="detail-btn">詳細を見る</a>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
-    <?php else: ?>
-        <p class="no-result">該当する商品がありません。</p>
     <?php endif; ?>
 </main>
 
