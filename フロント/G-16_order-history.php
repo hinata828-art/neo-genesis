@@ -82,11 +82,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ご購入履歴</title>
-    <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-16_order-history.css">
 </head>
 <body>
-    <?php require '../common/header.php'; // ヘッダーを読み込む ?>
     <div class="container">
 
         <header class="header">

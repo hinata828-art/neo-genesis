@@ -1,71 +1,99 @@
-main {
-    padding: 16px;
+/* G-10_product-list.css (商品カード横幅広め版) */
+
+body {
+    font-family: sans-serif;
+    background: #f7f7f7;
+    margin-top: 150px !important;
 }
 
-.top h1 {
-    font-size: 22px;
+.top {
     text-align: center;
-    margin-bottom: 10px;
+    padding: 1rem;
+}
+
+hr {
+    margin: 0 auto 1rem;
+    width: 90%;
+    border: none;
+    border-top: 2px solid #ccc;
 }
 
 .product-list {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem; /* 少し広めに間隔を取る */
+    padding: 1rem;
 }
 
-.product-item {
+/* ▼ 横幅を広げる箇所 */
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 320px; /* ← ここを 260px → 320px に変更 */
+    overflow: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    background-color: #f4f8ff;
-    padding: 10px;
-    border-radius: 10px;
+    text-align: center;
 }
 
-.product-image img {
-    width: 120px;
-    height: auto;
-    border-radius: 8px;
+/* 画像も少し大きめに調整 */
+.product-img {
+    width: 100%;
+    height: 240px; /* ← 200px → 240px に変更 */
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
 }
 
 .product-info {
-    flex: 1;
-    margin-left: 15px;
+    padding: 0.8rem;
+}
+
+.product-info h2 {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
 }
 
 .price {
-    color: red;
-    font-size: 18px;
     font-weight: bold;
-    margin: 5px 0;
-}
-
-.buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.detail-btn, .buy-btn {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-weight: bold;
-    border: 1px solid #333;
-}
-
-.detail-btn {
-    background-color: #fff;
     color: #333;
 }
 
-.buy-btn {
-    background-color: #a9bcf5;
-    color: #000;
+.detail-btn {
+    display: inline-block;
+    margin-top: 0.8rem;
+    padding: 0.6rem 1.4rem;
+    background: #a9bcf5;
+    color: #fff;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.detail-btn:hover {
+    background: #7893e0;
 }
 
 .no-result {
     text-align: center;
-    margin-top: 40px;
-    color: #888;
+    margin: 2rem 0;
+    font-size: 1.1rem;
+    color: #777;
+}
+
+/* ===== スマホ対応（600px以下） ===== */
+@media screen and (max-width: 600px) {
+    body {
+        margin-top: 120px !important;
+    }
+
+    .product-card {
+        width: 90%; /* スマホは横幅いっぱいに */
+    }
+
+    .product-img {
+        height: 200px;
+    }
 }

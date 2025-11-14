@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-require_once 'db_connect.php'; // DB接続ファイル
+require '../common/db_connect.php'; // DB接続ファイル
 
 if (isset($_SESSION['customer']['id'])) {
     $customer_id = $_SESSION['customer']['id'];
@@ -47,14 +47,14 @@ $coupons = $stmt->fetchAll();
   <title>所持クーポン一覧</title>
   <link rel="stylesheet" href="../css/header.css">
   <link rel="stylesheet" href="../css/breadcrumb.css">
-  <link rel="stylesheet" href="G-25_coupon_list.css">
+  <link rel="stylesheet" href="../css/G-25_coupon_list.css">
 </head>
 <body>
 
     <?php require __DIR__ . '/../common/header.php'; ?>
     <?php
     $breadcrumbs = [
-        ['name' => '現在のページ']
+        ['name' => '所持クーポン']
     ];
     require __DIR__ . '/../common/breadcrumb.php';
     ?>
@@ -64,12 +64,13 @@ $coupons = $stmt->fetchAll();
 
     <?php foreach ($coupons as $coupon): ?>
       <div class="coupon-card">
+
         <img src="<?= htmlspecialchars($coupon['product_image']) ?>" alt="商品画像">
         <div class="coupon-info">
           <h3><?= htmlspecialchars($coupon['category_name']) ?>製品</h3>
           <p class="discount"><?= htmlspecialchars($coupon['discount_rate']) ?>% OFF！！</p>
           <p class="note">※購入時のみ適用可能</p>
-          <a href="G-18_search_result.php?category_id=<?= $coupon['category_id'] ?>" class="coupon-link">対象商品一覧へ</a>
+          <a href="G-10_product-list.php?category=<?= $coupon['category_id'] ?>" class="coupon-link">対象商品一覧へ</a>
         </div>
       </div>
     <?php endforeach; ?>
