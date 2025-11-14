@@ -1,4 +1,9 @@
 <?php
+if (isset($_GET['test'])) {
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'debug_ok', 'message' => 'PHPファイルは生きています']);
+    exit;
+}
 // G-17_spin_roulette.php
 // (ルーレットの抽選とDB保存を行う、裏方のファイル)
 
