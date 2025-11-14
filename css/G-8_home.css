@@ -1,5 +1,6 @@
-body{
-    margin-top:150px;
+body {
+    /* G-10と同じく、margin-topでヘッダー分の余白を確保します */
+    margin-top: 150px !important;
 }
 /* ===== おすすめ商品セクション ===== */
 .pickapp {
