@@ -54,7 +54,7 @@ require __DIR__ . '/../common/breadcrumb.php';
             <p class="name"><?= htmlspecialchars($item['product_name']) ?></p>
             <p class="price">¥<?= number_format($item['price']) ?></p>
             <div class="buttons">
-                <form action="G-11_delete_cart.php" method="POST">
+                <form action="G-11_delete-cart.php" method="POST">
                     <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
                     <button type="submit" class="delete-btn">削除</button>
                 </form>
