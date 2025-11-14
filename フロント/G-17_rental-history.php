@@ -176,7 +176,7 @@ function getStatusClass($status) {
                 <?php if ($show_roulette_button): ?>
                 <section class="roulette-link-section">
                     <a href="G-17_rental-roulette.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette">
-                        <span>🎁</span> 返却ありがとう！ルーレットを回す
+                        <span>🎁</span> 外れなし！ルーレットを回す
                     </a>
                 </section>
                 <?php endif; ?>
