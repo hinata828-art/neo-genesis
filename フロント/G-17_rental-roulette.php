@@ -28,12 +28,12 @@ try {
                     r.coupon_claimed, 
                     p.category_id,
                     t.delivery_status
-                  FROM rental AS r
-                  JOIN product AS p ON r.product_id = p.product_id
-                  JOIN transaction_table AS t ON r.transaction_id = t.transaction_id
-                  WHERE r.transaction_id = :tid 
-                    AND t.customer_id = :cid
-                  LIMIT 1";
+                FROM rental AS r
+                JOIN product AS p ON r.product_id = p.product_id
+                JOIN transaction_table AS t ON r.transaction_id = t.transaction_id
+                WHERE r.transaction_id = :tid 
+                  AND t.customer_id = :cid
+                LIMIT 1";
     $stmt_check = $pdo->prepare($sql_check);
     $stmt_check->execute([':tid' => $transaction_id, ':cid' => $customer_id]);
     $rental_info = $stmt_check->fetch(PDO::FETCH_ASSOC);
@@ -52,9 +52,10 @@ try {
     $show_roulette = true;
     
     // 6. 景品リストをDBから取得 (ID 2〜7)
+    // ★★★ 修正点 1: 抽選ロジックと並び順を揃えるため、coupon_id ASC に変更 ★★★
     $sql_prizes = "SELECT coupon_name FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
-                   ORDER BY discount_rate ASC";
+                   ORDER BY coupon_id ASC";
     
     $stmt_prizes = $pdo->prepare($sql_prizes);
     $stmt_prizes->execute();
@@ -149,8 +150,9 @@ function getStatusClass($status) {
             canvas.width = canvasSize;
             canvas.height = canvasSize;
             
-            pointer.style.top = `${-canvasSize * 0.1}px`;
-            pointer.style.left = `calc(50% - 20px)`; 
+            // ★★★ 修正点 2: 矢印の位置調整を削除 (CSSで固定するため) ★★★
+            // pointer.style.top = `${-canvasSize * 0.1}px`;
+            // pointer.style.left = `calc(50% - 20px)`; 
             
             drawRoulette();
         }
@@ -238,6 +240,15 @@ function getStatusClass($status) {
                     
                     resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
                     spinButton.style.display = 'none'; 
+
+                    // ★★★ 修正点 3: クーポン一覧へのリンクを表示 ★★★
+                    const link = document.createElement('a');
+                    link.href = 'G-25_coupon_list.php';
+                    link.textContent = 'クーポン一覧ページへ移動';
+                    link.className = 'coupon-list-link'; // CSSでスタイリング
+                    
+                    // resultP要素の後 (下) にリンクを追加
+                    resultP.after(link); 
                 }
             }
             requestAnimationFrame(animate);
