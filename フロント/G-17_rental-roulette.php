@@ -206,7 +206,7 @@ function getStatusClass($status) {
                     let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
                     let targetAngle = (2 * Math.PI) - targetSectorCenter + (Math.PI / 2);
                     
-                    const totalRotation = 10 * (2 * Math.PI) + targetAngle;
+                    const totalRotation = 10 * (1.5 * Math.PI) + targetAngle;
                     animateSpin(totalRotation, prizeName);
 
                 } else {
