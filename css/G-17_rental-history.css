@@ -68,16 +68,16 @@ G-17 履歴詳細ページ用スタイル
     padding: 16px;
     margin-bottom: 24px;
     display: grid;
-    grid-template-columns: 100px 1fr; /* 画像(100px)と情報エリア(残り) */
-    grid-template-rows: auto auto;    /* 情報(行1)とボタン(行2) */
+    grid-template-columns: 100px 1fr;
+    grid-template-rows: auto auto;
     gap: 12px;
 }
 .product-image-container {
-    grid-row: 1 / span 2; /* 2行分を占める */
+    grid-row: 1 / span 2;
     background-color: #e5e7eb;
     border-radius: 8px;
     overflow: hidden;
-    aspect-ratio: 1 / 1; /* 正方形に */
+    aspect-ratio: 1 / 1;
 }
 .product-image {
     width: 100%;
@@ -85,8 +85,8 @@ G-17 履歴詳細ページ用スタイル
     object-fit: cover;
 }
 .product-info {
-    grid-column: 2; /* 2列目 */
-    grid-row: 1;    /* 1行目 */
+    grid-column: 2;
+    grid-row: 1;
 }
 .product-name {
     font-size: 20px;
@@ -96,17 +96,17 @@ G-17 履歴詳細ページ用スタイル
 .product-price {
     font-size: 22px;
     font-weight: 700;
-    color: #ef4444; /* 赤色 */
+    color: #ef4444;
     margin: 0;
     border-bottom: 2px solid #ef4444;
     display: inline-block;
 }
 .button-group {
-    grid-column: 2; /* 2列目 */
-    grid-row: 2;    /* 2行目 */
+    grid-column: 2;
+    grid-row: 2;
     display: flex;
     justify-content: flex-end;
-    align-items: flex-end; /* 下揃え */
+    align-items: flex-end;
     gap: 12px;
 }
 .btn {
@@ -121,13 +121,13 @@ G-17 履歴詳細ページ用スタイル
     transition: background-color 0.2s ease;
 }
 .btn-detail {
-    background-color: #facc15; /* 黄色 */
+    background-color: #facc15;
     color: #1f2937;
     border-color: #facc15;
 }
 .btn-purchase {
-    background-color: #dbeafe; /* 薄い青 */
-    color: #2563eb; /* 濃い青 */
+    background-color: #dbeafe;
+    color: #2563eb;
     border-color: #93c5fd;
 }
 
@@ -139,12 +139,12 @@ G-17 履歴詳細ページ用スタイル
     font-size: 22px;
     font-weight: 700;
     margin-bottom: 12px;
-    border-left: 4px solid #3b82f6; /* 左の青い線 */
+    border-left: 4px solid #3b82f6;
     padding-left: 8px;
 }
 .detail-box {
     border: 1px solid #e5e7eb;
-    background-color: #f9fafb; /* 薄いグレー */
+    background-color: #f9fafb;
     border-radius: 8px;
     padding: 16px;
     min-height: 50px; 
@@ -157,7 +157,7 @@ G-17 履歴詳細ページ用スタイル
     margin-bottom: 0;
 }
 .detail-label {
-    width: 112px; /* ラベル幅固定 */
+    width: 112px;
     color: #4b5563;
     font-weight: 600;
     flex-shrink: 0; 
@@ -259,14 +259,14 @@ G-17 履歴詳細ページ用スタイル
     transition: opacity 0.2s;
 }
 .btn-danger {
-    background-color: #ef4444; /* 赤 */
+    background-color: #ef4444;
     color: white;
 }
 .btn-danger:hover {
     opacity: 0.8;
 }
 .btn-secondary {
-    background-color: #facc15; /* 黄色 */
+    background-color: #facc15;
     color: #1f2937;
 }
 .btn-secondary:hover {
@@ -348,17 +348,21 @@ G-17 ルーレットページ用スタイル
     margin: 60px auto 50px auto; 
 }
 
-/* ★ 修正: 矢印の位置を中央に固定 */
+/* ★★★ 矢印のCSSを完全に修正 ★★★ */
 #pointer {
     width: 0;
     height: 0;
+    /* 修正: 「下向き」の矢印（border-bottom）に変更 */
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-top: 40px solid red;
+    border-bottom: 40px solid red; 
+    
     position: absolute;
-    top: 50%; /* ルーレットの中央（縦）に配置 */
-    left: 50%; /* ルーレットの中央（横）に配置 */
-    transform: translate(-50%, -100%); /* 自身の幅の半分、高さの分だけ上に移動 */
+    /* 修正: ルーレットコンテナの上端(top: 0)に配置 */
+    top: 0; 
+    left: 50%;
+    /* 修正: 左右中央揃え(translateX)のみに変更 */
+    transform: translateX(-50%); 
     z-index: 10; 
 }
 #canvas {
@@ -395,12 +399,12 @@ G-17 ルーレットページ用スタイル
     color: #d9534f;
 }
 
-/* ★ 追加: クーポン一覧への遷移リンク */
+/* クーポン一覧への遷移リンク */
 .coupon-list-link {
     display: block;
     margin-top: 24px;
     padding: 12px;
-    background-color: #3b82f6; /* 青色 */
+    background-color: #3b82f6;
     color: white;
     font-size: 16px;
     font-weight: 700;
