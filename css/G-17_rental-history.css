@@ -344,22 +344,22 @@ G-17 ルーレットページ用スタイル
 /* ルーレット（矢印とキャンバス） */
 #roulette {
     position: relative;
-    /* ★ 修正: 上の余白を 60px に増やし、文字との重なりを解消 */
-    margin: 60px auto 50px auto; 
+    /* ルーレットの上部にもう少しスペースを確保 (矢印の高さ + 余白) */
+    margin: 80px auto 50px auto; 
 }
 
-/* ★★★ 矢印のCSSを完全に修正 ★★★ */
+/* ★★★ 矢印のCSSを再々修正 (上から下向き) ★★★ */
 #pointer {
     width: 0;
     height: 0;
-    /* 修正: 「下向き」の矢印（border-bottom）に変更 */
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 40px solid red; 
+    /* 修正: 「上から下向き」の矢印（border-top）に戻す */
+    border-top: 40px solid red; 
     
     position: absolute;
-    /* 修正: ルーレットコンテナの上端(top: 0)に配置 */
-    top: 0; 
+    /* 修正: ルーレットの親要素の上端からマイナス値で配置し、ルーレットの外に出す */
+    top: -40px; /* 矢印の高さ分だけ上に移動 */
     left: 50%;
     /* 修正: 左右中央揃え(translateX)のみに変更 */
     transform: translateX(-50%); 
