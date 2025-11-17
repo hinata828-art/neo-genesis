@@ -1,46 +1,58 @@
 /* カート全体・合計 */
 .cart,
 .cart-summary {
-    max-width: 95%;      /* 元の幅に少し余白 */
+    max-width: 95%;
     margin: 20px auto;
     box-sizing: border-box;
 }
 
-/* 商品アイテム */
+/* 商品アイテム：縦幅を広くする */
 .item {
-    display: flex;       /* 左右並び固定 */
+    display: flex;
     background-color: #f5f8fc;
     border-radius: 10px;
     margin-bottom: 15px;
-    padding: 10px;
-    flex-wrap: wrap;     /* スマホで折り返し可能に */
+    padding: 15px;
+    min-height: 180px;      /* ← 商品の縦幅を広くする */
+    align-items: center;
 }
 
-/* 商品画像 */
+/* 左側：商品画像 */
 .item-right {
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
 .product-img {
-    max-width: 150px;
-    max-height: 150px;
+    width: 150px;
+    height: 150px;
     object-fit: contain;
     border-radius: 5px;
 }
 
-/* 商品情報＋ボタン */
+/* 右側：商品情報とボタン */
 .item-left {
     flex: 2;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 140px;
-    margin-right: 10px;
+    height: 150px;
+    padding-left: 15px;
 }
 
+.name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.price {
+    font-size: 16px;
+    margin: 5px 0 10px;
+}
+
+/* ボタン横並び */
 .buttons {
     display: flex;
     gap: 10px;
@@ -48,43 +60,48 @@
 
 .buttons form,
 .buttons .buy-btn {
-    flex: 1;           /* ボタン幅を均等に */
+    flex: 1;
 }
 
-.delete-btn {
-    background: red;
-    color: black;
-    border: none;
-    padding: 8px 0;
+/* 共通ボタンスタイル */
+.delete-btn,
+.buy-btn,
+.checkout-btn {
+    padding: 10px 0;
     border-radius: 20px;
-    width: 100%;
     font-weight: bold;
     cursor: pointer;
+    width: 100%;
+    text-align: center;
+    border: none;
+    display: inline-block;
 }
 
+/* 削除ボタン */
+.delete-btn {
+    background: red;
+    color: white;
+}
+
+/* 購入ボタン */
 .buy-btn {
     background: #0048bc;
     color: white;
     border: 1px solid rgb(0, 100, 201);
-    border-radius: 20px;
-    padding: 8px 0;
-    width: 100%;
-    font-weight: bold;
-    cursor: pointer;
     text-decoration: none;
-    text-align: center;
 }
 
 /* 合計表示 */
 .cart-summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background-color: #fff;
-    padding: 15px 20px;
+    padding: 20px;
     border-radius: 10px;
     border: 1px solid #ddd;
     box-shadow: 0 0 5px #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
 }
 
 .total {
@@ -93,31 +110,39 @@
     text-align: right;
 }
 
-/* レスポンシブ：スマホ調整 */
+/* レジへ進む → 購入ボタンと同じデザインに統一 */
+.checkout-btn {
+    background: #0048bc;
+    color: white;
+    border: 1px solid rgb(0, 100, 201);
+    border-radius: 20px;
+    text-decoration: none;
+}
+
+/* スマホ対応 */
 @media (max-width: 480px) {
     .item {
         flex-direction: column;
-        align-items: center;
+        text-align: center;
+        min-height: auto;
     }
+
+    .item-right {
+        margin-bottom: 10px;
+    }
+
     .item-left {
+        padding-left: 0;
         width: 100%;
-        margin-right: 0;
         height: auto;
     }
+
     .buttons {
         flex-direction: column;
     }
-    .buttons form,
-    .buttons .buy-btn {
-        width: 100%;
-    }
-    .cart-summary {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: right;
-    }
+
     .checkout-btn {
         width: 100%;
-        margin-top: 10px;
     }
 }
+
