@@ -3,7 +3,7 @@ body {
   font-family: 'Helvetica', 'Arial', sans-serif;
   background-color: #f5f5f5;
   /* G-10と同じく、margin-topでヘッダー分の余白を確保します */
-  margin-top: 150px !important;
+  margin-top: 150px;
 }
 
 .coupon-container {
