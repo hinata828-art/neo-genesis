@@ -14,6 +14,6 @@
         退会が完了しました！<br>
         ご利用ありがとうございました！
     </div>
-    <a href="G-1_login-form.php" class="btn">ホーム画面へ</a>
+    <a href="G-1_customer-form.php" class="btn">ログイン画面へ</a>
 </body>
 </html>
