@@ -40,12 +40,16 @@ $breadcrumbs = [
 ];
 require __DIR__ . '/../common/breadcrumb.php';
 ?>
+<!-- ▼ カート合計とレジボタン（パンくずの下に自然に配置） -->
+<div class="cart-summary">
+    <p class="total">小計：￥<?= number_format($total) ?></p>
+    <a href="G-12_order.php?id=<?= $cart_items[0]['product_id'] ?>&color=original" class="checkout-btn">レジへ進む</a>
+</div>
 
 <div class="cart">
 <?php if (empty($cart_items)): ?>
     <p>カートに商品がありません。</p>
 <?php else: ?>
-    <p class="total">小計：￥<?= number_format($total) ?></p>
 
     <?php foreach ($cart_items as $item): ?>
     <div class="item">
@@ -58,10 +62,7 @@ require __DIR__ . '/../common/breadcrumb.php';
                     <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
                     <button type="submit" class="delete-btn">削除</button>
                 </form>
-                <form action="G-12_order.php" method="POST">
-                    <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
-                    <button type="submit" class="buy-btn">購入</button>
-                </form>
+              <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=original" class="buy-btn">購入</a>
             </div>
         </div>
 
