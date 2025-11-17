@@ -64,7 +64,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../css/G-22_staff_product.css">
 </head>
 <body>
-  <?php include 'staff_header.php'; ?>
+    <?php require '../common/db_connect.php'; ?>
 
   <main class="main-container">
     <h2 class="page-title">商品管理</h2>

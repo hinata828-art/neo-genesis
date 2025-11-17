@@ -11,6 +11,6 @@
 
   <!-- 右側：ユーザーアイコン画像 -->
   <div class="user-icon">
-    <img src="images/user.png" alt="ユーザーアイコン">
+    <img src="../img/icon.png" alt="ユーザーアイコン">
   </div>
 </header>
