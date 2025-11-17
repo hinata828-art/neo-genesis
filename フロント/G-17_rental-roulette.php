@@ -243,7 +243,7 @@ function getStatusClass($status) {
 
                     // ★★★ 修正点 3: クーポン一覧へのリンクを表示 ★★★
                     const link = document.createElement('a');
-                    link.href = 'G-25_coupon_list.php';
+                    link.href = 'G-25_coupon-list.php';
                     link.textContent = 'クーポン一覧ページへ移動';
                     link.className = 'coupon-list-link'; // CSSでスタイリング
                     
