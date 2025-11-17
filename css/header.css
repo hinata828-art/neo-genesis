@@ -200,3 +200,57 @@ header {
         font-size: 14px;
     }
 }
+
+/* ========== スライドメニュー ========== */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -250px; /* 初期状態は隠す */
+    width: 250px;
+    height: 100%;
+    background: #6e89ff;
+    color: #fff;
+    padding-top: 80px;
+    transition: 0.3s ease;
+    z-index: 2000;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-menu li {
+    padding: 15px 20px;
+    font-size: 18px;
+}
+
+.side-menu li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.side-menu.open {
+    left: 0; /* 開く */
+}
+
+/* 背景の黒いオーバーレイ */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 1500;
+}
+
+.menu-overlay.show {
+    display: block;
+}
+
+/* ハンバーガーメニューの z-index 修正 */
+.hamburger-menu {
+    z-index: 3000;
+}

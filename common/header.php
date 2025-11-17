@@ -80,4 +80,34 @@ $user_name = $login ? $_SESSION['customer']['name'] : '';
         </div>
     </form>
 
+    <!-- スライドメニュー -->
+<nav id="sideMenu" class="side-menu">
+    <ul>
+        <li><a href="../フロント/G-4_member-information.php">マイページ</a></li>
+        <li><a href="../フロント/G-8_home.php">トップページ</a></li>
+        <li><a href="../フロント/G-11_coupon-list.php">所持クーポン一覧</a></li>
+        <li><a href="../logout.php">ログアウト</a></li>
+    </ul>
+</nav>
+
+<!-- メニューを閉じるための黒背景 -->
+<div id="overlay" class="menu-overlay"></div>
+
+<script>
+    const menu = document.getElementById("sideMenu");
+    const overlay = document.getElementById("overlay");
+    const burger = document.querySelector(".hamburger-menu");
+
+    burger.addEventListener("click", function () {
+        menu.classList.toggle("open");
+        overlay.classList.toggle("show");
+    });
+
+    overlay.addEventListener("click", function () {
+        menu.classList.remove("open");
+        overlay.classList.remove("show");
+    });
+</script>
+
+
 </header>
