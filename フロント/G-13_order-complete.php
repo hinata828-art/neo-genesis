@@ -17,14 +17,17 @@ if ($customer_id === null) {
 }
 
 // G-12から送られてきた「ベース」の商品ID、「選択された」色、「合計金額」
-$base_product_id = $_POST['product_id'] ?? 0;   // (例: 14)
-$selected_color_file_name = $_POST['color'] ?? 'original'; // (例: '白色' や 'original')
+$base_product_id = $_POST['product_id'] ?? 0;
+$selected_color_file_name = $_POST['color'] ?? 'original';
 $total_amount = $_POST['total_amount'] ?? 0;
 $payment_method = $_POST['payment'] ?? '不明';
 
 // オプション
 $option_warranty = $_POST['option_warranty'] ?? null;
 $option_delivery = $_POST['option_delivery'] ?? null;
+
+// ★★★ 修正点 1: G-12から「使用したクーポンのID」を受け取る ★★★
+$customer_coupon_id = $_POST['customer_coupon_id'] ?? 0; 
 
 
 // === 2. G-12と同じ「逆引き辞書」を定義 ===
@@ -41,7 +44,7 @@ $color_display_map = [
     'グレー'     => 'グレー'
 ];
 
-// 選択された色の「表示名」(DBのcolorカラムと一致する名前) (例: '白色' -> 'ホワイト')
+// 選択された色の「表示名」(DBのcolorカラムと一致する名前)
 $selected_color_display_name = $color_display_map[$selected_color_file_name] ?? $selected_color_file_name;
 
 
@@ -53,19 +56,17 @@ $order_info = [
     'payment' => $payment_method,
     'delivery_days' => '---'
 ];
-$final_product_id = $base_product_id; // ひとまずベースIDをセット
+$final_product_id = $base_product_id; 
 
 
 try {
     $pdo = new PDO($connect, USER, PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // === 4. ▼▼▼ ここからが最重要：正しい商品IDを検索する ▼▼▼ ===
+    // === 4. 正しい商品IDを検索する (変更なし) ===
 
     if ($selected_color_display_name !== 'オリジナル') {
-        // (A) 色が選択された場合 (例: 'ホワイト')
-
-        // 1. ベース商品の「商品名」を取得 (例: '8K液晶テレビ 70インチ')
+        // (A) 色が選択された場合
         $sql_get_name = "SELECT product_name FROM product WHERE product_id = ?";
         $stmt_get_name = $pdo->prepare($sql_get_name);
         $stmt_get_name->execute([$base_product_id]);
@@ -74,24 +75,19 @@ try {
         if ($base_product) {
             $base_product_name = $base_product['product_name'];
 
-            // 2. 「商品名」と「選択された色」が一致する商品IDを検索
             $sql_find_variant = "SELECT product_id FROM product WHERE product_name = ? AND color = ?";
             $stmt_find_variant = $pdo->prepare($sql_find_variant);
             $stmt_find_variant->execute([$base_product_name, $selected_color_display_name]);
             $variant_product = $stmt_find_variant->fetch(PDO::FETCH_ASSOC);
 
             if ($variant_product) {
-                // 3. 正しい商品ID (例: 16) が見つかった
                 $final_product_id = $variant_product['product_id'];
             }
-            // (もし見つからなくても、$final_product_id はベースID(14)のまま進む)
         }
 
     } else {
-        // (B) 'オリジナル' が選択された場合
-        // $final_product_id は $base_product_id (例: 14) のままでOK
+        // (B) 'オリジナル' が選択された場合 (何もしない)
     }
-    // === ▲▲▲ 商品ID検索ロジックここまで ▲▲▲ ===
 
 
     // === 5. データベース書き込み処理 ===
@@ -117,16 +113,34 @@ try {
 
     // 3. transaction_detail への INSERT
     $sql_detail = "INSERT INTO transaction_detail 
-                       (transaction_id, product_id, quantity)
+                        (transaction_id, product_id, quantity)
                    VALUES
-                       (?, ?, 1)";
+                        (?, ?, 1)";
     
     $stmt_detail = $pdo->prepare($sql_detail);
-    // ▼▼▼ 修正点：$final_product_id (例: 16) をINSERTする ▼▼▼
     $stmt_detail->execute([
         $new_transaction_id,
         $final_product_id 
     ]);
+
+    
+    // ★★★ 修正点 2: クーポンを使用済みにする UPDATE 処理を追加 ★★★
+    if ($customer_coupon_id > 0) {
+        
+        $sql_coupon_update = "UPDATE customer_coupon 
+                              SET used_at = NOW() 
+                              WHERE customer_coupon_id = :ccid 
+                              AND customer_id = :cid
+                              AND used_at IS NULL"; // 念のため未使用か確認
+                              
+        $stmt_coupon = $pdo->prepare($sql_coupon_update);
+        $stmt_coupon->execute([
+            ':ccid' => $customer_coupon_id,
+            ':cid' => $customer_id
+        ]);
+    }
+    // ★★★ 修正ここまで ★★★
+
 
     // 4. すべて成功したら、トランザクションを「コミット」（確定）
     $pdo->commit();
@@ -176,7 +190,6 @@ try {
     <div class="order-summary">
         <p><strong>配送予定日数：</strong>
         <?php
-            // エラーや未設定の場合は「日後」の文字を表示しないように制御
             if (is_numeric($order_info['delivery_days'])) {
                 echo htmlspecialchars($order_info['delivery_days']) . '日後に発送予定';
             } else {
@@ -184,6 +197,10 @@ try {
             }
         ?>
         </p>
+
+        <?php if ($customer_coupon_id > 0): ?>
+            <p><strong>クーポン：</strong>割引を適用しました。</p>
+        <?php endif; ?>
     </div>
 
     <?php if ($order_info['transaction_id'] !== '---'): ?>
