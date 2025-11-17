@@ -62,7 +62,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <title>商品管理 - ニシムラ Online</title>
     <link rel="stylesheet" href="../css/G-22_staff_product.css">
-    <link rel="stylesheet" href="../css/G-22_staff_header.css">
+    <link rel="stylesheet" href="../css/staff_header.css">
  
 </head>
 <body>
