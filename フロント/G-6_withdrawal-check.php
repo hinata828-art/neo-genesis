@@ -11,7 +11,7 @@
     <?php require __DIR__ . '/../common/header.php'; ?>
     
     <div class="container">
-            <img src="img/NishimuraOnline.png" alt="ニシムラOnline" class="logo">
+            <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="logo">
 
         <main class="confirm-box">
             <div class="alert-icon">⚠️</div>
