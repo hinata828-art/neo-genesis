@@ -1,47 +1,22 @@
-body {
-    font-family: "Segoe UI","メイリオ",sans-serif;
-    background-color: #fafafa;
-    text-align: center;
-}
-
-.cart {
-    max-width: 480px;
-    margin: 30px auto;
-    background: #fff;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 0 10px #ddd;
-}
+/* カート全体・合計 */
+.cart,
 .cart-summary {
-    max-width: 480px;      /* breadcrumb と同じ幅 */
-    margin: 20px auto;     /* 自動センタリング */
-    background-color: #fff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 0 5px #ccc;
-    z-index: 1;            /* fixedやstickyにしないので不要 */
+    max-width: 95%;      /* 元の幅に少し余白 */
+    margin: 20px auto;
+    box-sizing: border-box;
 }
 
-.checkout-btn {
-    background-color: #0048bc;
-    color: #fff;
-    border-radius: 20px;
-    padding: 8px 20px;
-    text-decoration: none;
-    font-weight: bold;
-}
+/* 商品アイテム */
 .item {
-    display: flex; /* 左右並び固定 */
+    display: flex;       /* 左右並び固定 */
     background-color: #f5f8fc;
     border-radius: 10px;
     margin-bottom: 15px;
     padding: 10px;
+    flex-wrap: wrap;     /* スマホで折り返し可能に */
 }
 
+/* 商品画像 */
 .item-right {
     flex: 1;
     display: flex;
@@ -50,41 +25,30 @@ body {
 }
 
 .product-img {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 150px;
+    max-height: 150px;
     object-fit: contain;
     border-radius: 5px;
 }
 
-.item-right {
-    flex: 1;
+/* 商品情報＋ボタン */
+.item-left {
+    flex: 2;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* 上：情報、下：ボタン */
+    justify-content: space-between;
     height: 140px;
-}
-
-.name {
-    font-size: 18px;
-    text-align: left;
-    margin-bottom: 5px;
-}
-
-.price {
-    color: red;
-    font-weight: bold;
-    text-align: left;
-    margin-bottom: 10px;
+    margin-right: 10px;
 }
 
 .buttons {
     display: flex;
-    justify-content: space-between; /* 横並び均等配置 */
     gap: 10px;
 }
 
-.buttons form {
-    flex: 1; /* ボタン幅を均等に */
+.buttons form,
+.buttons .buy-btn {
+    flex: 1;           /* ボタン幅を均等に */
 }
 
 .delete-btn {
@@ -107,14 +71,53 @@ body {
     width: 100%;
     font-weight: bold;
     cursor: pointer;
-    display: inline-block;
     text-decoration: none;
     text-align: center;
+}
+
+/* 合計表示 */
+.cart-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 5px #ccc;
 }
 
 .total {
     font-size: 20px;
     font-weight: bold;
     text-align: right;
-    margin-top: 20px;
+}
+
+/* レスポンシブ：スマホ調整 */
+@media (max-width: 480px) {
+    .item {
+        flex-direction: column;
+        align-items: center;
+    }
+    .item-left {
+        width: 100%;
+        margin-right: 0;
+        height: auto;
+    }
+    .buttons {
+        flex-direction: column;
+    }
+    .buttons form,
+    .buttons .buy-btn {
+        width: 100%;
+    }
+    .cart-summary {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: right;
+    }
+    .checkout-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
 }
