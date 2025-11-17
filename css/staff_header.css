@@ -1,0 +1,47 @@
+/* ヘッダー全体 */
+.header {
+  display: flex;
+  justify-content: space-between; /* 左：メニュー＋タイトル、右：アイコン */
+  align-items: center;
+  background-color: #444;
+  color: #fff;
+  padding: 1em 2em;
+}
+
+/* 左側コンテナ：ハンバーガー＋タイトルを横並び */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1em; /* メニューとタイトルの間に余白 */
+}
+
+/* ハンバーガーメニュー */
+.hamburger-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.hamburger-menu span {
+  display: block;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+/* タイトル */
+.header-left h1 {
+  font-size: 1.4em;
+  margin: 0;
+}
+
+/* ユーザーアイコン画像 */
+.user-icon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}

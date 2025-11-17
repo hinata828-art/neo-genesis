@@ -1,0 +1,205 @@
+body {
+  margin: 0;
+  font-family: 'Helvetica', sans-serif;
+  background-color: #f9f9f9;
+}
+
+
+.main-container {
+  max-width: 100%;
+  padding: 1em 2em;
+  position: relative;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 1.4em;
+  margin-bottom: 1em;
+}
+
+/* 新規登録＋検索バー横並び */
+.action-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 10px;
+}
+
+.new-product-btn {
+  background-color: #ffd700;
+  color: #000;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.search-bar input {
+  padding: 0.4em;
+  width: 300px;
+  font-size: 0.9em;
+}
+
+/* メインエリア：フィルターを右端に固定 */
+.main-area {
+  position: relative;
+  width: 100%;
+}
+
+/* 商品一覧：横並び固定＋スクロール対応 */
+/* 商品一覧：2×2のグリッド表示 */
+/* 商品一覧：2×2のグリッド表示 */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(2, 430px); /* 2列固定 */
+  grid-template-rows: auto auto;           /* 2行 */
+  gap: 2em;                                /* 横・縦の余白を広げる */
+  margin-right: 325px;                     /* フィルター分のスペース */
+}
+
+/* 商品カード：横幅はそのまま */
+.product-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 430px;
+  padding: 0.8em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  margin: 0.5em; /* 追加でカード外側にも余白を確保 */
+}
+
+
+
+
+/* 商品ID：上部に表示 */
+.product-id {
+  font-weight: bold;
+  font-size: 0.95em;
+  color: #333;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.3em;
+}
+
+/* 商品画像・情報・在庫を横並びに */
+.product-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8em;
+}
+
+/* 商品画像 */
+.product-main img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* 商品情報 */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 120px;
+}
+
+.product-info h4 {
+  margin: 0.2em 0;
+  font-size: 0.9em;
+}
+
+.product-info .price {
+  margin: 0.2em 0;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: red;
+}
+
+.product-actions {
+  margin-top: 0.3em;
+}
+
+.product-actions button {
+  margin: 0.2em 0.2em 0 0;
+  padding: 0.3em 0.6em;
+  font-size: 0.85em;
+  border: none;
+  background-color: #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 在庫情報 */
+.stock-info {
+  font-size: 0.85em;
+  color: #333;
+  min-width: 100px;
+}
+
+.stock-info ul {
+  padding-left: 1em;
+  margin: 0.3em 0;
+}
+
+.stock-info li {
+  margin-bottom: 0.2em;
+}
+
+/* 最終入荷日と発注日を横並びに */
+.stock-dates {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  font-size: 0.8em;
+}
+
+/* フィルター：右端にぴったり固定 */
+.filter-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 305px; /* インプット幅300px + 5px */
+  background-color: #fff3d9;
+  padding: 1em;
+  border-radius: 8px;
+  min-height: 400px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.filter-box h3 {
+  margin-top: 0;
+  font-size: 1.1em;
+  margin-bottom: 1em;
+}
+
+.filter-box label {
+  display: block;
+  margin-bottom: 0.8em;
+  font-size: 0.95em;
+}
+
+.filter-box input[type="text"] {
+  width: 300px;
+  padding: 0.4em;
+  margin-top: 0.3em;
+}
+
+.filter-box input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+.apply-btn {
+  background-color: #30cfcf;
+  color: #fff;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1em;
+}
