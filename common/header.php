@@ -55,7 +55,7 @@ $user_name = $login ? $_SESSION['customer']['name'] : '';
             </div>
 
             <div class="header-cart">
-                <a href="../フロント/G-10_cart.php">
+                <a href="../フロント/G-11_cart.php">
                     <img src="../img/cart.png" alt="カート">
                     <label>カート</label>
                 </a>

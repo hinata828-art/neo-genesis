@@ -1,28 +1,30 @@
 body {
     font-family: "Helvetica Neue", Arial, sans-serif;
     background-color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    /* 修正: display:flex を削除し、ヘッダーが正しく表示されるようにする */
     margin: 0;
+    /* もしヘッダーが画面上部に固定されている場合、
+       ヘッダーの高さ分だけ余白が必要な場合があります。
+       例: padding-top: 80px; 
+    */
 }
 
 .container {
     text-align: center;
     width: 90%;
     max-width: 400px;
+    /* 修正: display:flex の代わりに margin:auto で中央寄せする */
+    margin: 40px auto; /* 上下に 40px、左右に auto */
 }
 
 /* --- ヘッダー --- */
-
 .logo {
-    width: min(50vw, 300px); /* 画面幅の25%、ただし最大100px */
+    /* 修正: コメント（最大100px）とコード(300px)が食い違っていたため、
+       現実的なサイズ (min(40vw, 200px)) に調整 */
+    width: min(40vw, 200px); 
     height: auto;
     margin-bottom: 10px;
 }
-
-
 
 .site-title {
     font-size: 20px;
@@ -58,7 +60,15 @@ body {
     display: flex;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap; /* ✅ 画面が狭いときに自動で折り返す */
+    flex-wrap: wrap; 
+}
+
+/* ★★★ 修正点 1: <form> タグ自体に幅を持たせる ★★★ */
+.button-group form {
+    width: 45%;         /* 画面幅の45%を使用 */
+    max-width: 180px;   /* PCでは大きすぎないよう制限 */
+    min-width: 130px;   /* 最小サイズを確保 */
+    margin: 0;          /* formデフォルトのマージンをリセット */
 }
 
 .btn {
@@ -69,9 +79,7 @@ body {
     cursor: pointer;
     color: #fff;
     font-weight: bold;
-    width: 45%;          /* ✅ 画面幅の45%を使用（横に2つ並ぶ） */
-    max-width: 180px;    /* PCでは大きすぎないよう制限 */
-    min-width: 130px;    /* 最小サイズを確保 */
+    width: 100%;         /* ★ 修正: 親(form)の幅いっぱいに広がる */
     text-align: center;
     box-sizing: border-box;
     transition: 0.2s;
@@ -90,15 +98,15 @@ body {
     opacity: 0.9;
 }
 
-/* --- ✅ スマホ画面向け調整 --- */
+/* ★★★ 修正点 2: スマホ画面向けの調整 ★★★ */
 @media screen and (max-width: 480px) {
+    /* 修正: 1列にするため、formの幅を 90% や 100% にする */
+    .button-group form {
+        width: 90%; 
+        min-width: 0; /* 最小幅をリセット */
+    }
+    
     .btn {
-        width: 45%;      /* スマホでは1列にして横幅いっぱい */
         font-size: 17px;
     }
-   
 }
-
-
-
-
