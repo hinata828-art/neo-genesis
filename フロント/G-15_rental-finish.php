@@ -22,7 +22,7 @@ $base_product_id = $_POST['product_id'] ?? 0;
 $selected_color_file_name = $_POST['color'] ?? 'original';
 $total_amount = $_POST['total_amount'] ?? 0;
 $payment_method = $_POST['payment'] ?? '不明';
-$rental_term_string = $_POST['rental_term'] ?? '1month'; // (例: '1month')
+$rental_term_string = $_POST['rental_term'] ?? '1month'; 
 
 // オプション
 $option_warranty = $_POST['option_warranty'] ?? null;
@@ -52,7 +52,7 @@ $order_info = [
     'transaction_id' => '---',
     'total_amount' => $total_amount,
     'payment' => $payment_method,
-    'delivery_days' => '---' // G-13同様、配送日数を表示
+    'delivery_days' => '---' 
 ];
 $final_product_id = $base_product_id; 
 
@@ -80,18 +80,16 @@ try {
         }
     }
 
-    // === 5. ▼▼▼ 修正点：POSTされた文字列を「日数(int)」に変換 ▼▼▼ ===
+    // === 5. POSTされた文字列を「日数(int)」に変換 (変更なし) ===
     $term_to_days_map = [
         '1week'   => 7,
         '2weeks'  => 14,
-        '1month'  => 30, // 1ヶ月を30日と仮定
-        '3months' => 90, // 3ヶ月を90日と仮定
+        '1month'  => 30, 
+        '3months' => 90, 
         '6months' => 180,
         '1year'   => 365
     ];
-    // G-14から来た文字列 (例: '1month') を、日数 (例: 30) に変換
     $rental_days_int = $term_to_days_map[$rental_term_string] ?? 30;
-    // ▲▲▲ 修正点ここまで ▲▲▲
 
 
     // === 6. データベース書き込み処理 ===
@@ -115,7 +113,7 @@ try {
     $order_info['transaction_id'] = $new_transaction_id;
 
 
-    // 3. ▼▼▼ 修正点：rental テーブル への INSERT（カラム名を修正） ▼▼▼
+    // 3. rental テーブル への INSERT
     $sql_rental_detail = "INSERT INTO rental 
                             (transaction_id, customer_id, product_id, rental_start, rental_end, rental_days)
                           VALUES
@@ -124,23 +122,39 @@ try {
     $stmt_rental_detail = $pdo->prepare($sql_rental_detail);
     $stmt_rental_detail->execute([
         $new_transaction_id,
-        $customer_id,      // ★ rental テーブルのカラムに合わせて customer_id を追加
-        $final_product_id, // ★ 色を反映した商品ID
-        $rental_days_int,  // ★ DATE_ADD() で終了日を計算
-        $rental_days_int   // ★ rental_days カラム (int) に日数を保存
+        $customer_id,
+        $final_product_id,
+        $rental_days_int,
+        $rental_days_int
     ]);
-    // ▲▲▲ 修正点ここまで ▲▲▲
 
-    // 4. すべて成功したら、トランザクションを「コミット」（確定）
+    
+    // ★★★ 修正点: transaction_detail にも履歴を保存 ★★★
+    // (G-13_order-complete.php と同じ処理を追加)
+    $sql_detail = "INSERT INTO transaction_detail 
+                        (transaction_id, product_id, quantity)
+                   VALUES
+                        (?, ?, 1)"; // レンタルでも数量は 1
+    
+    $stmt_detail = $pdo->prepare($sql_detail);
+    $stmt_detail->execute([
+        $new_transaction_id,
+        $final_product_id 
+    ]);
+    // ★★★ 修正ここまで ★★★
+    
+
+    // 5. すべて成功したら、トランザクションを「コミット」（確定）
     $pdo->commit();
 
     // === 7. 配送日数SELECT処理 (G-13と同じ) ===
+    // (※ transaction_detail を参照するようにクエリを変更)
     $sql_delivery = "
         SELECT c.delivery_days
-        FROM rental r
-        JOIN product p ON r.product_id = p.product_id
+        FROM transaction_detail td 
+        JOIN product p ON td.product_id = p.product_id
         JOIN category c ON p.category_id = c.category_id
-        WHERE r.transaction_id = ?
+        WHERE td.transaction_id = ?
         LIMIT 1
     ";
     $stmt_delivery = $pdo->prepare($sql_delivery);
