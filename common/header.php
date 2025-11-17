@@ -41,9 +41,17 @@ $user_name = $login ? $_SESSION['customer']['name'] : '';
         <div class="header-right-icons">
 
             <div class="header-user">
-                <a href="../フロント/G-4_member-information.php">
-                    <img src="../img/icon.png" alt="会員情報" class="user-icon">
-                </a>
+                <?php if ($login): ?>
+                <!-- ログイン時：会員情報へ -->
+                    <a href="../フロント/G-4_member-information.php">
+                        <img src="../img/icon.png" alt="会員情報" class="user-icon">
+                    </a>
+                <?php else: ?>
+                <!-- 未ログイン時：会員登録フォームへ -->
+                    <a href="../フロント/G-1_customer-form.php">
+                        <img src="../img/icon.png" alt="ログイン" class="user-icon">
+                    </a>
+                <?php endif; ?>
             </div>
 
             <div class="header-cart">
