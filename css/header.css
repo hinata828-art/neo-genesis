@@ -6,223 +6,252 @@
 }
 body {
     font-family: sans-serif;
-    overflow-x: hidden; 
+    overflow-x: hidden;
+    padding-top: 130px; /* 固定ヘッダー分の余白 */
 }
 
-/* ===== ヘッダー全体 ===== */
+/* ===== ヘッダー本体 ===== */
 header {
     background-color: #a9bcf5;
-    padding: 8px 0; 
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
-/* --- コンテナ (ヘッダー内部の左右余白を管理) --- */
-.top-row,
-.bottom-row {
+/* ===== 上段：3カラム配置 ===== */
+.top-row {
     width: 100%;
-    padding: 0 10px; /* 左右に10pxの余白 */
+    padding: 0 10px;
     display: flex;
     align-items: center;
+    justify-content: space-between; /* ← 左・中央・右に配置 */
 }
 
-/* ===== 上段：ロゴ・アイコン・カート ===== */
-.top-row {
-    justify-content: space-between; 
-    gap: 10px;
-}
-
-/* 左側（ハンバーガーとロゴ） */
+/* --------------- 左：ハンバーガー + ロゴ --------------- */
 .header-left {
     display: flex;
     align-items: center;
-    gap: 8px; 
+    gap: 10px;
 }
 
-/* ハンバーガーメニュー */
+/* ハンバーガー */
 .hamburger-menu {
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    cursor: pointer;
 }
 .hamburger-menu span {
-    display: block;
     height: 4px;
-    width: 100%;
-    background-color: #ffffff;
+    background: white;
     border-radius: 2px;
 }
 
 /* ロゴ */
 .header-logo img {
-    height: 80px;
+    height: 60px;
     width: auto;
-    display: block; 
 }
 
-/* 右側のアイコン群 */
+/* --------------- 中央：ウェルカムメッセージ --------------- */
+.welcome-message {
+    flex: 1;                    /* 中央で伸びる */
+    text-align: center;
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.3;
+}
+
+.customer-name {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.login-link {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.login-text {
+    color: #fff;
+    font-size: 14px;
+}
+
+/* --------------- 右：アイコン群 --------------- */
 .header-right-icons {
     display: flex;
     align-items: center;
-    gap: 3px; /* アイコンとカートの隙間 */
+    gap: 15px;
 }
 
-/* ユーザーアイコン（親要素：グレーの丸） */
+/* ユーザーアイコン */
 .header-user {
-    background-color: #ddd;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* 標準サイズを設定 */
-    width: 56px; 
-    height: 56px; 
+    overflow: hidden;  /* ← これで丸く切れる */
 }
-.header-user img {
-    width: 130%;
-    height: 130%;
-    object-fit: cover;
-}
-/* ★★★ 修正箇所 終わり ★★★ */
 
+.header-user img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ← 自動トリミングで綺麗に収まる */
+}
 
 /* カートボタン */
 .header-cart a {
     display: flex;
     align-items: center;
     gap: 5px;
-    background-color: #fff;
-    border: 1px solid #333;
+    background: #fff;
+    border: 1px solid #444;
+    padding: 6px 14px;
     border-radius: 9999px;
-    padding: 8px 16px;
     text-decoration: none;
     color: #333;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .header-cart img {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
-/* ===== 下段：検索窓 ===== */
+/* ===== 下段：検索バー ===== */
 .bottom-row {
-    margin-top: 8px; 
+    margin-top: 8px;
+    padding: 0 10px;
+    display: flex;
 }
+
 .search-container {
     position: relative;
     width: 100%;
     display: flex;
-    /* 【追加】フレックスアイテムが小さくなりすぎるのを防ぐ */
-    min-width: 0; 
+    min-width: 0;
 }
-/* カテゴリプルダウン（検索窓の左側） */
+
 .category-select {
-    padding: 12px 10px;
-    border-right: none;
-    border-top-left-radius: 9999px;
-    border-bottom-left-radius: 9999px;
+    width: 110px;
     border: 1px solid #333;
-    font-size: 16px;
-    background-color: #fff;
-    cursor: pointer;
-    width: 120px; 
-    flex-shrink: 0;
+    border-right: none;
+    padding: 12px 8px;
+    border-radius: 9999px 0 0 9999px;
 }
-/* 検索窓のスタイルを調整（プルダウンと連続させるため） */
+
+
 .search-container input {
     width: 100%;
-    padding: 12px 60px 12px 20px;
-    border-radius: 9999px;
     border: 1px solid #333;
-    font-size: 16px;
-    border-left: none; /* プルダウンと境界線を結合 */
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    padding: 12px 55px 12px 15px;
+    border-radius: 0 9999px 9999px 0;
 }
 
-
-/* kensaku.png を使うボタン */
 .search-button {
     position: absolute;
-    right: 5px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    background: none;
     border: none;
-    padding: 5px;
-    cursor: pointer;
-    height: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: none;
 }
 .search-button img {
-    height: 100%;
-    width: auto;
-    max-height: 28px;
+    width: 26px;
+    height: 26px;
 }
 
-/* ===== スマホ対応（600px以下） ===== */
-@media screen and (max-width: 600px) {
-    /* 左右の余白を少し調整 */
-    .top-row,
-    .bottom-row {
-        padding: 0 5px; 
+/* ===== スマホ対応 ===== */
+@media (max-width: 600px) {
+
+    body {
+        padding-top: 150px;
     }
 
-    /* スマホではカートの文字を非表示 (任意) */
-    .header-cart label {
-        display: none;
-    }
-    .header-cart a {
-        padding: 8px 12px;
-    }
-
-    /* アイコンの枠サイズをスマホ用に調整 */
-    .header-user {
-        width: 40px;
-        height: 40px;
-    }
-    
     .header-logo img {
-        height: 80px; 
+        height: 50px;
     }
-    .hamburger-menu {
-        width: 35px;
-        height: 35px;
+
+    .welcome-message {
+        font-size: 13px;
     }
-    .hamburger-menu span {
-        height: 3px;
+    .customer-name {
+        font-size: 15px;
     }
-    
-    /* カテゴリ選択の幅をスマホ用に調整し、表示を維持 */
+
+    .header-user {
+        width: 36px;
+        height: 36px;
+    }
+
+    .header-cart a {
+        padding: 6px 10px;
+    }
+
     .category-select {
-        /* 幅を固定 (Chromeで崩れにくいように min-width も指定) */
-        width: 80px; 
-        min-width: 80px; 
+        width: 80px;
+        font-size: 13px;
         padding: 10px 5px;
-        font-size: 14px;
-        /* PC版の設定を維持: border-right: none; */
-        border-top-left-radius: 9999px;
-        border-bottom-left-radius: 9999px;
-        border: 1px solid #333;
     }
-    
-    /* 検索窓のスタイルを調整（プルダウンと連続させるため） */
+
     .search-container input {
-        width: 100%;
-        padding: 10px 60px 10px 10px;
+        padding: 10px 50px 10px 12px;
         font-size: 14px;
-        /* PC版の設定を元に戻す（カテゴリ選択と連続させる） */
-        border-radius: 9999px;
-        border: 1px solid #333;
-        border-left: none; 
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
     }
+}
+
+/* ========== スライドメニュー ========== */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -250px; /* 初期状態は隠す */
+    width: 250px;
+    height: 100%;
+    background: #6e89ff;
+    color: #fff;
+    padding-top: 80px;
+    transition: 0.3s ease;
+    z-index: 2000;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-menu li {
+    padding: 15px 20px;
+    font-size: 18px;
+}
+
+.side-menu li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.side-menu.open {
+    left: 0; /* 開く */
+}
+
+/* 背景の黒いオーバーレイ */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 1500;
+}
+
+.menu-overlay.show {
+    display: block;
+}
+
+/* ハンバーガーメニューの z-index 修正 */
+.hamburger-menu {
+    z-index: 3000;
 }

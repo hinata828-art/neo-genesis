@@ -12,7 +12,28 @@ body {
     padding: 20px;
     box-shadow: 0 0 10px #ddd;
 }
+.cart-summary {
+    max-width: 480px;      /* breadcrumb と同じ幅 */
+    margin: 20px auto;     /* 自動センタリング */
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 5px #ccc;
+    z-index: 1;            /* fixedやstickyにしないので不要 */
+}
 
+.checkout-btn {
+    background-color: #0048bc;
+    color: #fff;
+    border-radius: 20px;
+    padding: 8px 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
 .item {
     display: flex; /* 左右並び固定 */
     background-color: #f5f8fc;
@@ -21,15 +42,17 @@ body {
     padding: 10px;
 }
 
-.item-left {
-    width: 100px;
-    margin-right: 15px;
-    flex-shrink: 0;
+.item-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .product-img {
-    width: 100%;
-    height: auto;
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: contain;
     border-radius: 5px;
 }
 
@@ -38,7 +61,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* 上：情報、下：ボタン */
-    height: 140px; /* 枠内高さ調整 */
+    height: 140px;
 }
 
 .name {
@@ -84,6 +107,9 @@ body {
     width: 100%;
     font-weight: bold;
     cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
 }
 
 .total {
@@ -91,13 +117,4 @@ body {
     font-weight: bold;
     text-align: right;
     margin-top: 20px;
-}
-
-.checkout-btn {
-    background-color: #bcdcff;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 10px 0 20px;
 }
