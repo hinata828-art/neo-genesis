@@ -75,7 +75,9 @@ $coupons = $stmt->fetchAll();
     $breadcrumbs = [
         ['name' => '所持クーポン']
     ];
+    /*
     require __DIR__ . '/../common/breadcrumb.php';
+    */
     ?>
 
   <main class="coupon-container">
