@@ -97,9 +97,6 @@ try {
 $breadcrumbs = [
     ['name' => '現在のページ']
 ];
-require __DIR__ . '../common/header-Administrator.php';
-?>
-
 <div class="container">
 
   <!-- ★ 顧客情報と履歴を横並びにする wrapper -->
