@@ -6,7 +6,7 @@
     border-radius: 10px;
     margin-bottom: 15px;
     padding: 20px;
-    min-height: 230px;          /* ← 縦幅アップ！ */
+    min-height: 250px;          /* ← 縦幅アップ！ */
     align-items: center;        /* 中央揃え */
 }
 
