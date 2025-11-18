@@ -116,7 +116,7 @@ $initial_total_price = $initial_subtotal + $compensation_price;
         ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
         ['name' => 'レンタル申し込み']
     ];
-    require __DIR__ . '/../common/breadcrumb.php';
+    //require __DIR__ . '/../common/breadcrumb.php';
     ?>
     <div class="container">
     <p>レンタル</p>
