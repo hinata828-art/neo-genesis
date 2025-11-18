@@ -123,7 +123,7 @@ $history = $historyStmt->fetchAll(PDO::FETCH_ASSOC);
 
         <label>商品画像</label>
         <div class="product-image-box">
-            <img src="data:image/jpeg;base64,<?= base64_encode($product['product_image']) ?>">
+            <img src="<?= htmlspecialchars($product['product_image']) ?>" alt="商品画像">
         </div>
 
         <label>商品詳細</label>
