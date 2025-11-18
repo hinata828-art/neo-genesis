@@ -97,7 +97,7 @@ try {
 $breadcrumbs = [
     ['name' => '現在のページ']
 ];
-require __DIR__ . '/header-Administrator.php';
+require '../common/header-Administrator.php';
 ?>
 
 <div class="container">
