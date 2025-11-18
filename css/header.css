@@ -26,7 +26,7 @@ header {
     padding: 0 10px;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* ← 左・中央・右に配置 */
+    justify-content: space-between;
 }
 
 /* --------------- 左：ハンバーガー + ロゴ --------------- */
@@ -34,6 +34,8 @@ header {
     display: flex;
     align-items: center;
     gap: 10px;
+    /* ★ 修正: 縮まないようにする */
+    flex-shrink: 0; 
 }
 
 /* ハンバーガー */
@@ -59,12 +61,24 @@ header {
 
 /* --------------- 中央：ウェルカムメッセージ --------------- */
 .welcome-message {
-    flex: 1;                    /* 中央で伸びる */
+    flex: 1;
     text-align: center;
     color: #fff;
     font-size: 15px;
     line-height: 1.3;
+    
+    /* ★ 修正: flexアイテムが正しく縮小できるように最小幅を指定 */
+    min-width: 0; 
 }
+
+/* ★ 修正: テキストがはみ出た場合に省略(...)する設定を追加 */
+.welcome-message span {
+    display: block; /* ブロック要素にして */
+    white-space: nowrap; /* 折り返しを禁止 */
+    overflow: hidden; /* はみ出しを隠す */
+    text-overflow: ellipsis; /* 省略記号(...)を表示 */
+}
+
 
 .customer-name {
     font-weight: bold;
@@ -86,6 +100,8 @@ header {
     display: flex;
     align-items: center;
     gap: 15px;
+    /* ★ 修正: 縮まないようにする */
+    flex-shrink: 0; 
 }
 
 /* ユーザーアイコン */
@@ -93,13 +109,13 @@ header {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    overflow: hidden;  /* ← これで丸く切れる */
+    overflow: hidden;
 }
 
 .header-user img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* ← 自動トリミングで綺麗に収まる */
+    object-fit: cover;
 }
 
 /* カートボタン */

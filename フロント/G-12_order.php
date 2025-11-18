@@ -131,7 +131,9 @@ if (!empty($base_image_url_from_db)) {
         ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
         ['name' => '注文情報入力']
     ];
-    //require __DIR__ . '/../common/breadcrumb.php';
+    /*
+    require __DIR__ . '/../common/breadcrumb.php';
+    */
     ?>
     
 <div class="container">

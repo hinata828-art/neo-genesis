@@ -1,268 +1,201 @@
-/* 共通スタイル（省略せず再掲） */
+/* --- 基本設定 --- */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
     margin: 0;
-    padding: 20px;
+    background-color: #f3f4f6;
+    color: #1f2937;
 }
 
+/* --- 全体コンテナ (スマホ幅) --- */
 .container {
-    max-width: 700px;
-    margin: auto;
-    background-color: #fff;
-    padding: 30px 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    min-height: 100vh;
 }
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-/* ▼▼▼ 追加 ▼▼▼
-   ページのメインチタイトル（「注文内容」）のスタイル
-   .container の直下にある最初の <p> タグを対象にします
-*/
+/* --- ページタイトル ("注文内容") --- */
 .container > p:first-child {
-    font-size: 22px;    /* 大きく */
-    font-weight: bold;
-    text-align: center; /* センター揃え */
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 10px;
     margin-bottom: 20px;
 }
-/* ▲▲▲ 追加 ▲▲▲ */
-
 
 hr {
-    margin: 20px 0;
     border: none;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #e5e7eb;
+    margin: 24px 0;
 }
 
-/* 商品情報 */
+/* --- 商品情報セクション --- */
 .product-section {
     display: flex;
-    flex-wrap: nowrap;
+    gap: 16px;
     align-items: flex-start;
-    gap: 15px;
-    margin-bottom: 20px;
 }
 
 .product-image {
-    width: 120px;
-    height: auto;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
     flex-shrink: 0;
 }
 
 .product-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    flex-grow: 1;
 }
 
 .product-name {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 10px;
-    word-break: break-word;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
 }
 
 .product-color-row {
     display: flex;
     gap: 8px;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.product-color-label {
     font-size: 14px;
-    flex-shrink: 0;
+    color: #4b5563;
 }
 
-.product-color {
-    font-size: 14px;
-}
-
-/* 金額表示 */
+/* --- 金額表示セクション --- */
 .price-section p {
     display: flex;
     justify-content: space-between;
     font-size: 16px;
-    margin: 5px 0;
+    margin: 8px 0;
+}
+
+.price-section p:last-child {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 12px;
 }
 
 .price {
-    color: red;
-    font-weight: bold;
-    text-align: right;
+    font-weight: 700;
+    color: #1f2937;
 }
 
-/* 入力フィールド */
-input[type="text"],
-input[type="number"] {
+/* ★★★ 追加: 割引額のスタイル ★★★ */
+.price-discount {
+    font-weight: 700;
+    color: #ef4444; /* 赤色 */
+}
+
+/* --- 共通入力フォームスタイル --- */
+.delivery-section label,
+.payment-section > p,
+.option-section > p,
+.credit-details label {
+    font-size: 16px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* ★★★ 追加: input-text のスタイル ★★★ */
+.input-text {
     width: 100%;
-    max-width: 100%;
-    padding: 8px;
-    margin: 5px 0 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-sizing: border-box; /* 幅計算の基準を統一 */
+    margin-bottom: 16px;
+}
+.input-text:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 
-.input-small {
-    width: 50px;
-    padding: 6px;
-    margin: 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    text-align: center;
+/* --- 支払い方法 --- */
+.payment-box {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+}
+.payment-box label {
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.credit-details {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
 }
 
 .expiry-row {
     display: flex;
     align-items: center;
-    gap: 4px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.expiry-row label {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 0;
 }
 
-/* セクションラベル */
-/* ▼▼▼ 修正 ▼▼▼
-   .payment-section と .option-section のタイトル（<p>タグ）も
-   スタイル対象に含め、フォントサイズを 18px に指定します
-*/
-.delivery-section label,
-.payment-section > p,
-.option-section > p {
-    text-align: left;
-    display: block;
-    font-weight: bold;
-    margin-top: 10px;
-    font-size: 18px; /* ◀ 大きく */
-    margin-bottom: 10px; /* ◀ pタグの場合、下の要素との間隔を追加 */
-}
-/* ▲▲▲ 修正 ▲▲▲ */
-
-
-/* 支払い方法の囲み */
-.payment-box {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    background-color: #f5f5f5;
+/* ★★★ 追加: input-small のスタイル ★★★ */
+.input-small {
+    width: 70px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.credit-details {
-    margin-left: 10px;
-    margin-top: 10px;
+/* --- 追加オプション --- */
+/* ★★★ 追加: option-box のスタイル ★★★ */
+.option-box {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+}
+.option-box label {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.option-box input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
 }
 
-/* ボタン */
+/* --- 確定ボタン --- */
 .confirm-button {
     display: block;
     width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-    background-color: #007bff;
+    padding: 16px;
+    background-color: #28a745;
     color: white;
-    padding: 12px;
-    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
     text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: background-color 0.3s;
 }
-
 .confirm-button:hover {
-    background-color: #0056b3;
-}
-
-/* 📱 スマートフォン対応 */
-@media screen and (max-width: 480px) {
-    .container {
-        padding: 20px 15px;
-    }
-
-    .product-section {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .product-image {
-        width: 100px;
-        height: auto;
-        flex-shrink: 0;
-    }
-
-    .product-info {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-    }
-
-    .product-name {
-        font-size: 15px;
-        margin-bottom: 8px;
-    }
-
-    .product-color-row {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .product-color-label,
-    .product-color {
-        font-size: 13px;
-    }
-    .price-section p {
-        display: flex;
-        justify-content: space-between;
-        font-size: 15px;
-        margin: 4px 0;
-    }
-
-    .price {
-        color: red;
-        font-weight: bold;
-        text-align: right;
-    }
-
-    .input-text,
-    input[type="text"],
-    input[type="number"] {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-
-    .expiry-row {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 4px;
-        margin-bottom: 10px;
-    }
-
-    .input-small {
-        width: 50px;
-        padding: 6px;
-        margin: 0;
-        box-sizing: border-box;
-        text-align: center;
-    }
-    .confirm-button {
-        width: 100%;
-        box-sizing: border-box;
-    }
+    background-color: #218838;
 }
