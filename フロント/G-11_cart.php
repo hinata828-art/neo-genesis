@@ -46,7 +46,7 @@ $breadcrumbs = [
     ['name' => 'ホーム', 'url' => 'G-8_home.php'],
     ['name' => 'カート']
 ];
-require __DIR__ . '/../common/breadcrumb.php';
+//require __DIR__ . '/../common/breadcrumb.php';
 ?>
 <!-- ▼ カート合計とレジボタン（パンくずの下に自然に配置） -->
 <div class="cart-summary">
