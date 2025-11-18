@@ -1,18 +1,20 @@
 /* ヘッダー全体 */
 .header {
   display: flex;
-  justify-content: space-between; /* 左：メニュー＋タイトル、右：アイコン */
+  justify-content: space-between;
   align-items: center;
   background-color: #444;
   color: #fff;
   padding: 1em 2em;
+  position: relative;
+  z-index: 1000;
 }
 
-/* 左側コンテナ：ハンバーガー＋タイトルを横並び */
+/* 左側：ハンバーガー＋タイトル */
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1em; /* メニューとタイトルの間に余白 */
+  gap: 1em;
 }
 
 /* ハンバーガーメニュー */
@@ -23,6 +25,7 @@
   width: 25px;
   height: 18px;
   cursor: pointer;
+  z-index: 3000;
 }
 
 .hamburger-menu span {
@@ -38,7 +41,7 @@
   margin: 0;
 }
 
-/* ユーザーアイコン画像 */
+/* ユーザーアイコン */
 .user-icon img {
   width: 32px;
   height: 32px;
@@ -46,55 +49,67 @@
   object-fit: cover;
 }
 
+/* スライドメニュー */
 .side-menu {
-    position: fixed;
-    top: 0;
-    left: -250px; /* 初期状態は隠す */
-    width: 250px;
-    height: 100%;
-    background: #6e89ff;
-    color: #fff;
-    padding-top: 80px;
-    transition: 0.3s ease;
-    z-index: 2000;
-}
-
-.side-menu ul {
-    list-style: none;
-    padding: 0;
-}
-
-.side-menu li {
-    padding: 15px 20px;
-    font-size: 18px;
-}
-
-.side-menu li a {
-    color: #fff;
-    text-decoration: none;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background: #6e89ff;
+  color: #fff;
+  padding-top: 80px;
+  transition: left 0.3s ease;
+  z-index: 2500;
 }
 
 .side-menu.open {
-    left: 0; /* 開く */
+  left: 0;
 }
 
-/* 背景の黒いオーバーレイ */
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu li {
+  padding: 15px 20px;
+  font-size: 18px;
+}
+
+.side-menu li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* オーバーレイ（背景の黒） */
 .menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    z-index: 1500;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  z-index: 2000;
 }
 
 .menu-overlay.show {
-    display: block;
+  display: block;
 }
 
-/* ハンバーガーメニューの z-index 修正 */
-.hamburger-menu {
-    z-index: 3000;
+/* レスポンシブ対応（任意） */
+@media screen and (max-width: 768px) {
+  .header-left h1 {
+    font-size: 1.2em;
+  }
+
+  .side-menu {
+    width: 200px;
+  }
+
+  .side-menu li {
+    font-size: 16px;
+  }
 }
