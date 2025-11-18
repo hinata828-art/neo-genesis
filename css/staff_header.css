@@ -56,7 +56,7 @@
   left: -250px; /* 初期状態は画面外 */
   width: 250px;
   height: 100%;
-  background: #6e89ff;
+  background: rgba(0,0,0,0.5);
   color: #fff;
   padding-top: 80px;
   transition: left 0.3s ease;
