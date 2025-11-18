@@ -1,4 +1,10 @@
 <?php
+// ★★★ 修正: session_start() を追加します ★★★
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// ----------------------------------------------------
+
 // ===== データベース接続 =====
 require '../common/db_connect.php';
 
@@ -33,7 +39,9 @@ try {
     $breadcrumbs = [
         ['name' => '現在のページ']
     ];
+    /*
     require __DIR__ . '/../common/breadcrumb.php';
+    */
     ?>
 
 <main>
