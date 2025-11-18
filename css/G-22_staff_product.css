@@ -161,7 +161,7 @@ body {
 /* フィルター：右端にぴったり固定 */
 .filter-box {
   position: fixed;   /* ← absoluteからfixedに変更 */
-  top: 30px;
+  top: 40px;
   right: 0;
   width: 305px; /* インプット幅300px + 5px */
   background-color: #fff3d9;
