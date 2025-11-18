@@ -30,7 +30,7 @@ if ($category !== '') {
   $params[':category'] = $category;
 }
 if ($maker !== '') {
-  $where[] = 'name LIKE :maker';
+  $where[] = 'maker LIKE :maker';
   $params[':maker'] = "%{$maker}%";
 }
 // ▼▼▼ 拡張子(.jpg) を追加するロジックを「削除」 ▼▼▼
@@ -62,9 +62,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <title>商品管理 - ニシムラ Online</title>
     <link rel="stylesheet" href="../css/G-22_staff_product.css">
+    <link rel="stylesheet" href="../css/staff_header.css">
+ 
 </head>
 <body>
-  <?php include 'staff_header.php'; ?>
+    <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
   <main class="main-container">
     <h2 class="page-title">商品管理</h2>
@@ -91,7 +93,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="product-info">
                   <h4><?= htmlspecialchars($p['product_name']) ?></h4>
                   <p class="price">¥<?= number_format($p['price']) ?></p>
-                  <p>メーカー: <?= htmlspecialchars($p['name']) ?></p>
+                  <p>メーカー: <?= htmlspecialchars($p['maker']) ?></p>
                   <p>カラー: <?= htmlspecialchars($p['color']) ?></p>
                   <div class="product-actions">
                     <button onclick="location.href='g23_product_edit.php?id=<?= $p['product_id'] ?>'">編集</button>

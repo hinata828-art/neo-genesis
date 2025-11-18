@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
-require 'db-connect.php';
+require '../common/db_connect.php'; // DB接続ファイルを利用
 
 // URLパラメータから顧客IDを取得
 $customer_id = $_GET['id'] ?? null;
@@ -88,7 +88,7 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>顧客詳細 - 管理者画面</title>
 <link rel="stylesheet" href="../css/G-21_customer-detail.css">
-<link rel="stylesheet" href="../css/header-Administrator.css">
+<link rel="stylesheet" href="../css/header.css">
 <link rel="stylesheet" href="../css/G-21_sub.css"> <!-- ★追加したCSS -->
 </head>
 

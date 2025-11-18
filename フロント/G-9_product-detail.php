@@ -132,7 +132,7 @@ try {
         ['name' => 'ホーム', 'url' => 'G-8_home.php'],
         ['name' => htmlspecialchars($product['product_name'])]
     ];
-    require __DIR__ . '/../common/breadcrumb.php';
+    //require __DIR__ . '/../common/breadcrumb.php';
     ?>
 
 <main class="product-detail">

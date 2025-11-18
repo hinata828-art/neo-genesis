@@ -160,7 +160,7 @@ body {
 
 /* フィルター：右端にぴったり固定 */
 .filter-box {
-  position: absolute;
+  position: fixed;   /* ← absoluteからfixedに変更 */
   top: 0;
   right: 0;
   width: 305px; /* インプット幅300px + 5px */
@@ -169,6 +169,7 @@ body {
   border-radius: 8px;
   min-height: 400px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-sizing: border-box; /* 幅計算を安定させる */
 }
 
 .filter-box h3 {
@@ -184,9 +185,10 @@ body {
 }
 
 .filter-box input[type="text"] {
-  width: 300px;
+  width: 100%;       /* フィルター幅に合わせる */
   padding: 0.4em;
   margin-top: 0.3em;
+  box-sizing: border-box;
 }
 
 .filter-box input[type="checkbox"] {
@@ -202,4 +204,5 @@ body {
   font-weight: bold;
   cursor: pointer;
   margin-top: 1em;
+  width: 100%;       /* ボタンもフィルター幅に合わせる */
 }
