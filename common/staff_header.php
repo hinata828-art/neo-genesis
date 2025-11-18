@@ -13,6 +13,8 @@
   <div class="user-icon">
     <img src="../img/icon.png" alt="ユーザーアイコン">
   </div>
+</header>
+
 
   <!-- スライドメニュー -->
 <nav id="sideMenu" class="side-menu">
@@ -24,7 +26,7 @@
 
 <!-- メニューを閉じるための黒背景 -->
 <div id="overlay" class="menu-overlay"></div>
-</header>
+
 <script>
     const menu = document.getElementById("sideMenu");
     const overlay = document.getElementById("overlay");
