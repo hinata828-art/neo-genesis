@@ -96,7 +96,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   <p>メーカー: <?= htmlspecialchars($p['maker']) ?></p>
                   <p>カラー: <?= htmlspecialchars($p['color']) ?></p>
                   <div class="product-actions">
-                    <button onclick="location.href='G-23_product-detail.php?id=<?= $p['product_id'] ?>'">編集</button>
+                    <button onclick="location.href='G-23_product-detail.php?product_id=<?= $p['product_id'] ?>'">編集</button>
                     <button onclick="if(confirm('削除しますか？')) location.href='delete_product.php?id=<?= $p['product_id'] ?>'">削除</button>
                   </div>
                 </div>
