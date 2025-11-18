@@ -39,7 +39,9 @@ try {
     $breadcrumbs = [
         ['name' => '現在のページ']
     ];
+    /*
     require __DIR__ . '/../common/breadcrumb.php';
+    */
     ?>
 
 <main>
