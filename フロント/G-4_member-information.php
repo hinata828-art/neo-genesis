@@ -26,10 +26,10 @@ $error_message = '';
 try {
     // 5. SQL 1: 会員情報の取得 (変更なし)
     $sql_customer = "SELECT c.*, a.prefecture, a.city 
-                       FROM customer AS c
-                       LEFT JOIN address AS a ON c.customer_id = a.customer_id
-                       WHERE c.customer_id = :id
-                       LIMIT 1";
+                        FROM customer AS c
+                        LEFT JOIN address AS a ON c.customer_id = a.customer_id
+                        WHERE c.customer_id = :id
+                        LIMIT 1";
     $stmt_customer = $pdo->prepare($sql_customer);
     $stmt_customer->bindValue(':id', $customer_id, PDO::PARAM_INT);
     $stmt_customer->execute();
@@ -39,7 +39,7 @@ try {
         throw new Exception('顧客情報が見つかりません。');
     }
     
-    // (会員情報の null チェック ... 元のコードのまま)
+    // (会員情報の null チェック ... 変更なし)
     $customer_info['full_address'] = ($customer_info['prefecture'] ?? '') . ($customer_info['city'] ?? '');
     if(empty($customer_info['full_address'])){ $customer_info['full_address'] = '（住所未登録）'; }
     if(empty($customer_info['phone_number'])){ $customer_info['phone_number'] = '（電話番号未登録）'; }
@@ -49,12 +49,12 @@ try {
     // 6. SQL 2: 購入履歴の取得 (最新5件)
     // ▼▼▼ 修正点 1: t.delivery_status を SELECT に追加 ▼▼▼
     $sql_purchase = "SELECT p.product_name, p.product_image, t.transaction_id AS tid, t.delivery_status
-                       FROM transaction_table AS t
-                       JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
-                       JOIN product AS p ON d.product_id = p.product_id
-                       WHERE t.customer_id = :id AND t.transaction_type = '購入'
-                       ORDER BY t.transaction_date DESC
-                       LIMIT 5"; // 最新5件のみ表示
+                        FROM transaction_table AS t
+                        JOIN transaction_detail AS d ON t.transaction_id = d.transaction_id
+                        JOIN product AS p ON d.product_id = p.product_id
+                        WHERE t.customer_id = :id AND t.transaction_type = '購入'
+                        ORDER BY t.transaction_date DESC
+                        LIMIT 5"; // 最新5件のみ表示
     $stmt_purchase = $pdo->prepare($sql_purchase);
     $stmt_purchase->bindValue(':id', $customer_id, PDO::PARAM_INT);
     $stmt_purchase->execute();
@@ -63,12 +63,12 @@ try {
     // 7. SQL 3: レンタル履歴の取得 (最新5件)
     // ▼▼▼ 修正点 2: t.delivery_status を SELECT に追加 ▼▼▼
     $sql_rental = "SELECT p.product_name, p.product_image, t.transaction_id AS tid, t.delivery_status
-                       FROM transaction_table AS t
-                       JOIN rental AS r ON t.transaction_id = r.transaction_id
-                       JOIN product AS p ON r.product_id = p.product_id
-                       WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
-                       ORDER BY t.transaction_date DESC
-                       LIMIT 5"; // 最新5件のみ表示
+                        FROM transaction_table AS t
+                        JOIN rental AS r ON t.transaction_id = r.transaction_id
+                        JOIN product AS p ON r.product_id = p.product_id
+                        WHERE t.customer_id = :id AND t.transaction_type = 'レンタル'
+                        ORDER BY t.transaction_date DESC
+                        LIMIT 5"; // 最新5件のみ表示
     $stmt_rental = $pdo->prepare($sql_rental);
     $stmt_rental->bindValue(':id', $customer_id, PDO::PARAM_INT);
     $stmt_rental->execute();
@@ -78,7 +78,7 @@ try {
     $error_message = $e->getMessage();
 }
 
-// ▼▼▼ 修正点 3: G-16と同じヘルパー関数を追加 ▼▼▼
+// ▼▼▼ 修正点 3: G-16/G-17と同じヘルパー関数を追加 ▼▼▼
 function getStatusClass($status) {
     if ($status == 'キャンセル済み') return 'status-cancelled';
     if ($status == '配達完了' || $status == '返却済み') return 'status-delivered';
