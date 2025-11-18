@@ -1,13 +1,15 @@
 <?php
+// ヘッダーコードの最上部にあるPHPコードを以下に置き換えてください。
+
+// 1. セッションがまだ開始されていない場合のみ、セッションを開始する
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ★ login-process.php で保存した形式に合わせる
-$login = isset($_SESSION['customer']); 
+// 2. ログイン状態とユーザー名を取得
+$login = isset($_SESSION['customer']['id']); 
 $user_name = $login ? $_SESSION['customer']['name'] : '';
 ?>
-
 <header>
 
     <!-- 上段：ロゴ、中央メッセージ、カート・ユーザ -->
