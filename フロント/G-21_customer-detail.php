@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
-require '../common/db_connect.php'; // DB接続ファイルを利用
+require '../common/db_connect.php';
 
 // URLパラメータから顧客IDを取得
 $customer_id = $_GET['id'] ?? null;
@@ -97,7 +97,7 @@ try {
 $breadcrumbs = [
     ['name' => '現在のページ']
 ];
-require __DIR__ . '/header.php';
+require __DIR__ . '../common/header-Administrator.php';
 ?>
 
 <div class="container">
