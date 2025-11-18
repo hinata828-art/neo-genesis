@@ -13,6 +13,8 @@
   <div class="user-icon">
     <img src="../img/icon.png" alt="ユーザーアイコン">
   </div>
+</header>
+
 
   <!-- スライドメニュー -->
 <nav id="sideMenu" class="side-menu">
