@@ -78,8 +78,10 @@ $history = $historyStmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- ❗ ここが重要：CSS ファイルは ../css/ 以下 -->
     <link rel="stylesheet" href="../css/G-23_product-detail.css">
+    <link rel="stylesheet" href="../css/staff_header.css">
 </head>
 <body>
+<?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
 <h2>商品詳細（編集）</h2>
 
