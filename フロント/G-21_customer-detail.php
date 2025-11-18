@@ -98,6 +98,7 @@ $breadcrumbs = [
     ['name' => '現在のページ']
 ];
 require '../common/header-Administrator.php';
+?>
 
 <div class="container">
 
