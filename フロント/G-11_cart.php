@@ -4,21 +4,29 @@ require __DIR__ . '/../common/db_connect.php';
 
 // カート取得
 $cart = $_SESSION['cart'] ?? [];
+$cart_items = [];
 
-if (empty($cart)) {
-    $cart_items = [];
-} else {
-    $ids = implode(',', array_fill(0, count($cart), '?'));
-    $sql = "SELECT product_id, product_name, price, product_image FROM product WHERE product_id IN ($ids)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array_keys($cart));
-    $cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-// 小計計算
 $total = 0;
-foreach ($cart_items as $item) {
-    $total += $item['price']; // 数量は考慮せず単価のみ
+
+// カート内の商品を1件ずつ処理
+foreach ($cart as $key => $qty) {
+
+    // ★ 商品IDとカラーを分離（例： "23_red" → 23, red）
+    list($product_id, $color) = explode('_', $key);
+
+    $sql = "SELECT product_id, product_name, price, product_image
+            FROM product WHERE product_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$product_id]);
+    $p = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($p) {
+        $p['qty'] = $qty;      // 数量
+        $p['color'] = $color;  // ★ カラー
+        $cart_items[] = $p;
+
+        $total += $p['price'] * $qty;
+    }
 }
 ?>
 <!DOCTYPE html>
