@@ -86,6 +86,8 @@ $rows = $stmt->fetchAll();
   
 </head>
 <body>
+  <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
+
   <main class="page">
     <div class="page-title">
       <h1>顧客管理</h1>
