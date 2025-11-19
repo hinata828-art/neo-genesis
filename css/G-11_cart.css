@@ -1,4 +1,7 @@
 /* カート全体・合計 */
+.cart-page-wrapper {
+    padding-top: 120px; /* ← 適宜調整（100〜140pxがおすすめ） */
+}
 .cart,
 .cart-summary {
     max-width: 95%;
@@ -13,8 +16,8 @@
     border-radius: 10px;
     margin-bottom: 15px;
     padding: 20px;
-    min-height: 550px; /* ← ★縦幅をさらに大きく */
-    align-items: center;
+    min-height: 350px;
+    min-height: center;
 }
 
 /* 左側：商品画像 */
@@ -26,8 +29,8 @@
 }
 
 .product-img {
-    width: 300px;
-    height: 3000px;
+    width: 400px;
+    height: 280px;
     object-fit: contain;
     border-radius: 5px;
 
