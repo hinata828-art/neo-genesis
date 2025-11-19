@@ -1,33 +1,34 @@
 <?php
 session_start();
-require '../common/db_connect.php'; // DB接続ファイルを利用
+require '../common/db_connect.php'; // DB接続
 
 // 入力チェック
-if (empty($_POST['email']) || empty($_POST['password'])) {
+if (empty($_POST['staff_id']) || empty($_POST['password'])) {
     header('Location: G-19_admin-login.php?error=1');
     exit();
 }
 
-$email = $_POST['email'];
+$staff_id = $_POST['staff_id'];
 $password = $_POST['password'];
 
 try {
-    // 管理者テーブルからメールを検索
-    $sql = "SELECT * FROM admin WHERE admin_email = :email";
+    // staff テーブルから社員IDを検索
+    $sql = "SELECT * FROM staff WHERE staff_id = :staff_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+    $stmt->bindValue(':staff_id', $staff_id, PDO::PARAM_STR);
     $stmt->execute();
-    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+    $staff = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($admin && password_verify($password, $admin['admin_password'])) {
+    // パスワード（平文）の照合
+    if ($staff && $password === $staff['password']) {
 
-        // セッション格納（キー名は admin で区別）
-        $_SESSION['admin'] = [
-            'id' => $admin['admin_id'],
-            'name' => $admin['admin_name']
+        // セッション格納
+        $_SESSION['staff'] = [
+            'id'   => $staff['staff_id'],
+            'name' => $staff['staff_name']
         ];
 
-        // 管理者専用トップへ
+        // 社員用ダッシュボードへ
         header('Location: G-20_admin-dashboard.php');
         exit();
     } else {
