@@ -9,7 +9,7 @@ require '../common/db_connect.php';
 // 2. データの初期化
 $transaction_id = 0;
 $show_roulette = false; // ルーレットを表示するか
-$prizes_for_js = [];    // ルーレットの景品リスト (JS用)
+$prizes_for_js = [];    // ルーレットの景品リスト (JS用)
 $error_message = '';
 
 try {
@@ -52,7 +52,6 @@ try {
     $show_roulette = true;
     
     // 6. 景品リストをDBから取得 (ID 2〜7)
-    // ★★★ 修正点 1: 抽選ロジックと並び順を揃えるため、coupon_id ASC に変更 ★★★
     $sql_prizes = "SELECT coupon_name FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
                    ORDER BY coupon_id ASC";
@@ -150,7 +149,7 @@ function getStatusClass($status) {
             canvas.width = canvasSize;
             canvas.height = canvasSize;
             
-            // ★★★ 修正点 2: 矢印の位置調整を削除 (CSSで固定するため) ★★★
+            // 矢印の位置調整はCSSで固定するため削除
             // pointer.style.top = `${-canvasSize * 0.1}px`;
             // pointer.style.left = `calc(50% - 20px)`; 
             
@@ -175,7 +174,10 @@ function getStatusClass($status) {
                 ctx.rotate((index + 0.5) * sectorAngle);
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
-                ctx.fillStyle = "#FFFFFF";
+                
+                // ★ 修正点 1: 文字色を黒 (#000000) に変更
+                ctx.fillStyle = "#000000"; 
+                
                 ctx.textBaseline = "middle";
                 ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
                 ctx.restore();
@@ -204,9 +206,10 @@ function getStatusClass($status) {
                     const prizeName = data.prize_name;
 
                     let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
-                    let targetAngle = (2 * Math.PI) - targetSectorCenter + (Math.PI / 2);
+                    // targetAngleを1.5*Math.PI (270度/12時)に修正
+                    let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI); 
                     
-                    const totalRotation = 10 * (1.5 * Math.PI) + targetAngle;
+                    const totalRotation = 10 * (2 * Math.PI) + targetAngle; // 10回転以上 + 最終角度
                     animateSpin(totalRotation, prizeName);
 
                 } else {
@@ -245,9 +248,8 @@ function getStatusClass($status) {
                     const link = document.createElement('a');
                     link.href = 'G-25_coupon-list.php';
                     link.textContent = 'クーポン一覧ページへ移動';
-                    link.className = 'coupon-list-link'; // CSSでスタイリング
+                    link.className = 'coupon-list-link';
                     
-                    // resultP要素の後 (下) にリンクを追加
                     resultP.after(link); 
                 }
             }
