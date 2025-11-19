@@ -1,5 +1,7 @@
 <?php
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // ===== データベース接続 =====
 
 require '../common/db_connect.php';
