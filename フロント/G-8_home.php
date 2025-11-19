@@ -31,7 +31,7 @@ try {
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/breadcrumb.css">
     <link rel="stylesheet" href="../css/G-8_home.css">
-</head>
+    </head>
 
 <body>
     <?php require_once __DIR__ . '/../common/header.php'; ?>
@@ -46,7 +46,6 @@ try {
 
 <main>
 
-    <!-- ===== おすすめ商品スライダー ===== -->
     <section class="pickapp">
         <div class="pickapp-label">
             <h2>おすすめ商品！！！</h2>
@@ -79,7 +78,6 @@ try {
         </div>
     </section>
 
-    <!-- スライダー制御 -->
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const slider = document.getElementById('slider');
@@ -103,7 +101,6 @@ try {
     </script>
 
 
-    <!-- ===== カテゴリボタン ===== -->
     <section class="category-section">
         <div class="category-buttons">
             <a href="G-10_product-list.php?category=C01" class="category-item">
@@ -160,10 +157,103 @@ try {
 </main>
 
 <footer class="footer-banner">
-    <div class="footer-box">レンタルで<br>お得な<br>ルーレット！！</div>
-    <div class="footer-box">レンタル<br>OK!!!</div>
-    <div class="footer-box">今すぐ<br>チェック！</div>
+    <div class="footer-box" id="roulette-box" role="button" tabindex="0">
+        レンタルで<br>お得な<br>ルーレット！！
+    </div>
+    <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">
+        レンタル<br>OK!!!
+    </div>
+    <div class="footer-box">
+        今すぐ<br>チェック！
+    </div>
 </footer>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3 id="modal-title"></h3>
+        <p id="modal-text">ここに詳細な情報が表示されます。</p>
+        </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // スライダー制御のスクリプトは既に記述済みとして、モーダル関連のスクリプトを記述
+
+    const modal = document.getElementById('myModal');
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
+    const rouletteBox = document.getElementById('roulette-box');
+    const rentalOkBox = document.getElementById('rental-ok-box');
+    const modalTitle = document.getElementById('modal-title');
+    const modalText = document.getElementById('modal-text');
+
+    /**
+     * モーダルを表示する関数
+     * @param {string} title - モーダルに表示するタイトル
+     * @param {string} text - モーダルに表示する本文
+     */
+    function openModal(title, text) {
+        modalTitle.textContent = title;
+        modalText.textContent = text;
+        modal.style.display = 'flex'; // CSSでflexを使うことで中央寄せを容易にする
+    }
+
+    // --- イベントリスナーの設定 ---
+
+    // 1. ルーレットのボックスクリック
+    rouletteBox.addEventListener('click', () => {
+        openModal(
+            'レンタルでお得なルーレット！！',
+            'レンタル商品をご利用いただくと、お得な特典が当たるルーレットに挑戦できます！詳細はキャンペーンページをご確認ください。'
+        );
+    });
+
+    // 2. レンタルOKのボックスクリック
+    rentalOkBox.addEventListener('click', () => {
+        openModal(
+            'レンタルOK!!!',
+            '当社の多くの商品がレンタル可能です！最新の家電をお気軽に、必要な期間だけご利用いただけます。レンタル可能な商品の一覧はこちら。'
+        );
+    });
+
+    // 3. 閉じるボタンクリックでモーダルを閉じる
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // 4. モーダルの背景（モーダルコンテンツの外側）クリックでモーダルを閉じる
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // 5. キーボード操作（Enter/Space）でもモーダルが開くようにする (アクセシビリティ対応)
+    function addKeyboardModalOpen(element, callback) {
+        element.addEventListener('keydown', (event) => {
+            // Enterキー(keyCode 13) または Spaceキー(keyCode 32)
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault(); // スクロールなどを防ぐ
+                callback();
+            }
+        });
+    }
+
+    addKeyboardModalOpen(rouletteBox, () => {
+        openModal(
+            'レンタルでお得なルーレット！！',
+            'レンタル商品をご利用いただくと、お得な特典が当たるルーレットに挑戦できます！詳細はキャンペーンページをご確認ください。'
+        );
+    });
+
+    addKeyboardModalOpen(rentalOkBox, () => {
+        openModal(
+            'レンタルOK!!!',
+            '当社の多くの商品がレンタル可能です！最新の家電をお気軽に、必要な期間だけご利用いただけます。レンタル可能な商品の一覧はこちら。'
+        );
+    });
+});
+</script>
 
 </body>
 </html>
