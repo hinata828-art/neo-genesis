@@ -14,19 +14,18 @@
     <img src="../img/icon.png" alt="ユーザーアイコン">
   </div>
 
-
-
   <!-- スライドメニュー -->
-<nav id="sideMenu" class="side-menu">
+  <nav id="sideMenu" class="side-menu">
     <ul>
-        <li><a href="../バック/.php">顧客管理</a></li>
+        <li><a href="../バック/G-20_customer-management.php">顧客管理</a></li>
         <li><a href="../バック/G-22_product.php">商品管理</a></li>
     </ul>
-</nav>
+  </nav>
 
-<!-- メニューを閉じるための黒背景 -->
-<div id="overlay" class="menu-overlay"></div>
+  <!-- メニューを閉じるための黒背景 -->
+  <div id="overlay" class="menu-overlay"></div>
 </header>
+
 <script>
     const menu = document.getElementById("sideMenu");
     const overlay = document.getElementById("overlay");
@@ -42,5 +41,3 @@
         overlay.classList.remove("show");
     });
 </script>
-
-  </header>
