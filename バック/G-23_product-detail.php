@@ -83,7 +83,7 @@ $history = $historyStmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
 <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
-<h2>商品詳細・編集）</h2>
+<h2>商品詳細・編集</h2>
 
 <form method="POST">
 <div class="container">
