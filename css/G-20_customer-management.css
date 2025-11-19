@@ -1,0 +1,259 @@
+/* ベース */
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #30cfcf;
+  --primary-dark: #30cfcf;
+  --accent: #30cfcf;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Meiryo", "Helvetica Neue",
+    Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ページレイアウト */
+.page {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 0 24px;
+}
+
+.page-title h1 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* カード */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+/* コンテンツの2カラム */
+.content {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+}
+
+/* セクションヘッダー */
+.section-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.section-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* テーブル */
+.table-wrap {
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table tbody td {
+  font-size: 14px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.col-name { width: 40%; }
+.col-id   { width: 20%; }
+.col-age  { width: 15%; }
+.col-action { width: 25%; text-align: right; }
+
+.table td:last-child {
+  text-align: right;
+}
+
+/* ボタン */
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.btn-detail {
+  color: var(--primary);
+  border-color: #30cfcf;
+  background: #f5f9ff;
+}
+.btn-detail:hover {
+  background: #eaf2ff;
+  border-color: #a8c7ff;
+}
+
+.btn-apply {
+  width: 100%; /* ← セレクトボックスと同じ幅にする */
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+.btn-apply:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+
+/* フィルター */
+.filters {
+  padding: 16px;
+  padding-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* ← 上詰めに変更 */
+  align-items: stretch;        /* ← 横幅を揃える */
+  gap: 12px;                   /* 要素間の間隔 */
+  min-height: auto;            /* ← 高さ制限を解除（必要なら削除） */
+}
+
+.filters.card {
+  margin-bottom: 450px; /* 例：元が20pxなら半分に */
+}
+
+
+.filter-form {
+  padding: 0;                  /* 内側余白を削減して上に詰める */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  margin-bottom: 0;            /* 下余白を削減 */
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+}
+
+.form-actions {
+  margin-top: 4px;
+}
+
+/* 検索バー（統合版） */
+.search-bar {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.search-form label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.search-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-row input {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.btn-search {
+  background: var(--accent);     /* → #30cfcf */
+  color: #fff;
+  border-color: var(--accent);  /* → #30cfcf */
+}
+.btn-search:hover {
+  background: #30cfcf;
+  border-color: #059669;        /* hover時のみ異なる色（調整可能） */
+}
+
+
+/* レスポンシブ（右カラムを下に） */
+@media (max-width: 900px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+  .filters {
+    order: 2;
+  }
+  .customer-list {
+    order: 1;
+  }
+}
