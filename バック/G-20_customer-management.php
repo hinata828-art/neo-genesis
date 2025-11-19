@@ -81,9 +81,9 @@ $rows = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>顧客管理</title>
     <link rel="stylesheet" href="../css/G-20_customer-management.css">
-    <link rel="stylesheet" href="../css/staff_header.css">  <style>
+    <link rel="stylesheet" href="../css/staff_header.css">
     /* 既存CSSに追加が必要な場合はここに記述してもOK */
-  </style>
+  
 </head>
 <body>
   <main class="page">
