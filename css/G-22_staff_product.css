@@ -160,6 +160,7 @@ body {
 
 /* フィルター：右端にぴったり固定 */
 .filter-box {
+  margin-top:120px;
   position: fixed;   /* ← absoluteからfixedに変更 */
   top: 40px;
   right: 0;
