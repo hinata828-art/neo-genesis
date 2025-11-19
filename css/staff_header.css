@@ -1,47 +1,34 @@
-/* ================================
-   固定ヘッダー（競合防止のため staff- を付与）
-================================ */
-
 /* ヘッダー全体 */
-.staff-header {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #444;
   color: #fff;
   padding: 1em 2em;
-  position: fixed;        /* 固定にする */
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 3000;
-  box-sizing: border-box;
-}
-
-/* ページ本体がヘッダーと重ならないように上部余白を追加 */
-.staff-header-space {
-  height: 70px; /* ヘッダーの高さ分（調整可） */
+  position: relative;
+  z-index: 1000;
 }
 
 /* 左側：ハンバーガー＋タイトル */
-.staff-header-left {
+.header-left {
   display: flex;
   align-items: center;
   gap: 1em;
 }
 
 /* ハンバーガーメニュー */
-.staff-hamburger-menu {
+.hamburger-menu {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 25px;
   height: 18px;
   cursor: pointer;
-  z-index: 3200;
+  z-index: 3000;
 }
 
-.staff-hamburger-menu span {
+.hamburger-menu span {
   display: block;
   height: 3px;
   background-color: #fff;
@@ -49,13 +36,13 @@
 }
 
 /* タイトル */
-.staff-header-left h1 {
+.header-left h1 {
   font-size: 1.4em;
   margin: 0;
 }
 
 /* ユーザーアイコン */
-.staff-user-icon img {
+.user-icon img {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -63,7 +50,7 @@
 }
 
 /* スライドメニュー */
-.staff-side-menu {
+.side-menu {
   position: fixed;
   top: 0;
   left: -250px; /* 初期状態は画面外 */
@@ -76,28 +63,28 @@
   z-index: 2500;
 }
 
-.staff-side-menu.open {
+.side-menu.open {
   left: 0;
 }
 
-.staff-side-menu ul {
+.side-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.staff-side-menu li {
+.side-menu li {
   padding: 15px 20px;
   font-size: 18px;
 }
 
-.staff-side-menu li a {
+.side-menu li a {
   color: #fff;
   text-decoration: none;
 }
 
 /* オーバーレイ（背景の黒） */
-.staff-menu-overlay {
+.menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -108,21 +95,21 @@
   z-index: 2000;
 }
 
-.staff-menu-overlay.show {
+.menu-overlay.show {
   display: block;
 }
 
-/* レスポンシブ対応 */
+/* レスポンシブ対応（任意） */
 @media screen and (max-width: 768px) {
-  .staff-header-left h1 {
+  .header-left h1 {
     font-size: 1.2em;
   }
 
-  .staff-side-menu {
+  .side-menu {
     width: 200px;
   }
 
-  .staff-side-menu li {
+  .side-menu li {
     font-size: 16px;
   }
 }
