@@ -7,21 +7,23 @@ require '../common/db_connect.php';
 
 // 2. ログイン状態の確認
 $customer_info = null;
+$customer_id = 0; // クーポン検索用にIDを初期化
 if (isset($_SESSION['customer'])) {
     $customer_info = $_SESSION['customer'];
+    $customer_id = $_SESSION['customer']['id']; // ログインしているIDを取得
 } else {
     $customer_info = ['name' => '（ゲスト）', 'address' => '（住所未登録）'];
 }
 
 // 3. URLから商品IDとカラーを取得
 $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-// G-9から渡されたファイル名 (例: '白' や '青' や 'original')
 $color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'original';
 
 // 4. 商品IDを使ってDBから商品情報を取得
 try {
-    // G-9 と同様に product_image と color も取得
-    $sql = "SELECT product_name, price, product_image, color FROM product WHERE product_id = :id";
+    // product.category_id も取得
+    $sql = "SELECT product_name, price, product_image, color, category_id 
+            FROM product WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
     $stmt->execute();
@@ -37,59 +39,73 @@ if (!$product) {
     exit;
 }
 
-// ▼▼▼ 修正点1：ファイル名 => 表示名 への「逆引きマップ」 ▼▼▼
+// 6. カラー名を取得 (逆引きマップ)
 $color_display_map = [
-    // --- 判明しているもの ---
-    'original' => 'オリジナル',
-    '白色'       => 'ホワイト', // ★「白」は「ホワイト」に翻訳（これだけでOK）
-    '青'       => 'ブルー',
-    'ゲーミング' => 'ゲーミング',
-    '黄色'     => 'イエロー',
-    '赤'       => 'レッド',
-    '緑'       => 'グリーン',
-    // --- (仮) G-9の修正に合わせて、ここも修正が必要 ---
-    'ブラック'   => 'ブラック',
-    'ピンク'     => 'ピンク',
-    'グレー'     => 'グレー'
+    'original' => 'オリジナル', '白色' => 'ホワイト', '青' => 'ブルー',
+    'ゲーミング' => 'ゲーミング', '黄色' => 'イエロー', '赤' => 'レッド',
+    '緑' => 'グリーン', 'ブラック' => 'ブラック', 'ピンク' => 'ピンク',
+    'グレー' => 'グレー'
 ];
-// ▲▲▲ ここまで ▲▲▲
-
-// 6. カラー名を取得 (例: '白' -> 'ホワイト')
 $color_name = $color_display_map[$color_value] ?? $color_value;
 
 // 7. ご請求額を計算（小計）
 $total_price = $product['price'];
 
 
-// ▼▼▼ 修正点2：拡張子(.jpg) を追加するロジックを「削除」 ▼▼▼
+// ★★★ 適用可能なクーポンを探すロジック (変更なし) ★★★
+$best_coupon = null;
+$discount_amount = 0;
+$customer_coupon_id_to_use = 0;
+$product_category_id = $product['category_id'];
+
+// ログインしている場合のみクーポンを検索
+if ($customer_id > 0) {
+    $sql_coupon = "SELECT 
+                        cc.customer_coupon_id, 
+                        c.discount_rate
+                   FROM customer_coupon cc
+                   JOIN coupon c ON cc.coupon_id = c.coupon_id
+                   WHERE cc.customer_id = :cid 
+                     AND cc.applicable_category_id = :catid
+                     AND cc.used_at IS NULL
+                     AND c.expiration_date >= CURDATE()
+                   ORDER BY c.discount_rate DESC
+                   LIMIT 1";
+                   
+    $stmt_coupon = $pdo->prepare($sql_coupon);
+    $stmt_coupon->execute([
+        ':cid' => $customer_id,
+        ':catid' => $product_category_id
+    ]);
+    $best_coupon = $stmt_coupon->fetch(PDO::FETCH_ASSOC);
+}
+
+// 8. 割引額と最終合計額を計算
+if ($best_coupon) {
+    $discount_rate = $best_coupon['discount_rate'];
+    $discount_amount = floor(($total_price * $discount_rate) / 100);
+    $customer_coupon_id_to_use = $best_coupon['customer_coupon_id'];
+}
+
+$final_total_price = $total_price - $discount_amount;
+
+
+// 9. 画像表示ロジック (変更なし)
 $base_image_url_from_db = $product['product_image'] ?? '';
 $selected_color_filename = $color_value; 
 $image_to_display = '';
 
 if (!empty($base_image_url_from_db)) {
-    // ベースURLを取得 ( .../カメラ1-白 -> .../カメラ1 )
     $true_base_url = preg_replace('/-[^-]+$/u', '', $base_image_url_from_db);
-
-    // ▼▼▼ バグ修正：G-9から渡ってくる 'original' (英語) と直接比較する ▼▼▼
-
-    // (85行目) $original_color_value = ... (この行は不要なので削除)
     
-    // (87行目) G-9から渡ってくる「オリジナル」の *値* は 'original' (英語)
     if ($selected_color_filename === 'original') {
-    // ▲▲▲ バグ修正ここまで ▲▲▲
-
-        // ケースA: 'original' が選択された
         $image_to_display = $true_base_url;
     } else {
-        // ケースB: '白' や 'ピンク' が選択された
         $image_to_display = $true_base_url . '-' . $selected_color_filename;
     }
-
 } else {
-    // DBに画像URLが登録されていない場合
-    $image_to_display = '../img/no_image.jpg'; // (ダミーのパス)
+    $image_to_display = '../img/no_image.jpg';
 }
-// ▲▲▲ 修正点2 ここまで ▲▲▲
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -111,7 +127,9 @@ if (!empty($base_image_url_from_db)) {
         ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
         ['name' => '注文情報入力']
     ];
+    /*
     require __DIR__ . '/../common/breadcrumb.php';
+    */
     ?>
     
 <div class="container">
@@ -120,8 +138,7 @@ if (!empty($base_image_url_from_db)) {
     
     <div class="product-section">
         <img src="<?php echo htmlspecialchars($image_to_display); ?>" alt="商品画像" class="product-image">
-        <div class="product-section">
-        <?php echo ""; ?>
+        
         <div class="product-info">
             <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
             <div class="product-color-row">
@@ -129,11 +146,13 @@ if (!empty($base_image_url_from_db)) {
                 <label class="product-color"><?php echo htmlspecialchars($color_name); ?></label>
             </div>
         </div>
-    </div>
-
-    <div class="price-section">
-            <p>商品の小計：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
-            <p>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($total_price); ?></span></p>
+        
+    </div> <div class="price-section">
+        <p>商品の小計：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
+        
+        <p>割引額：<span class="price-discount">-￥<?php echo number_format($discount_amount); ?></span></p>
+        
+        <p>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($final_total_price); ?></span></p>
     </div>
 
     <hr>
@@ -143,7 +162,9 @@ if (!empty($base_image_url_from_db)) {
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
         <input type="hidden" name="color" value="<?php echo htmlspecialchars($color_value); ?>">
         
-        <input type="hidden" name="total_amount" id="total_amount_hidden" value="<?php echo $total_price; ?>">
+        <input type="hidden" name="customer_coupon_id" value="<?php echo $customer_coupon_id_to_use; ?>">
+        
+        <input type="hidden" name="total_amount" id="total_amount_hidden" value="<?php echo $final_total_price; ?>">
 
         <div class="delivery-section">
             <label>お届け先氏名：</label><br>

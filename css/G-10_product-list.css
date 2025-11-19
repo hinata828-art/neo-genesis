@@ -3,7 +3,6 @@
 body {
     font-family: sans-serif;
     background: #f7f7f7;
-    margin-top: 150px !important;
 }
 
 .top {
@@ -85,9 +84,6 @@ hr {
 
 /* ===== スマホ対応（600px以下） ===== */
 @media screen and (max-width: 600px) {
-    body {
-        margin-top: 120px !important;
-    }
 
     .product-card {
         width: 90%; /* スマホは横幅いっぱいに */

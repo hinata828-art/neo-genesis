@@ -1,17 +1,15 @@
 <?php
-// セッション開始
+// ヘッダーコードの最上部にあるPHPコードを以下に置き換えてください。
+
+// 1. セッションがまだ開始されていない場合のみ、セッションを開始する
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// DB接続（ユーザ名取得に必要なら）
-require_once __DIR__ . '/db_connect.php';
-
-// ★ ログイン判定
-$login = isset($_SESSION['user_id']);   // ← ログイン時は user_id などで判断（任意）
-$user_name = $login ? ($_SESSION['user_name'] ?? 'ユーザー') : '';
+// 2. ログイン状態とユーザー名を取得
+$login = isset($_SESSION['customer']['id']); 
+$user_name = $login ? $_SESSION['customer']['name'] : '';
 ?>
-
 <header>
 
     <!-- 上段：ロゴ、中央メッセージ、カート・ユーザ -->
@@ -37,7 +35,7 @@ $user_name = $login ? ($_SESSION['user_name'] ?? 'ユーザー') : '';
                 <span class="customer-name"><?php echo htmlspecialchars($user_name); ?> 様</span>
             <?php else: ?>
                 <span>いらっしゃいませ</span>
-                <a href="../フロント/G-1_customer-form.php" class="login-link">ログインはこちら →</a>
+                <span class="login-text">ログインはこちら →</span>
             <?php endif; ?>
         </div>
 
@@ -45,9 +43,17 @@ $user_name = $login ? ($_SESSION['user_name'] ?? 'ユーザー') : '';
         <div class="header-right-icons">
 
             <div class="header-user">
-                <a href="../フロント/G-4_member-information.php">
-                    <img src="../img/user.png" alt="会員情報" class="user-icon">
-                </a>
+                <?php if ($login): ?>
+                <!-- ログイン時：会員情報へ -->
+                    <a href="../フロント/G-4_member-information.php">
+                        <img src="../img/icon.png" alt="会員情報" class="user-icon">
+                    </a>
+                <?php else: ?>
+                <!-- 未ログイン時：会員登録フォームへ -->
+                    <a href="../フロント/G-1_customer-form.php">
+                        <img src="../img/icon.png" alt="ログイン" class="user-icon">
+                    </a>
+                <?php endif; ?>
             </div>
 
             <div class="header-cart">
@@ -83,5 +89,35 @@ $user_name = $login ? ($_SESSION['user_name'] ?? 'ユーザー') : '';
 
         </div>
     </form>
+
+    <!-- スライドメニュー -->
+<nav id="sideMenu" class="side-menu">
+    <ul>
+        <li><a href="../フロント/G-4_member-information.php">マイページ</a></li>
+        <li><a href="../フロント/G-8_home.php">トップページ</a></li>
+        <li><a href="../フロント/G-25_coupon-list.php">所持クーポン一覧</a></li>
+        <li><a href="../フロント/G-6_withdrawal-check.php">ログアウト</a></li>
+    </ul>
+</nav>
+
+<!-- メニューを閉じるための黒背景 -->
+<div id="overlay" class="menu-overlay"></div>
+
+<script>
+    const menu = document.getElementById("sideMenu");
+    const overlay = document.getElementById("overlay");
+    const burger = document.querySelector(".hamburger-menu");
+
+    burger.addEventListener("click", function () {
+        menu.classList.toggle("open");
+        overlay.classList.toggle("show");
+    });
+
+    overlay.addEventListener("click", function () {
+        menu.classList.remove("open");
+        overlay.classList.remove("show");
+    });
+</script>
+
 
 </header>

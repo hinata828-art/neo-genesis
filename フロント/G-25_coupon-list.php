@@ -16,23 +16,42 @@ if (isset($_SESSION['customer']['id'])) {
 }
 //$customer_id = $_SESSION['customer_id'] ?? 6; // 仮の顧客ID
 
+// ★★★ ここからSQLクエリを修正 ★★★
 $sql = "
-SELECT cc.customer_coupon_id, c.coupon_id, c.discount_rate, c.category_id, c.expiration_date,
-       cat.category_name, p.product_image
+SELECT 
+    cc.customer_coupon_id, 
+    c.coupon_id, 
+    c.discount_rate, 
+    
+    -- 修正点 1: customer_coupon テーブルからカテゴリIDを取得し、
+    -- HTML側で使えるよう 'category_id' という別名を付けます
+    cc.applicable_category_id AS category_id, 
+    
+    c.expiration_date,
+    cat.category_name, 
+    p.product_image
 FROM customer_coupon cc
 JOIN coupon c ON cc.coupon_id = c.coupon_id
-JOIN category cat ON c.category_id = cat.category_id
+
+-- 修正点 2: c.category_id ではなく cc.applicable_category_id で結合します
+JOIN category cat ON cat.category_id = cc.applicable_category_id 
+
+-- 修正点 3: c.category_id ではなく cc.applicable_category_id で結合します
 JOIN (
     SELECT category_id, MIN(product_id) AS min_product_id
     FROM product
     GROUP BY category_id
-) first_product ON first_product.category_id = c.category_id
+) first_product ON first_product.category_id = cc.applicable_category_id
+
 JOIN product p ON p.product_id = first_product.min_product_id
+
 WHERE cc.customer_id = :customer_id
   AND cc.used_at IS NULL
   AND c.expiration_date >= CURDATE()
 ORDER BY cc.acquired_at DESC
 ";
+// ★★★ ここまでSQLクエリを修正 ★★★
+
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['customer_id' => $customer_id]);
@@ -56,11 +75,17 @@ $coupons = $stmt->fetchAll();
     $breadcrumbs = [
         ['name' => '所持クーポン']
     ];
+    /*
     require __DIR__ . '/../common/breadcrumb.php';
+    */
     ?>
 
   <main class="coupon-container">
     <h2>所持クーポン一覧</h2>
+
+    <?php if (empty($coupons)): ?>
+        <p class="no-coupon-message">現在利用可能なクーポンはありません。</p>
+    <?php endif; ?>
 
     <?php foreach ($coupons as $coupon): ?>
       <div class="coupon-card">
