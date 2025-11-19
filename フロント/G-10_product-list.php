@@ -1,10 +1,23 @@
 <?php
+// ===== セッション開始 =====
+session_start();
+
 // ===== データベース接続 =====
 require '../common/db_connect.php';
 
 // ===== パラメータ取得 =====
 $category = $_GET['category'] ?? '';
 $keyword = $_GET['keyword'] ?? '';
+
+// ===== 検索条件をセッションに保存 =====
+// カテゴリが空でない、またはキーワードが空でない場合に保存
+if ($category !== '' || $keyword !== '') {
+    $_SESSION['last_category'] = $category;
+    $_SESSION['last_keyword'] = $keyword;
+}
+// 検索条件をリセットしたい場合は、別途ロジックが必要です
+// 例: カテゴリもキーワードも指定がない場合はセッションをクリアするなど
+// 今回は指定された値があれば上書き・保存します
 
 // ===== カテゴリ名リスト =====
 $category_names = [
@@ -41,7 +54,9 @@ try {
     $stmt->execute($params);
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    echo "商品データ取得エラー: " . $e->getMessage();
+    // 本番環境では詳細なエラーメッセージをユーザーに表示しない方が安全です
+    error_log("商品データ取得エラー: " . $e->getMessage()); // ログに出力
+    echo "商品データ取得エラーが発生しました。";
     $products = [];
 }
 
@@ -79,8 +94,9 @@ if ($keyword !== '') {
 <body>
     <?php require_once __DIR__ . '/../common/header.php'; ?>
     <?php 
-    //require __DIR__ . '/../common/breadcrumb.php'; 
-    // ?>
+    // require __DIR__ . '/../common/breadcrumb.php'; 
+    // breadcrumb.php が存在し、上記で設定した $breadcrumbs 変数を使用する場合にコメントを外します。
+    ?>
 
 <main>
     <div class="top">
@@ -100,13 +116,14 @@ if ($keyword !== '') {
         <div class="product-list">
             <?php foreach ($products as $p): ?>
                 <div class="product-card">
-                    <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
-                         alt="<?php echo htmlspecialchars($p['product_name']); ?>" class="product-img">
-                    <div class="product-info">
-                        <h2><?php echo htmlspecialchars($p['product_name']); ?></h2>
-                        <p class="price">¥<?php echo number_format($p['price']); ?></p>
-                        <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="detail-btn">詳細を見る</a>
-                    </div>
+                    <a href="G-9_product-detail.php?id=<?php echo $p['product_id']; ?>" class="product-link">
+                        <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
+                             alt="<?php echo htmlspecialchars($p['product_name']); ?>" class="product-img">
+                        <div class="product-info">
+                            <h2><?php echo htmlspecialchars($p['product_name']); ?></h2>
+                            <p class="price">¥<?php echo number_format($p['price']); ?></p>
+                            </div>
+                    </a>
                 </div>
             <?php endforeach; ?>
         </div>
