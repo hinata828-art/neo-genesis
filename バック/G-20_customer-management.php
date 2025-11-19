@@ -82,7 +82,6 @@ $rows = $stmt->fetchAll();
   <title>顧客管理</title>
     <link rel="stylesheet" href="../css/G-20_customer-management.css">
     <link rel="stylesheet" href="../css/staff_header.css">
-    /* 既存CSSに追加が必要な場合はここに記述してもOK */
   
 </head>
 <body>
