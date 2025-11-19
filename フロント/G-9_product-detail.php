@@ -205,7 +205,7 @@ try {
 <script>
 // ★★★ 修正点 2: ログインチェックとページ遷移を統合 ★★★
 const IS_LOGGED_IN = <?php echo json_encode($is_logged_in); ?>;
-const LOGIN_PAGE_URL = 'G-1_login.php'; // 実際のログインページに合わせてください
+const LOGIN_PAGE_URL = 'G-1_customer-form.php'; // 実際のログインページに合わせてください
 
 function goToOrder(pageUrl, productId) {
     
