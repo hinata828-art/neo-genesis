@@ -106,7 +106,6 @@ function getStatusClass($status) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>レンタル履歴詳細</title>
-    <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
 </head>
 <body>
