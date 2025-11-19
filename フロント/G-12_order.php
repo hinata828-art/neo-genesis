@@ -7,10 +7,10 @@ require '../common/db_connect.php';
 
 // 2. ログイン状態の確認
 $customer_info = null;
-$customer_id = 0; // ★ クーポン検索用にIDを初期化
+$customer_id = 0; // クーポン検索用にIDを初期化
 if (isset($_SESSION['customer'])) {
     $customer_info = $_SESSION['customer'];
-    $customer_id = $_SESSION['customer']['id']; // ★ ログインしているIDを取得
+    $customer_id = $_SESSION['customer']['id']; // ログインしているIDを取得
 } else {
     $customer_info = ['name' => '（ゲスト）', 'address' => '（住所未登録）'];
 }
@@ -21,7 +21,7 @@ $color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'origi
 
 // 4. 商品IDを使ってDBから商品情報を取得
 try {
-    // ★★★ 修正点 1: product.category_id を取得 ★★★
+    // product.category_id も取得
     $sql = "SELECT product_name, price, product_image, color, category_id 
             FROM product WHERE product_id = :id";
     $stmt = $pdo->prepare($sql);
@@ -52,10 +52,10 @@ $color_name = $color_display_map[$color_value] ?? $color_value;
 $total_price = $product['price'];
 
 
-// ★★★ 修正点 2: 適用可能なクーポンを探す ★★★
+// ★★★ 適用可能なクーポンを探すロジック (変更なし) ★★★
 $best_coupon = null;
 $discount_amount = 0;
-$customer_coupon_id_to_use = 0; // 次のページに渡すID
+$customer_coupon_id_to_use = 0;
 $product_category_id = $product['category_id'];
 
 // ログインしている場合のみクーポンを検索
@@ -69,7 +69,7 @@ if ($customer_id > 0) {
                      AND cc.applicable_category_id = :catid
                      AND cc.used_at IS NULL
                      AND c.expiration_date >= CURDATE()
-                   ORDER BY c.discount_rate DESC -- 最も割引率の高いものを優先
+                   ORDER BY c.discount_rate DESC
                    LIMIT 1";
                    
     $stmt_coupon = $pdo->prepare($sql_coupon);
@@ -82,16 +82,12 @@ if ($customer_id > 0) {
 
 // 8. 割引額と最終合計額を計算
 if ($best_coupon) {
-    // クーポンが見つかった場合
     $discount_rate = $best_coupon['discount_rate'];
-    // 割引額を計算 (小数点以下は切り捨て)
     $discount_amount = floor(($total_price * $discount_rate) / 100);
     $customer_coupon_id_to_use = $best_coupon['customer_coupon_id'];
 }
 
-// 最終的なご請求額（JSのベースプライスにもなる）
 $final_total_price = $total_price - $discount_amount;
-// ★★★ 修正ここまで ★★★
 
 
 // 9. 画像表示ロジック (変更なし)
@@ -142,8 +138,7 @@ if (!empty($base_image_url_from_db)) {
     
     <div class="product-section">
         <img src="<?php echo htmlspecialchars($image_to_display); ?>" alt="商品画像" class="product-image">
-        <div class="product-section">
-        <?php echo ""; ?>
+        
         <div class="product-info">
             <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
             <div class="product-color-row">
@@ -151,14 +146,13 @@ if (!empty($base_image_url_from_db)) {
                 <label class="product-color"><?php echo htmlspecialchars($color_name); ?></label>
             </div>
         </div>
-    </div>
-
-    <div class="price-section">
-            <p>商品の小計：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
-            
-            <p>割引額：<span class="price-discount">-￥<?php echo number_format($discount_amount); ?></span></p>
-            
-            <p>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($final_total_price); ?></span></p>
+        
+    </div> <div class="price-section">
+        <p>商品の小計：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
+        
+        <p>割引額：<span class="price-discount">-￥<?php echo number_format($discount_amount); ?></span></p>
+        
+        <p>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($final_total_price); ?></span></p>
     </div>
 
     <hr>
