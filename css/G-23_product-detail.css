@@ -1,6 +1,8 @@
 body {
     font-family: sans-serif;
     background-color: #f7f7f7;
+    padding: none;
+    margin: 0%;
 }
 
 h2 {
