@@ -88,7 +88,7 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>顧客詳細 - 管理者画面</title>
 <link rel="stylesheet" href="../css/G-21_customer-detail.css">
-<link rel="stylesheet" href="../css/header.css">
+<link rel="stylesheet" href="../css/staff_header.css">
 <link rel="stylesheet" href="../css/G-21_sub.css"> <!-- ★追加したCSS -->
 </head>
 
@@ -97,7 +97,7 @@ try {
 $breadcrumbs = [
     ['name' => '現在のページ']
 ];
-require '../common/header-Administrator.php';
+require '../common/staff_header.php';
 ?>
 
 <div class="container">
