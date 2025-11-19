@@ -67,6 +67,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
+    <!-- 重なり防止スペース -->
+    <div class="staff-header-space"></div>
 
   <main class="main-container">
     <h2 class="page-title">商品管理</h2>
