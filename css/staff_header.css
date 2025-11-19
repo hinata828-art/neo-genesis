@@ -1,21 +1,14 @@
-/* ヘッダー全体 */ 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #444;
-  color: #fff;
-  padding: 1em 2em;
-  position: fixed;   /* 固定 */
-  top: 0;
-  left: 0;
-  width: 100%;       /* 横幅固定 */
-  z-index: 1000;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 9999 !important;
 }
 
-/* ← 追加：header が固定された分だけ下に余白を作る */
+/* 固定した分の余白 */
 body {
-  padding-top: 80px;   /* header が約 64〜70px 想定なので少し余裕を持たせる */
+  padding-top: 80px !important;
 }
 
 /* 左側：ハンバーガー＋タイトル */
