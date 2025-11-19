@@ -46,13 +46,13 @@ $breadcrumbs = [
     ['name' => 'ホーム', 'url' => 'G-8_home.php'],
     ['name' => 'カート']
 ];
-//require __DIR__ . '/../common/breadcrumb.php';
+require __DIR__ . '/../common/breadcrumb.php';
 ?>
 <!-- ▼ カート合計とレジボタン（パンくずの下に自然に配置） -->
  <div class="cart-page-wrapper">
 <div class="cart-summary">
     <p class="total">小計：￥<?= number_format($total) ?></p>
-    <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>" class="buy-btn">レジへ進む</a>
+    <a href="G-12_order.php"  class="buy-btn">レジへ進む</a>
 </div>
 
 <div class="cart">
