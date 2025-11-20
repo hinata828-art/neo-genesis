@@ -46,13 +46,13 @@ $breadcrumbs = [
     ['name' => 'ホーム', 'url' => 'G-8_home.php'],
     ['name' => 'カート']
 ];
-//require __DIR__ . '/../common/breadcrumb.php';
+require __DIR__ . '/../common/breadcrumb.php';
 ?>
 <!-- ▼ カート合計とレジボタン（パンくずの下に自然に配置） -->
  <div class="cart-page-wrapper">
 <div class="cart-summary">
     <p class="total">小計：￥<?= number_format($total) ?></p>
-    <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>" class="buy-btn">レジへ進む</a>
+    <a href="G-12_order.php"  class="buy-btn">レジへ進む</a>
 </div>
 
 <div class="cart">
@@ -60,27 +60,44 @@ $breadcrumbs = [
     <p>カートに商品がありません。</p>
 <?php else: ?>
 
-    <?php foreach ($cart_items as $item): ?>
-    <div class="item">
-        <!-- 左側：商品情報＋ボタン -->
-        <div class="item-left">
-            <p class="name"><?= htmlspecialchars($item['product_name']) ?></p>
-            <p class="price">¥<?= number_format($item['price']) ?></p>
-            <div class="buttons">
-               <form action="G-11_delete-cart.php" method="POST">
+<?php foreach ($cart_items as $item): ?>
+<div class="item">
+
+    <!-- 左：商品画像 -->
+    <div class="item-left">
+        <img src="<?= htmlspecialchars($item['product_image']) ?>"
+             alt="<?= htmlspecialchars($item['product_name']) ?>"
+             class="product-img">
+    </div>
+
+    <!-- 右：商品情報 -->
+    <div class="item-right">
+
+        <p class="name"><?= htmlspecialchars($item['product_name']) ?></p>
+
+        <p class="price">¥<?= number_format($item['price']) ?></p>
+
+        <!-- カラー（cart の color を表示） -->
+        <p class="color">カラー：<?= htmlspecialchars($item['color']) ?></p>
+
+        <!-- メーカー（DB に maker カラムがある前提） -->
+        <p class="maker">メーカー：<?= htmlspecialchars($item['maker'] ?? '不明') ?></p>
+
+        <!-- ボタン -->
+        <div class="buttons">
+            <form action="G-11_delete-cart.php" method="POST">
                 <input type="hidden" name="key" value="<?= $item['product_id'] . '_' . $item['color'] ?>">
                 <button type="submit" class="delete-btn">削除</button>
-                </form>
-                <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>" class="buy-btn">購入</a>
-            </div>
-        </div>
+            </form>
 
-        <!-- 右側：商品画像 -->
-        <div class="item-right">
-            <img src="<?= htmlspecialchars($item['product_image']) ?>" alt="<?= htmlspecialchars($item['product_name']) ?>" class="product-img">
+            <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>" 
+               class="buy-btn">購入</a>
         </div>
     </div>
-    <?php endforeach; ?>
+
+</div>
+<?php endforeach; ?>
+   
 <?php endif; ?>
 </div>
 

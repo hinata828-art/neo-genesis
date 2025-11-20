@@ -1,6 +1,6 @@
 /* カート全体・合計 */
 .cart-page-wrapper {
-    padding-top: 120px; /* ← 適宜調整（100〜140pxがおすすめ） */
+    padding-top: 150px; /* ← 適宜調整（100〜140pxがおすすめ） */
 }
 .cart,
 .cart-summary {
@@ -102,6 +102,12 @@
 
 /* 合計部分 */
 .cart-summary {
+    position: fixed;
+    top: 150px; /* ← header の高さに合わせて調整 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
