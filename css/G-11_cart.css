@@ -16,8 +16,8 @@
     border-radius: 10px;
     margin-bottom: 15px;
     padding: 20px;
-    min-height: 350px;
-    min-height: center;
+    min-height: 220px; /* ← ★縦幅をさらに大きく */
+    align-items: center;
 }
 
 /* 左側：商品画像 */
@@ -29,14 +29,14 @@
 }
 
 .product-img {
-    width: 250px;
-    height: 280px;
+    width: 170px;
+    height: 170px;
     object-fit: contain;
     border-radius: 5px;
 
     /* ★白背景＋黒枠を追加 */
     background: #ffffff;
-    border: 1px solid black;
+    border: 2px solid black;
     padding: 10px;
 }
 
@@ -56,9 +56,8 @@
 }
 
 .price {
-    font-size: 25px;
+    font-size: 16px;
     margin: 5px 0 10px;
-    color: red;
 }
 
 /* ボタン横並び */
@@ -102,12 +101,6 @@
 
 /* 合計部分 */
 .cart-summary {
-    position: fixed;
-    top: 150px; /* ← header の高さに合わせて調整 */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 600px;
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
