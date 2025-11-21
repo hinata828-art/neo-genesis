@@ -1,12 +1,11 @@
 <?php
-// エラーを画面に強制表示させる設定
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-require '../common/db_connect.php'; 
+// require '../common/db_connect.php'; // コメントアウト
+// ...
+// require '../common/header.php'; // コメントアウト
+echo "ファイルは正しく読み込めています。";
 
 // 2. データの初期化
 $transaction_id = 0;
