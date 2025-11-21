@@ -1,6 +1,8 @@
 <?php
-// G-17_rental-roulette.php
-// 1. セッションとDB接続
+// エラーを画面に強制表示させる設定
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
