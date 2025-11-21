@@ -1,10 +1,13 @@
 <?php
 // G-17_rental-roulette.php
-// 1. セッションとDB接続
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-require '../common/db_connect.php'; 
+require '../common/db_connect.php'; // これでエラーが出ないか確認
+echo "DB接続成功";
+// 以降のすべてのコードを一旦コメントアウトまたは削除し、ブラウザでアクセスしてみる
+/*
+?>
 
 // 2. データの初期化
 $transaction_id = 0;
