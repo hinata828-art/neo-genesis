@@ -74,7 +74,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- 上部：新規商品登録ボタン＋検索フォーム -->
     <div class="action-row" style="display:flex; gap:10px; align-items:center;">
-      <a href="g23_product_edit.php" class="new-product-btn">+新規商品登録</a>
+      <a href="G-23_product-detail.php" class="new-product-btn">+新規商品登録</a>
       <form method="get" class="search-bar" style="display:flex; gap:8px;">
         <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="商品名で検索">
         <button type="submit" class="apply-btn">検索</button>
