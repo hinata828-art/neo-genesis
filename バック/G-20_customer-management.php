@@ -146,7 +146,7 @@ $rows = $stmt->fetchAll();
                     <td><?php echo htmlspecialchars($row['customer_id'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                     <td><?php echo $ageDisplay; ?></td>
                     <td>
-                      <form action="customer_detail.php" method="get" style="display:inline;">
+                      <form action="G-21_customer-detail.php" method="get" style="display:inline;">
                         <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['customer_id'], ENT_QUOTES, 'UTF-8'); ?>" />
                         <button class="btn btn-detail" type="submit">詳細</button>
                       </form>

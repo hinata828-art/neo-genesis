@@ -4,6 +4,8 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
+    /* header.css との競合を避けるために必要に応じて padding-top を追加してください */
+    padding-top: 120px; 
 }
 
 /* --- 全体コンテナ (スマホ幅) --- */
@@ -15,7 +17,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ヘッダー --- */
+/* --- ヘッダー（戻るボタンなど） --- */
 .header {
     display: flex;
     align-items: center;
@@ -57,7 +59,8 @@ body {
 }
 
 /* ==============================
-G-17 履歴詳細ページ用スタイル 
+G-17 履歴詳細/ルーレット用スタイル 
+(欠落していた共通部品も含む)
 ==============================
 */
 
@@ -293,7 +296,7 @@ G-17 履歴詳細ページ用スタイル
 
 /*
 ==============================
-G-17 ルーレットページ用スタイル
+G-17 ルーレット用スタイル
 ==============================
 */
 
@@ -344,24 +347,22 @@ G-17 ルーレットページ用スタイル
 /* ルーレット（矢印とキャンバス） */
 #roulette {
     position: relative;
-    /* ルーレットの上部にもう少しスペースを確保 (矢印の高さ + 余白) */
+    /* 修正前のマージン設定に戻す */
     margin: 80px auto 50px auto; 
+    /* 枠線は削除 */
 }
 
-/* ★★★ 矢印のCSSを再々修正 (上から下向き) ★★★ */
+/* ★★★ 矢印のCSS (上から下向き) ★★★ */
 #pointer {
     width: 0;
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    /* 修正: 「上から下向き」の矢印（border-top）に戻す */
     border-top: 40px solid red; 
     
     position: absolute;
-    /* 修正: ルーレットの親要素の上端からマイナス値で配置し、ルーレットの外に出す */
-    top: -40px; /* 矢印の高さ分だけ上に移動 */
+    top: -40px; 
     left: 50%;
-    /* 修正: 左右中央揃え(translateX)のみに変更 */
     transform: translateX(-50%); 
     z-index: 10; 
 }

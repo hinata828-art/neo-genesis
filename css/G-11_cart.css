@@ -1,157 +1,229 @@
-/* カート全体・合計 */
+/* ===================================
+    G-11_cart.css
+    カートページスタイル
+=================================== */
+
+/* -------------------------------
+    ページ全体のレイアウト
+-------------------------------- */
 .cart-page-wrapper {
-    padding-top: 120px; /* ← 適宜調整（100〜140pxがおすすめ） */
-}
-.cart,
-.cart-summary {
-    max-width: 95%;
+    max-width: 800px;
     margin: 20px auto;
-    box-sizing: border-box;
+    padding: 0 15px;
+    padding-top: 150px; /* 固定ヘッダーの高さ調整 */
 }
 
-/* 商品アイテム：画像を左、縦幅をさらに大きく */
-.item {
-    display: flex;
-    background-color: #f5f8fc;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    padding: 20px;
-    min-height: 350px;
-    min-height: center;
-}
+/* -------------------------------
+    カート合計（固定表示）
+-------------------------------- */
+.cart-summary {
+    position: fixed;
+    top: 150px; 
+    left: 0;
+    right: 0;
+    z-index: 500;
 
-/* 左側：商品画像 */
-.item-right {
-    flex: 1;
+    background: #f5f5f5;
+    padding: 15px;
+    border-bottom: 2px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
-.product-img {
-    width: 400px;
-    height: 280px;
-    object-fit: contain;
-    border-radius: 5px;
+.cart-summary .total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
 
-    /* ★白背景＋黒枠を追加 */
-    background: #ffffff;
-    border: 1px solid black;
+.cart-summary .buy-btn {
+    background: #4169e1;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.3s;
+}
+.cart-summary .buy-btn:hover {
+    background: #3154b8;
+}
+
+/* -------------------------------
+    カート商品一覧
+-------------------------------- */
+.cart {
+    background: #fff;
+    border-radius: 8px;
     padding: 10px;
 }
 
-/* 右側：商品情報とボタン */
-.item-left {
-    flex: 2;
+.cart > p {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    padding: 40px 0;
+}
+
+/* -------------------------------
+    商品アイテム1件
+-------------------------------- */
+.cart .item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 12px;
+
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+/* --- 左：商品画像（左寄せ固定） --- */
+.cart .item-left {
+    flex-shrink: 0;
+    width: 100px;
+    order: 1; /* 左側に固定 */
+}
+.cart .item-left .product-img {
+    width: 100%;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* --- 右：商品情報 --- */
+.cart .item-right {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 170px;
-    padding-left: 20px;
+    gap: 6px;
+    min-width: 0;
+    text-align: right;
+    order: 2; /* 右側に固定 */
 }
 
-.name {
-    font-size: 18px;
+.cart .item-right .name {
+    font-size: 16px;
     font-weight: bold;
+    color: #333;
 }
 
-.price {
-    font-size: 25px;
-    margin: 5px 0 10px;
-    color: red;
+.cart .item-right .price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #d32f2f;
 }
 
-/* ボタン横並び */
-.buttons {
+.cart .item-right .color,
+.cart .item-right .maker {
+    font-size: 13px;
+    color: #666;
+}
+
+/* --- ボタンエリア（右寄せ） --- */
+.cart .item-right .buttons {
+    margin-top: auto;
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    justify-content: flex-end;
 }
-
-.buttons form,
-.buttons .buy-btn {
-    flex: 1;
-}
-
-/* 共通ボタン */
-.delete-btn,
-.buy-btn,
-.checkout-btn {
-    padding: 10px 0;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    display: inline-block;
-    border: none;
+.cart .item-right .buttons form {
+    margin: 0;
 }
 
 /* 削除ボタン */
-.delete-btn {
-    background: red;
-    color: white;
+.cart .item-right .delete-btn {
+    background: #fff;
+    color: #d32f2f;
+    border: 2px solid #d32f2f;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.cart .item-right .delete-btn:hover {
+    background: #d32f2f;
+    color: #fff;
 }
 
 /* 購入ボタン */
-.buy-btn {
-    background: #0048bc;
-    color: white;
-    border: 1px solid rgb(0, 100, 201);
+.cart .item-right .buy-btn {
+    background: #4169e1;
+    color: #fff;
+    border: 2px solid #4169e1;
+    padding: 6px 16px;
+    border-radius: 9999px;
     text-decoration: none;
-}
-
-/* 合計部分 */
-.cart-summary {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    box-shadow: 0 0 5px #ccc;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-}
-
-.total {
-    font-size: 20px;
+    font-size: 13px;
     font-weight: bold;
-    text-align: right;
+    display: inline-block;
+    transition: 0.3s;
+}
+.cart .item-right .buy-btn:hover {
+    background: #3154b8;
+    border-color: #3154b8;
 }
 
-/* レジへ進むボタン（購入ボタンと同じデザイン）*/
-.checkout-btn {
-    background: #0048bc;
-    color: white;
-    border: 1px solid rgb(0, 100, 201);
-    border-radius: 20px;
-    text-decoration: none;
-}
+/* --------------------------------
+    スマホ対応
+-------------------------------- */
+@media (max-width: 600px) {
 
-/* スマホ対応 */
-@media (max-width: 480px) {
-
-    .item {
-        flex-direction: column;
-        min-height: auto;
-        text-align: center;
+    .cart-page-wrapper {
+        margin: 15px auto;
+        padding: 0 10px;
+        padding-top: 100px;
     }
 
-    .item-right {
-        margin-bottom: 10px;
+    .cart-summary {
+        top: 150px;
+        padding: 12px;
     }
 
-    .item-left {
-        padding-left: 0;
-        width: 100%;
-        height: auto;
+    .cart-summary .total {
+        font-size: 16px;
+    }
+    .cart-summary .buy-btn {
+        padding: 8px 20px;
+        font-size: 13px;
     }
 
-    .buttons {
-        flex-direction: column;
+    .cart .item {
+        gap: 12px;
+        padding: 12px;
     }
 
-    .checkout-btn {
-        width: 100%;
+    .cart .item-left {
+        width: 80px;
+    }
+
+    .cart .item-right .name {
+        font-size: 14px;
+    }
+
+    .cart .item-right .price {
+        font-size: 18px;
+    }
+
+    .cart .item-right .color,
+    .cart .item-right .maker {
+        font-size: 12px;
+    }
+
+    .cart .item-right .buttons {
+        gap: 6px;
+    }
+
+    .cart .item-right .delete-btn,
+    .cart .item-right .buy-btn {
+        padding: 5px 12px;
+        font-size: 12px;
     }
 }

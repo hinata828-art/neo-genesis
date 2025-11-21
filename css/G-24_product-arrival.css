@@ -1,0 +1,60 @@
+body {
+    font-family: sans-serif;
+    background-color: #f7f7f7;
+}
+
+h2 {
+    margin-bottom: 25px;
+}
+
+.container {
+    width: 50%;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.15);
+    margin: auto;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 12px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+    font-size: 15px;
+}
+
+textarea {
+    height: 90px;
+}
+
+.button-area {
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 10px 25px;
+    border-radius: 8px;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.btn-cancel {
+    padding: 10px 25px;
+    border-radius: 8px;
+    background: #ccc;
+    color: black;
+    font-size: 16px;
+    text-decoration: none;
+}
