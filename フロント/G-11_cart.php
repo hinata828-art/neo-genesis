@@ -14,7 +14,8 @@ foreach ($cart as $key => $qty) {
     // ★ 商品IDとカラーを分離（例： "23_red" → 23, red）
     list($product_id, $color) = explode('_', $key);
 
-    $sql = "SELECT product_id, product_name, price, product_image
+    // ★ maker を追加して取得
+    $sql = "SELECT product_id, product_name, price, product_image, maker
             FROM product WHERE product_id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$product_id]);
@@ -48,11 +49,13 @@ $breadcrumbs = [
 ];
 require __DIR__ . '/../common/breadcrumb.php';
 ?>
-<!-- ▼ カート合計とレジボタン（パンくずの下に自然に配置） -->
- <div class="cart-page-wrapper">
+
+<div class="cart-page-wrapper">
+
+<!-- ▼ カート合計とレジボタン -->
 <div class="cart-summary">
     <p class="total">小計：￥<?= number_format($total) ?></p>
-    <a href="G-12_order.php"  class="buy-btn">レジへ進む</a>
+    <a href="G-12_order.php" class="buy-btn">レジへ進む</a>
 </div>
 
 <div class="cart">
@@ -73,24 +76,27 @@ require __DIR__ . '/../common/breadcrumb.php';
     <!-- 右：商品情報 -->
     <div class="item-right">
 
+        <!-- 商品名 -->
         <p class="name"><?= htmlspecialchars($item['product_name']) ?></p>
 
+        <!-- 価格 -->
         <p class="price">¥<?= number_format($item['price']) ?></p>
 
-        <!-- カラー（cart の color を表示） -->
+        <!-- カラー -->
         <p class="color">カラー：<?= htmlspecialchars($item['color']) ?></p>
 
-        <!-- メーカー（DB に maker カラムがある前提） -->
+        <!-- メーカー -->
         <p class="maker">メーカー：<?= htmlspecialchars($item['maker'] ?? '不明') ?></p>
 
-        <!-- ボタン -->
+        <!-- 削除 / 購入 ボタン -->
         <div class="buttons">
             <form action="G-11_delete-cart.php" method="POST">
-                <input type="hidden" name="key" value="<?= $item['product_id'] . '_' . $item['color'] ?>">
+                <input type="hidden" name="key"
+                       value="<?= $item['product_id'] . '_' . $item['color'] ?>">
                 <button type="submit" class="delete-btn">削除</button>
             </form>
 
-            <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>" 
+            <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>"
                class="buy-btn">購入</a>
         </div>
     </div>
@@ -104,3 +110,4 @@ require __DIR__ . '/../common/breadcrumb.php';
 </div>
 </body>
 </html>
+
