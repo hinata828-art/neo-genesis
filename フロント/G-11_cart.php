@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/../common/db_connect.php';
+require __DIR__ . '../common/db_connect.php';
 
 // カート取得
 $cart = $_SESSION['cart'] ?? [];
@@ -49,14 +49,14 @@ foreach ($cart as $key => $qty) {
 <link rel="stylesheet" href="../css/G-11_cart.css">
 </head>
 <body>
-<?php require __DIR__ . '/../common/header.php'; ?>
+<?php require __DIR__ . '../common/header.php'; ?>
 
 <?php
 $breadcrumbs = [
     ['name' => 'ホーム', 'url' => 'G-8_home.php'],
     ['name' => 'カート']
 ];
-require __DIR__ . '/../common/breadcrumb.php';
+require __DIR__ . '../common/breadcrumb.php';
 ?>
 
 <div class="cart-page-wrapper">
