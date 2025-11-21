@@ -4,7 +4,6 @@ body {
   background-color: #f9f9f9;
 }
 
-
 .main-container {
   max-width: 100%;
   padding: 1em 2em;
@@ -42,40 +41,46 @@ body {
   font-size: 0.9em;
 }
 
-/* メインエリア：フィルターを右端に固定 */
-.main-area {
-  position: relative;
-  width: 100%;
+.apply-btn {
+  background-color: #30cfcf;
+  color: #fff;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-/* 商品一覧：横並び固定＋スクロール対応 */
-/* 商品一覧：2×2のグリッド表示 */
-/* 商品一覧：2×2のグリッド表示 */
+/* メインエリア：商品リスト2列＋フィルター1列の3列構成 */
+.main-area {
+  display: flex;
+  align-items: flex-start;
+  gap: 2em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 商品一覧：左2列に配置 */
 .product-list {
   display: grid;
-  grid-template-columns: repeat(2, 430px); /* 2列固定 */
-  grid-template-rows: auto auto;           /* 2行 */
-  gap: 2em;                                /* 横・縦の余白を広げる */
-  margin-right: 325px;                     /* フィルター分のスペース */
+  grid-template-columns: repeat(2, 480px); /* 商品カード2列固定幅 */
+  gap: 3em;
+  flex: 1; /* 残り領域を使う */
 }
 
-/* 商品カード：横幅はそのまま */
+/* 商品カード */
 .product-card {
+  width: 480px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  width: 430px;
-  padding: 0.8em;
+  padding: 1em;
   display: flex;
   flex-direction: column;
-  gap: 0.6em;
-  margin: 0.5em; /* 追加でカード外側にも余白を確保 */
+  gap: 0.8em;
 }
 
-
-
-
-/* 商品ID：上部に表示 */
+/* 商品ID */
 .product-id {
   font-weight: bold;
   font-size: 0.95em;
@@ -84,93 +89,104 @@ body {
   padding-bottom: 0.3em;
 }
 
-/* 商品画像・情報・在庫を横並びに */
+/* 商品メイン：画像＋情報横並び */
 .product-main {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 0.8em;
+  gap: 1em;
 }
 
 /* 商品画像 */
 .product-main img {
-  width: 60px;
-  height: 60px;
+  width: 180px;
+  height: 180px;
   object-fit: cover;
   border-radius: 6px;
 }
 
-/* 商品情報 */
+/* 商品情報（画像横） */
 .product-info {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  min-width: 120px;
+  flex-grow: 1;
 }
 
 .product-info h4 {
   margin: 0.2em 0;
-  font-size: 0.9em;
+  font-size: 1.2em;
+  white-space: nowrap;
 }
 
 .product-info .price {
-  margin: 0.2em 0;
-  font-size: 0.9em;
+  font-size: 1em;
   font-weight: bold;
   color: red;
+  margin: 0.2em 0;
 }
 
+/* 詳細：折り返し可、全文表示 */
+.product-info .detail {
+  margin-bottom: 1em;
+  font-size: 0.9em;
+  color: #333;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+/* テーブル：メーカー・カラー・在庫数・発注数・最終入荷日・最終発注日 */
+.product-table {
+  margin-top: 1em;
+}
+
+.product-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  background-color: #fafafa;
+}
+
+.product-table td {
+  border: 1px solid #ccc;
+  padding: 0.6em;
+  vertical-align: top;
+}
+
+.product-table td strong {
+  color: #333;
+}
+
+/* 編集・削除ボタン：テーブルと同じ横幅で均等配置 */
 .product-actions {
-  margin-top: 0.3em;
+  margin-top: 1em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em;
+  width: 100%;
 }
 
 .product-actions button {
-  margin: 0.2em 0.2em 0 0;
-  padding: 0.3em 0.6em;
-  font-size: 0.85em;
+  padding: 0.6em 0;
+  font-size: 0.9em;
   border: none;
   background-color: #ccc;
   border-radius: 4px;
   cursor: pointer;
+  width: 100%;
 }
 
-/* 在庫情報 */
-.stock-info {
-  font-size: 0.85em;
-  color: #333;
-  min-width: 100px;
-}
-
-.stock-info ul {
-  padding-left: 1em;
-  margin: 0.3em 0;
-}
-
-.stock-info li {
-  margin-bottom: 0.2em;
-}
-
-/* 最終入荷日と発注日を横並びに */
-.stock-dates {
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
-  font-size: 0.8em;
-}
-
-/* フィルター：右端にぴったり固定 */
+/* フィルター：右端に固定 */
 .filter-box {
-  margin-top:120px;
-  position: fixed;   /* ← absoluteからfixedに変更 */
-  top: 40px;
+  grid-column: 3; /* グリッド右端に配置 */
+  position: fixed; /* スクロールしても右端に固定 */
+  top: 120px;
   right: 0;
-  width: 305px; /* インプット幅300px + 5px */
+  width: 305px;
   background-color: #fff3d9;
   padding: 1em;
   border-radius: 8px;
   min-height: 400px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  box-sizing: border-box; /* 幅計算を安定させる */
+  box-sizing: border-box;
 }
 
 .filter-box h3 {
@@ -186,7 +202,7 @@ body {
 }
 
 .filter-box input[type="text"] {
-  width: 100%;       /* フィルター幅に合わせる */
+  width: 100%;
   padding: 0.4em;
   margin-top: 0.3em;
   box-sizing: border-box;
@@ -196,7 +212,7 @@ body {
   margin-right: 0.5em;
 }
 
-.apply-btn {
+.filter-box .apply-btn {
   background-color: #30cfcf;
   color: #fff;
   border: none;
@@ -205,5 +221,5 @@ body {
   font-weight: bold;
   cursor: pointer;
   margin-top: 1em;
-  width: 100%;       /* ボタンもフィルター幅に合わせる */
+  width: 100%;
 }
