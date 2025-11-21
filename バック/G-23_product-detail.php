@@ -148,6 +148,9 @@ $history = $historyStmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="button-area">
     <button type="button" class="btn btn-cancel" onclick="location.href='G-22_product.php'">キャンセル</button>
     <button type="submit" class="btn">登録</button>
+    <a class="btn" href="G-24_product-arrival.php?product_id=<?php echo $product_id; ?>">
+    入荷登録
+</a>
 </div>
 
 </form>
