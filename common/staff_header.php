@@ -18,7 +18,7 @@
   <nav id="sideMenu" class="side-menu">
     <ul>
         <li><a href="../バック/G-20_customer-management.php">顧客管理</a></li>
-        <li><a href="../バック/G-22_product.php">商品管理</a></li>
+        <li><a href="/バック/G-22_product.php">商品管理</a></li>
     </ul>
   </nav>
 
