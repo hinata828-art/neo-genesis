@@ -1,22 +1,25 @@
 <?php
-// --------------------------------------------------
-// ファイル名: G-17_rental-roulette.php
-// --------------------------------------------------
-
-// 1. セッションとDB接続
-session_start();
+// ★ エラーがあれば画面に表示する設定（デバッグ用）
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// セッション開始
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// DB接続
 require '../common/db_connect.php'; 
 
-// 2. データの初期化
+// データの初期化
 $transaction_id = 0;
-$show_roulette = false; // ルーレットを表示するか
-$prizes_for_js = [];    // ルーレットの景品リスト (JS用)
+$show_roulette = false;
+$prizes_for_js = [];
 $error_message = '';
 
 try {
-    // 3. 顧客IDと取引IDを取得
+    // ログイン確認
     $customer_id = $_SESSION['customer']['id'] ?? null;
     if ($customer_id === null) {
         throw new Exception('ログイン情報が確認できません。');
@@ -26,7 +29,7 @@ try {
     }
     $transaction_id = $_GET['id'];
 
-    // 4. このレンタルが「抽選可能」か、DBを確認
+    // レンタル情報の確認
     $sql_check = "SELECT 
                     r.coupon_claimed, 
                     p.category_id,
@@ -47,16 +50,15 @@ try {
     if ($rental_info['delivery_status'] !== '返却済み') {
         throw new Exception('このレンタルはまだ返却が完了していません。');
     }
-    // ★重要: 既に回している場合はエラーにする（テスト時はここをコメントアウトすると何度も回せます）
+    // 既に回しているかチェック
     if ($rental_info['coupon_claimed'] == 1) {
         throw new Exception('このレンタルでは既にルーレットを回しています。');
     }
 
-    // 5. すべてOKなら、ルーレットを表示
+    // ここまで来たらルーレット表示OK
     $show_roulette = true;
     
-    // 6. 景品リストをDBから取得
-    // 抽選ロジックと並び順を揃えるため、coupon_id ASC に変更
+    // 景品リスト取得
     $sql_prizes = "SELECT coupon_name FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
                    ORDER BY coupon_id ASC";
@@ -66,18 +68,11 @@ try {
     $prizes_for_js = $stmt_prizes->fetchAll(PDO::FETCH_COLUMN, 0);
     
     if (count($prizes_for_js) < 6) {
-        throw new Exception('景品がDBに正しく登録されていません (ID 2-7が必要です)。');
+        throw new Exception('景品データが不足しています。');
     }
 
 } catch (Exception $e) {
     $error_message = $e->getMessage();
-}
-
-// ステータス色分け関数
-function getStatusClass($status) {
-    if ($status == 'キャンセル済み') return 'status-cancelled';
-    if ($status == '配達完了' || $status == '返却済み') return 'status-delivered';
-    return 'status-processing'; 
 }
 ?>
 <!DOCTYPE html>
@@ -87,11 +82,11 @@ function getStatusClass($status) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>割引ルーレット!!!</title>
     <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/G-17_rental-history.css">
-    
+    <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
     <style>
+        /* ルーレットの黒枠線 (CSSファイルが効かない場合の保険) */
         #roulette {
-            border: 2px solid #1f2937; /* 枠線を黒に */
+            border: 2px solid #1f2937;
             border-radius: 50%;
         }
     </style>
@@ -100,7 +95,6 @@ function getStatusClass($status) {
     <?php require '../common/header.php'; ?>
     
     <div class="container">
-
         <header class="header">
             <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>">
                 <img src="../img/modoru.png" alt="戻る" class="back-link">
@@ -110,7 +104,6 @@ function getStatusClass($status) {
         </header>
 
         <main class="main-content">
-
             <?php if (!empty($error_message)): ?>
                 <div class="error-box">
                     <p><?php echo htmlspecialchars($error_message); ?></p>
@@ -131,7 +124,6 @@ function getStatusClass($status) {
                     <p id="result"></p>
                 </section>
             <?php endif; ?>
-
         </main>
     </div> 
     
@@ -146,7 +138,6 @@ function getStatusClass($status) {
         const resultP = document.getElementById('result');
         const rouletteContainer = document.getElementById('roulette-container');
         
-        // PHPからデータ受け渡し
         const sectors = <?php echo json_encode($prizes_for_js); ?>; 
         const transactionId = <?php echo $transaction_id; ?>;
         
@@ -156,14 +147,11 @@ function getStatusClass($status) {
         const sectorAngle = 2 * Math.PI / sectors.length;
 
         function setCanvasSize() {
-            // コンテナ幅に合わせてサイズ調整
             canvasSize = rouletteContainer.clientWidth * 0.8;
             if (canvasSize < 200) canvasSize = 200;
             if (canvasSize > 320) canvasSize = 320;
-            
             canvas.width = canvasSize;
             canvas.height = canvasSize;
-            
             drawRoulette();
         }
 
@@ -186,11 +174,10 @@ function getStatusClass($status) {
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
                 
-                // ★ 文字色を黒 (#000000) に設定
+                // 文字色は黒
                 ctx.fillStyle = "#000000"; 
                 
                 ctx.textBaseline = "middle";
-                // 文字位置の調整
                 ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
                 ctx.restore();
             });
@@ -218,10 +205,9 @@ function getStatusClass($status) {
                     const prizeName = data.prize_name;
 
                     let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
-                    // 12時の位置(270度 = 1.5PI)に合わせる計算式
+                    // 12時の位置に合わせる計算
                     let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI);
                     
-                    // 10回転以上 + 最終角度
                     const totalRotation = 10 * (2 * Math.PI) + targetAngle;
                     animateSpin(totalRotation, prizeName);
 
@@ -231,7 +217,7 @@ function getStatusClass($status) {
                 }
             })
             .catch(error => {
-                resultP.textContent = `エラー: ${error.message || '通信に失敗しました。'}`;
+                resultP.textContent = `エラー: ${error.message || '通信失敗'}`;
                 spinButton.disabled = false;
                 console.error('通信エラー:', error);
             });
@@ -257,7 +243,6 @@ function getStatusClass($status) {
                     resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
                     spinButton.style.display = 'none'; 
 
-                    // クーポン一覧へのリンクを表示
                     const link = document.createElement('a');
                     link.href = 'G-25_coupon-list.php';
                     link.textContent = 'クーポン一覧ページへ移動';
@@ -271,10 +256,9 @@ function getStatusClass($status) {
 
         spinButton.addEventListener('click', spinRoulette);
         window.addEventListener('resize', setCanvasSize);
-        setCanvasSize(); // 最初の描画
+        setCanvasSize(); 
     });
     </script>
     <?php endif; ?>
-
 </body>
 </html>
