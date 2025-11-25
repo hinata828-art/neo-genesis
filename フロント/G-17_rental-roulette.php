@@ -52,7 +52,6 @@ try {
     $show_roulette = true;
     
     // 6. 景品リストをDBから取得 (ID 2〜7)
-    // 抽選ロジックと並び順を揃えるため、coupon_id ASC に変更
     $sql_prizes = "SELECT coupon_name FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
                    ORDER BY coupon_id ASC";
@@ -150,8 +149,6 @@ function getStatusClass($status) {
             canvas.width = canvasSize;
             canvas.height = canvasSize;
             
-            // 矢印の位置調整はCSSで行うためJSでの調整は不要
-            
             drawRoulette();
         }
 
@@ -174,7 +171,7 @@ function getStatusClass($status) {
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
                 
-                // ★ 文字色を黒 (#000000) に設定
+                // ★ 修正: 文字色を黒 (#000000) に設定
                 ctx.fillStyle = "#000000"; 
                 
                 ctx.textBaseline = "middle";
@@ -243,11 +240,10 @@ function getStatusClass($status) {
                     resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
                     spinButton.style.display = 'none'; 
 
-                    // クーポン一覧へのリンクを表示
                     const link = document.createElement('a');
                     link.href = 'G-25_coupon-list.php';
                     link.textContent = 'クーポン一覧ページへ移動';
-                    link.className = 'coupon-list-link'; // CSSでスタイリング
+                    link.className = 'coupon-list-link'; 
                     
                     resultP.after(link); 
                 }
