@@ -1,5 +1,8 @@
 <?php
-// G-17_rental-roulette.php
+// --------------------------------------------------
+// ファイル名: G-17_rental-roulette.php
+// --------------------------------------------------
+
 // 1. セッションとDB接続
 session_start();
 ini_set('display_errors', 1);
@@ -9,7 +12,7 @@ require '../common/db_connect.php';
 // 2. データの初期化
 $transaction_id = 0;
 $show_roulette = false; // ルーレットを表示するか
-$prizes_for_js = [];    // ルーレットの景品リスト (JS用)
+$prizes_for_js = [];    // ルーレットの景品リスト (JS用)
 $error_message = '';
 
 try {
@@ -44,6 +47,7 @@ try {
     if ($rental_info['delivery_status'] !== '返却済み') {
         throw new Exception('このレンタルはまだ返却が完了していません。');
     }
+    // ★重要: 既に回している場合はエラーにする（テスト時はここをコメントアウトすると何度も回せます）
     if ($rental_info['coupon_claimed'] == 1) {
         throw new Exception('このレンタルでは既にルーレットを回しています。');
     }
@@ -51,7 +55,8 @@ try {
     // 5. すべてOKなら、ルーレットを表示
     $show_roulette = true;
     
-    // 6. 景品リストをDBから取得 (ID 2〜7)
+    // 6. 景品リストをDBから取得
+    // 抽選ロジックと並び順を揃えるため、coupon_id ASC に変更
     $sql_prizes = "SELECT coupon_name FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
                    ORDER BY coupon_id ASC";
@@ -82,14 +87,24 @@ function getStatusClass($status) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>割引ルーレット!!!</title>
     <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
+    <link rel="stylesheet" href="../css/G-17_rental-history.css">
+    
+    <style>
+        #roulette {
+            border: 2px solid #1f2937; /* 枠線を黒に */
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-    <?php require '../common/header.php'; // ヘッダーを読み込む ?>
+    <?php require '../common/header.php'; ?>
+    
     <div class="container">
 
         <header class="header">
-        <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
+            <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>">
+                <img src="../img/modoru.png" alt="戻る" class="back-link">
+            </a>
             <h1 class="header-title">ルーレット</h1>
             <span class="header-dummy"></span>
         </header>
@@ -115,7 +130,6 @@ function getStatusClass($status) {
                     <button id="spin">スピンする</button>
                     <p id="result"></p>
                 </section>
-                
             <?php endif; ?>
 
         </main>
@@ -128,11 +142,11 @@ function getStatusClass($status) {
         if (!canvas) return;
         
         const ctx = canvas.getContext('2d');
-        const pointer = document.getElementById('pointer');
         const spinButton = document.getElementById('spin');
         const resultP = document.getElementById('result');
         const rouletteContainer = document.getElementById('roulette-container');
         
+        // PHPからデータ受け渡し
         const sectors = <?php echo json_encode($prizes_for_js); ?>; 
         const transactionId = <?php echo $transaction_id; ?>;
         
@@ -142,6 +156,7 @@ function getStatusClass($status) {
         const sectorAngle = 2 * Math.PI / sectors.length;
 
         function setCanvasSize() {
+            // コンテナ幅に合わせてサイズ調整
             canvasSize = rouletteContainer.clientWidth * 0.8;
             if (canvasSize < 200) canvasSize = 200;
             if (canvasSize > 320) canvasSize = 320;
@@ -171,10 +186,11 @@ function getStatusClass($status) {
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
                 
-                // ★ 修正: 文字色を黒 (#000000) に設定
+                // ★ 文字色を黒 (#000000) に設定
                 ctx.fillStyle = "#000000"; 
                 
                 ctx.textBaseline = "middle";
+                // 文字位置の調整
                 ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
                 ctx.restore();
             });
@@ -205,6 +221,7 @@ function getStatusClass($status) {
                     // 12時の位置(270度 = 1.5PI)に合わせる計算式
                     let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI);
                     
+                    // 10回転以上 + 最終角度
                     const totalRotation = 10 * (2 * Math.PI) + targetAngle;
                     animateSpin(totalRotation, prizeName);
 
@@ -240,10 +257,11 @@ function getStatusClass($status) {
                     resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
                     spinButton.style.display = 'none'; 
 
+                    // クーポン一覧へのリンクを表示
                     const link = document.createElement('a');
                     link.href = 'G-25_coupon-list.php';
                     link.textContent = 'クーポン一覧ページへ移動';
-                    link.className = 'coupon-list-link'; 
+                    link.className = 'coupon-list-link';
                     
                     resultP.after(link); 
                 }
