@@ -68,13 +68,13 @@ require __DIR__ . '/../common/breadcrumb.php';
                         <p class="price">¥<?= number_format($item['price']) ?></p>
 
                         <div class="buttons">
-                            <form action="G-11_delete-cart.php" method="POST">
+                            <form action="G-11_delete-cart.php" method="POST"  onclick="event.stopPropagation();">
                                 <input type="hidden" name="key" value="<?= $item['product_id'] . '_' . $item['color'] ?>">
                                 <button type="submit" class="delete-btn">削除</button>
                             </form>
 
                             <!-- 個別購入ボタン（これはそのまま） -->
-                            <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>" class="buy-btn">購入</a>
+                            <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>" class="buy-btn"  onclick="event.stopPropagation();>購入</a>
                         </div>
                     </div>
 
