@@ -3,8 +3,10 @@
 // イースターエッグの判定とクーポン発行を行うサーバー側スクリプト
 
 session_start();
+// 本番ではエラー表示をオフにしますが、開発中はオンでOK
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
 require '../common/db_connect.php'; 
 
 header('Content-Type: application/json');
@@ -16,22 +18,21 @@ function sendError($message) {
 }
 
 try {
-    // 1. 顧客IDのチェック
+    // 1. 顧客IDのチェック (ログインしていないと特典はあげられない)
     $customer_id = $_SESSION['customer']['id'] ?? null;
     if ($customer_id === null) {
-        sendError('ログイン情報が確認できません。');
+        sendError('クーポンを獲得するにはログインが必要です。');
     }
 
-    // 2. 景品リストの取得
-    // ルーレットと同様のクーポンID 2〜7 を取得
+    // 2. 景品リストの取得 (DBにあるクーポンID 2〜7 を対象とする)
     $sql_prizes = "SELECT coupon_id, discount_rate FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)";
     $stmt_prizes = $pdo->prepare($sql_prizes);
     $stmt_prizes->execute();
     $prizes = $stmt_prizes->fetchAll(PDO::FETCH_ASSOC);
 
-    if (count($prizes) < 6) {
-        sendError('景品データが不足しています。');
+    if (count($prizes) < 1) {
+        sendError('現在発行できるクーポンがありません。');
     }
 
     // 3. 抽選（ランダムに1つ選ぶ）
@@ -43,7 +44,7 @@ try {
     $pdo->beginTransaction();
 
     // 5. customer_coupon テーブルに「当選結果」を INSERT
-    // ★ 修正点: 全カテゴリで使えるよう applicable_category_id は NULL で保存
+    // ★ 全カテゴリで使えるよう applicable_category_id は NULL で保存します
     $sql_insert = "INSERT INTO customer_coupon 
                     (customer_id, coupon_id, acquired_at, used_at, applicable_category_id)
                    VALUES 
@@ -66,7 +67,7 @@ try {
     exit;
 
 } catch (Exception $e) {
-    if ($pdo->inTransaction()) {
+    if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
     sendError('サーバーエラー: ' . $e->getMessage());

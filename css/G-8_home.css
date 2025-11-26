@@ -22,33 +22,26 @@
     align-items: center;
 }
 
-/* ★ 修正：横スクロール部分 */
+/* 横スクロール部分 */
 .pickapp-items {
     display: flex; 
     overflow-x: auto;
-    /* ★ 修正：gapを0に。商品幅(100%)で制御するため */
     gap: 0; 
     scroll-behavior: smooth; 
     padding: 10px 0;
-    
-    /* スクロールバー非表示 (PC) */
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none; 
 }
 .pickapp-items::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    display: none;
 }
 
-/* ★ 修正：商品カード */
+/* 商品カード */
 .item {
-    /* ★ 修正：幅を100%にして、1つだけ表示 */
     flex: 0 0 100%; 
     width: 100%;
     box-sizing: border-box; 
-
-    /* ★ 修正：レイアウトを「横並び」に戻す */
     display: flex;
-    align-items: center; /* 上下中央揃え */
-
+    align-items: center;
     background: #fafafa;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -59,39 +52,37 @@
     transform: scale(1.03);
 }
 
-/* ★ 修正：商品画像 */
+/* 商品画像 */
 .item img {
-    /* ★ 修正：幅を固定値に戻す */
     width: 160px; 
-    height: 120px; /* 少し大きく */
+    height: 120px; 
     object-fit: cover;
     border-radius: 8px;
-    /* ★ 修正：マージンを右側に戻す */
     margin-right: 15px;
     margin-bottom: 0;
 }
 
-/* ★ 修正：商品情報 */
+/* 商品情報 */
 .item-info {
     text-align: left;
-    flex: 1; /* ★ 横並びで残りの幅をすべて取る */
+    flex: 1; 
 }
 .item-title {
     font-weight: bold;
     margin-bottom: 5px;
-    font-size: 1.1em; /* ★ 修正：フォントを戻す */
+    font-size: 1.1em; 
 }
 .item-price {
     color: #e60000;
-    font-size: 1.2em; /* ★ 修正：フォントを戻す */
-    margin-bottom: 10px; /* ★ 修正：ボタンとの隙間 */
+    font-size: 1.2em; 
+    margin-bottom: 10px; 
 }
 .item-btn {
     background-color: #ffd700;
     border: none;
     border-radius: 6px;
-    padding: 6px 12px; /* ★ 修正：パディングを戻す */
-    font-size: 1em; /* ★ 修正：フォントを戻す */
+    padding: 6px 12px; 
+    font-size: 1em; 
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
@@ -103,7 +94,7 @@
     background-color: #ffcc00;
 }
 
-/* スライダーボタン (変更なし) */
+/* スライダーボタン */
 .slider-btn {
     position: absolute;
     top: 50%;
@@ -131,13 +122,12 @@
 }
 
 
-/* ===== カテゴリーボタンエリア (変更なし) ===== */
+/* ===== カテゴリーボタンエリア ===== */
 .category-section {
     width: 95%;
     margin: 40px auto;
     text-align: center;
 }
-/* (以下、変更ありません) */
 .category-buttons {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
@@ -193,7 +183,7 @@
 .footer-banner {
     display: flex;
     justify-content: space-around;
-    align-items: stretch; /* ← 既に stretch に変更されています */
+    align-items: stretch; 
     background-color: #f8f8f8;
     padding: 15px 10px;
     border-top: 2px solid #ddd;
@@ -212,60 +202,71 @@
     border: 1px solid #ccc;
     flex: 1; 
     margin: 0 5px;
-    display: flex; /* ✅ 追加：中身を中央に配置する */
-    align-items: center; /* ✅ 縦中央揃え */
-    justify-content: center; /* ✅ 横中央揃え */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
     height: 100px;
-}
-
-/* --- ★★★ モーダル関連の追加スタイル（修正版） ★★★ --- */
-
-/* クリック可能にしたフッター要素のスタイル */
-.footer-banner div[role="button"] {
-    cursor: pointer; /* マウスオーバー時にクリック可能であることを示す */
+    /* クリック可能に見せる */
+    cursor: pointer;
     transition: background-color 0.2s;
 }
-.footer-banner div[role="button"]:hover {
-    background-color: #e0e0e0; /* ホバー時の色変更 */
+.footer-box:hover {
+    background-color: #e0e0e0;
 }
 
-/* モーダル背景 */
+
+/* --- ★★★ モーダル（ポップアップ）スタイル ★★★ --- */
+
+/* モーダル背景 (画面全体) */
 .modal {
-    display: none; /* 初期状態では非表示 */
+    display: none; /* 初期状態は非表示 */
     position: fixed;
-    /* ★ 修正: ヘッダー(1000)やサイドメニュー(2000)より手前に来るよう大きな値にする */
-    z-index: 5000; 
+    z-index: 5000; /* 最前面 */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5); /* 半透明の黒背景 */
-
-    /* ★ 修正: Flexboxで上下左右中央寄せを確実にする設定 */
-    /* JSで display: flex に切り替わった時にこれが効きます */
-    justify-content: center; /* 横方向の中央 */
-    align-items: center;     /* 縦方向の中央 */
+    background-color: rgba(0,0,0,0.5); /* 半透明の黒 */
+    
+    /* 中央寄せのキモ */
+    justify-content: center; 
+    align-items: center;
 }
 
-/* モーダルコンテンツ */
+/* モーダルの中身 (白い箱) */
 .modal-content {
     background-color: #fefefe;
-    /* ★ 修正: margin: auto を削除 (Flexboxのalign-itemsと競合しないように) */
-    margin: 0; 
-    padding: 30px; /* 余白を少し広げる */
+    margin: 0; /* auto ではなく 0 (flexboxで制御するため) */
+    padding: 30px;
     border: 1px solid #888;
-    width: 90%; /* スマホで見やすいよう少し広げる */
+    width: 90%;
     max-width: 500px;
     border-radius: 10px;
     position: relative;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* 影をつけて浮き上がらせる */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     animation: fadeIn 0.3s;
+    text-align: center; /* テキスト中央揃え */
 }
 
-/* 閉じるボタン */
+/* タイトル */
+#modal-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+    color: #333;
+}
+
+/* 本文 */
+#modal-text {
+    line-height: 1.6;
+    color: #555;
+    font-size: 1.1em;
+}
+
+/* 閉じるボタン (×) */
 .close-btn {
     color: #aaa;
-    position: absolute; /* 絶対配置で右上に固定 */
+    position: absolute;
     top: 10px;
     right: 20px;
     font-size: 32px;
@@ -274,31 +275,18 @@
     cursor: pointer;
     transition: color 0.2s;
 }
-
 .close-btn:hover,
 .close-btn:focus {
     color: #000;
     text-decoration: none;
 }
 
-/* タイトルとテキストの余白調整 */
-#modal-title {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.4em;
-    color: #333;
-    text-align: center;
-}
-#modal-text {
-    line-height: 1.6;
-    color: #555;
-}
-
-/* モーダルのフェードインアニメーション */
+/* フェードインアニメーション */
 @keyframes fadeIn {
     from {opacity: 0; transform: scale(0.9);}
     to {opacity: 1; transform: scale(1);}
 }
+
 
 /* --- ★★★ イースターエッグ（家電落下）用CSS ★★★ --- */
 
@@ -309,88 +297,29 @@
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* 下の要素をクリックできるようにする */
-    z-index: 1000; 
+    pointer-events: none; /* 画像の下にある要素をクリック可能にする */
+    z-index: 9999; 
     overflow: hidden;
 }
 
 /* 落下するアイテム */
 .falling-item {
     position: absolute;
-    top: -50px; /* 画面外からスタート */
-    width: 40px; 
-    height: 40px;
+    top: -100px; /* 画面外からスタート */
     opacity: 0.9;
-    /* アニメーションの定義 */
     animation-name: fall;
     animation-timing-function: linear;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards; /* 最後に止まる */
+    animation-fill-mode: forwards; /* 最後に消えるまで再生 */
 }
 
-/* 落下アニメーションのキーフレーム */
+/* 落下アニメーション */
 @keyframes fall {
-    from {
-        transform: translateY(0);
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
     }
-    to {
-        transform: translateY(100vh); /* 画面全体を落下 */
+    100% {
+        transform: translateY(110vh) rotate(360deg); /* 画面の下まで落ちる */
+        opacity: 0;
     }
-}
-
-/* --- ★★★ クーポン獲得モーダル ★★★ --- */
-
-.custom-modal-overlay {
-    display: none; /* 初期状態は非表示 */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 5000;
-    justify-content: center;
-    align-items: center;
-}
-
-.custom-modal-content {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-}
-
-.custom-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 30px;
-    cursor: pointer;
-    color: #999;
-}
-
-#coupon-title {
-    font-size: 1.8em;
-    color: #e60000;
-    margin-bottom: 10px;
-}
-
-#coupon-message {
-    font-size: 1.1em;
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.btn-coupon-list {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
 }
