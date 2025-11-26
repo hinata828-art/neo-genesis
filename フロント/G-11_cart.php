@@ -13,7 +13,7 @@ foreach ($cart as $key => $qty) {
     // ★ 商品IDとカラーを分離（例： "23_red" → 23, red）
     list($product_id, $color) = explode('_', $key);
 
-    $sql = "SELECT product_id, product_name, price, product_image FROM product WHERE product_id = ?";
+    $sql = "SELECT product_id, product_name, price, product_image, color FROM product WHERE product_id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$product_id]);
     $p = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -60,7 +60,7 @@ require __DIR__ . '/../common/breadcrumb.php';
             <p>カートに商品がありません。</p>
         <?php else: ?>
             <?php foreach ($cart_items as $item): ?>
-                <div class="item">
+                <div class="item"  onclick="location.href='G-9_product-detail.php?product_id=<?= $item['product_id'] ?>'">
 
                     <!-- 左側：商品情報＋ボタン -->
                     <div class="item-left">
