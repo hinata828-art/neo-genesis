@@ -157,100 +157,134 @@ try {
 </main>
 
 <footer class="footer-banner">
-    <div class="footer-box" id="roulette-box" role="button" tabindex="0">
-        レンタルで<br>お得な<br>ルーレット！！
-    </div>
-    <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">
-        レンタル<br>OK!!!
-    </div>
-    <div class="footer-box">
+    <div class="footer-box" id="roulette-box" role="button" tabindex="0">レンタルで<br>お得な<br>ルーレット！！</div>
+    <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">レンタル<br>OK!!!</div>
+    
+    <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
         今すぐ<br>チェック！
     </div>
 </footer>
 
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h3 id="modal-title"></h3>
-        <p id="modal-text">ここに詳細な情報が表示されます。</p>
-        </div>
+<div id="rain-container"></div>
+
+<div id="coupon-modal" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+        <span class="custom-close-btn">&times;</span>
+        <div class="alert-icon">🎁</div>
+        <h3 id="coupon-title"></h3>
+        <p id="coupon-message"></p>
+        <a href="G-25_coupon-list.php" class="btn btn-coupon-list">クーポン一覧へ</a>
+    </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // スライダー制御のスクリプトは既に記述済みとして、モーダル関連のスクリプトを記述
+    const slider = document.getElementById('slider');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // イースターエッグ関連の要素
+    const easterEggBtn = document.getElementById('easter-egg-btn');
+    const rainContainer = document.getElementById('rain-container');
+    const couponModal = document.getElementById('coupon-modal');
+    const couponTitle = document.getElementById('coupon-title');
+    const couponMessage = document.getElementById('coupon-message');
+    const closeCouponModalBtn = document.querySelector('.custom-close-btn');
 
-    const modal = document.getElementById('myModal');
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
-    const rouletteBox = document.getElementById('roulette-box');
-    const rentalOkBox = document.getElementById('rental-ok-box');
-    const modalTitle = document.getElementById('modal-title');
-    const modalText = document.getElementById('modal-text');
+    let clickCount = 0;
+    const requiredClicks = 10;
+    
+    // 落下させる画像リスト (カテゴリ画像を使用)
+    const itemImages = [
+        '../img/tv.png', '../img/refrigerator.png', '../img/microwave.png', 
+        '../img/camera.png', '../img/headphone.png', '../img/washing.png', 
+        '../img/laptop.png', '../img/smartphone.png'
+    ];
 
-    /**
-     * モーダルを表示する関数
-     * @param {string} title - モーダルに表示するタイトル
-     * @param {string} text - モーダルに表示する本文
-     */
-    function openModal(title, text) {
-        modalTitle.textContent = title;
-        modalText.textContent = text;
-        modal.style.display = 'flex'; // CSSでflexを使うことで中央寄せを容易にする
-    }
-
-    // --- イベントリスナーの設定 ---
-
-    // 1. ルーレットのボックスクリック
-    rouletteBox.addEventListener('click', () => {
-        openModal(
-            'レンタルでお得なルーレット！！',
-            'レンタル商品をご利用いただくと、お得な特典が当たるルーレットに挑戦できます！詳細はキャンペーンページをご確認ください。'
-        );
+    // --- スライダー制御ロジック (既存) ---
+    function getScrollAmount() { return slider.clientWidth; }
+    prevBtn.addEventListener('click', () => {
+        const scrollAmount = getScrollAmount();
+        slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+    nextBtn.addEventListener('click', () => {
+        const scrollAmount = getScrollAmount();
+        slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     });
 
-    // 2. レンタルOKのボックスクリック
-    rentalOkBox.addEventListener('click', () => {
-        openModal(
-            'レンタルOK!!!',
-            '当社の多くの商品がレンタル可能です！最新の家電をお気軽に、必要な期間だけご利用いただけます。レンタル可能な商品の一覧はこちら。'
-        );
-    });
 
-    // 3. 閉じるボタンクリックでモーダルを閉じる
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+    // --- ★★★ イースターエッグロジック ★★★ ---
 
-    // 4. モーダルの背景（モーダルコンテンツの外側）クリックでモーダルを閉じる
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
+    // 1. 家電をランダムに落下させる関数
+    function dropItem() {
+        const randomImage = itemImages[Math.floor(Math.random() * itemImages.length)];
+        const item = document.createElement('img');
+        item.src = randomImage;
+        item.className = 'falling-item';
+        
+        // 画面のどこか上部からランダムにスタート
+        item.style.left = `${Math.random() * 95}vw`;
+        item.style.animationDuration = `${Math.random() * 1.5 + 0.5}s`; // 0.5s〜2.0s
+        rainContainer.appendChild(item);
 
-    // 5. キーボード操作（Enter/Space）でもモーダルが開くようにする (アクセシビリティ対応)
-    function addKeyboardModalOpen(element, callback) {
-        element.addEventListener('keydown', (event) => {
-            // Enterキー(keyCode 13) または Spaceキー(keyCode 32)
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault(); // スクロールなどを防ぐ
-                callback();
-            }
+        // 落下アニメーションが終わったら削除
+        item.addEventListener('animationend', () => {
+            item.remove();
         });
     }
 
-    addKeyboardModalOpen(rouletteBox, () => {
-        openModal(
-            'レンタルでお得なルーレット！！',
-            'レンタル商品をご利用いただくと、お得な特典が当たるルーレットに挑戦できます！詳細はキャンペーンページをご確認ください。'
-        );
+    // 2. 10回クリック判定と処理
+    easterEggBtn.addEventListener('click', () => {
+        clickCount++;
+        dropItem(); // クリックごとに家電を落下させる
+
+        if (clickCount >= requiredClicks) {
+            // 10回達成
+            clickCount = 0; // カウントをリセット
+            
+            // サーバーにクーポン生成を要求
+            fetchCouponAndDisplay();
+            
+        } else {
+            // 進行中のメッセージ表示 (デバッグ用。必要に応じて削除可)
+            resultMessage.textContent = `あと ${requiredClicks - clickCount} 回のクリックで特典！`;
+        }
     });
 
-    addKeyboardModalOpen(rentalOkBox, () => {
-        openModal(
-            'レンタルOK!!!',
-            '当社の多くの商品がレンタル可能です！最新の家電をお気軽に、必要な期間だけご利用いただけます。レンタル可能な商品の一覧はこちら。'
-        );
+    // 3. サーバーへリクエストを送り、クーポン情報を取得・表示
+    function fetchCouponAndDisplay() {
+        resultMessage.textContent = '特典生成中...';
+
+        fetch('G-8_easter-egg-process.php', { method: 'POST' })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                couponTitle.textContent = '🎉 よく見つけましたね！';
+                couponMessage.innerHTML = `
+                    おめでとうございます！<br>
+                    全商品に使える **${data.discount_rate}% 割引クーポン** をゲットしました！
+                `;
+                couponModal.style.display = 'flex';
+                resultMessage.textContent = '特典をゲットしました！';
+            } else {
+                alert(`特典獲得エラー: ${data.message}`);
+                resultMessage.textContent = '特典獲得に失敗しました。';
+            }
+        })
+        .catch(error => {
+            alert(`通信エラーが発生しました: ${error.message}`);
+            resultMessage.textContent = 'エラーが発生しました。';
+        });
+    }
+
+    // モーダルを閉じる処理
+    closeCouponModalBtn.addEventListener('click', () => {
+        couponModal.style.display = 'none';
     });
 });
 </script>
