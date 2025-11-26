@@ -89,6 +89,26 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   <h4><?= htmlspecialchars($p['product_name']) ?></h4>
                   <p class="price">¥<?= number_format($p['price']) ?></p>
                   <p class="detail"><?= nl2br(htmlspecialchars($p['product_detail'])) ?></p>
+                <!-- 詳細の下に余白を追加し、その下にテーブル配置 -->
+                <div class="product-table">
+                  <table>
+                    <tr>
+                      <td><strong>メーカー:</strong> <?= htmlspecialchars($p['maker']) ?></td>
+                      <td><strong>カラー:</strong> <?= htmlspecialchars($p['color']) ?></td>
+                    </tr>
+                    <tr>
+                      <td><strong>在庫数:</strong> <?= htmlspecialchars($p['stock_quantity']) ?> 台</td>
+                      <td><strong>発注数:</strong> <?= htmlspecialchars($p['order_quantity'] ?? '未設定') ?> 台</td>
+                    </tr>
+                    <tr>
+                      <td><strong>最終入荷日:</strong> <?= htmlspecialchars($p['last_arrival_date'] ?? '未設定') ?></td>
+                      <td><strong>最終発注日:</strong> <?= htmlspecialchars($p['last_order_date'] ?? '未設定') ?></td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="product-actions">
+                  <button onclick="location.href='G-23_product-detail.php?id=<?= $p['product_id'] ?>'">商品編集</button>
+                  <button onclick="if(confirm('削除しますか？')) location.href='delete_product.php?id=<?= $p['product_id'] ?>'">削除</button>
                 </div>
               </div>
 
