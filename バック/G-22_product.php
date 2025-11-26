@@ -12,34 +12,49 @@ $maker      = trim($_GET['maker'] ?? '');
 $where  = [];
 $params = [];
 
-// フィルターが入力されている場合のみ条件を追加
+// SQL組み立て（最新の入荷情報をJOIN）
+$sql = "
+  SELECT 
+    p.*,
+    sa.quantity AS order_quantity,
+    sa.arrival_date AS last_arrival_date,
+    sa.order_date AS last_order_date
+  FROM product p
+  LEFT JOIN (
+    SELECT s1.*
+    FROM stock_arrival s1
+    INNER JOIN (
+      SELECT product_id, MAX(arrival_date) AS max_arrival
+      FROM stock_arrival
+      GROUP BY product_id
+    ) s2 ON s1.product_id = s2.product_id AND s1.arrival_date = s2.max_arrival
+  ) sa ON sa.product_id = p.product_id
+  WHERE 1=1
+";
+
+// フィルター条件
 if ($search !== '') {
-  $where[] = 'product_name LIKE :search';
+  $sql .= " AND p.product_name LIKE :search";
   $params[':search'] = "%{$search}%";
 }
 if ($min_price !== '' && is_numeric($min_price)) {
-  $where[] = 'price >= :min_price';
+  $sql .= " AND p.price >= :min_price";
   $params[':min_price'] = $min_price;
 }
 if ($max_price !== '' && is_numeric($max_price)) {
-  $where[] = 'price <= :max_price';
+  $sql .= " AND p.price <= :max_price";
   $params[':max_price'] = $max_price;
 }
 if ($category !== '') {
-  $where[] = 'category_id = :category';
+  $sql .= " AND p.category_id = :category";
   $params[':category'] = $category;
 }
 if ($maker !== '') {
-  $where[] = 'maker LIKE :maker';
+  $sql .= " AND p.maker LIKE :maker";
   $params[':maker'] = "%{$maker}%";
 }
 
-// SQL組み立て
-$sql = 'SELECT * FROM product';
-if (!empty($where)) {
-  $sql .= ' WHERE ' . implode(' AND ', $where);
-}
-$sql .= ' ORDER BY product_id ASC';
+$sql .= " ORDER BY p.product_id ASC";
 
 // 実行
 $stmt = $pdo->prepare($sql);
@@ -52,7 +67,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <title>商品管理 - ニシムラ Online</title>
   <link rel="stylesheet" href="../css/G-22_staff_product.css">
-  <link rel="stylesheet" href="../css/staff_header.css">
+    <link rel="stylesheet" href="../css/staff_header.css">
 </head>
 <body>
   <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
@@ -70,21 +85,21 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="main-area">
-      <!-- 商品一覧（DBから動的表示） -->
+      <!-- 商品一覧 -->
       <section class="product-list" style="flex: 1;">
         <?php if ($products): ?>
           <?php foreach ($products as $p): ?>
             <div class="product-card">
-              <!-- 内部IDと外部公開用コードを両方表示 -->
+              <!-- 内部IDと公開コード -->
               <div class="product-id">
-                内部ID: <?= htmlspecialchars($p['product_id']) ?><br>
-                公開コード: <?= htmlspecialchars($p['jan_code'] ?? '未設定') ?>
+                <span class="internal-id">内部ID: <?= htmlspecialchars($p['product_id']) ?></span><br>
+                <span class="public-code">公開コード: <?= htmlspecialchars($p['jan_code'] ?? '未設定') ?></span>
               </div>
 
               <div class="product-main">
                 <!-- 商品画像 -->
                 <img src="<?= htmlspecialchars($p['product_image']) ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
-                <!-- 商品情報（画像横） -->
+                <!-- 商品情報 -->
                 <div class="product-info">
                   <h4><?= htmlspecialchars($p['product_name']) ?></h4>
                   <p class="price">¥<?= number_format($p['price']) ?></p>
