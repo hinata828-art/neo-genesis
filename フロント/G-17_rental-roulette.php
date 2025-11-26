@@ -1,29 +1,43 @@
 <?php
-// G-17_rental-roulette.php
-// 1. セッションとDB接続
-session_start();
+// -------------------------------------------------------------------
+// エラーを強制表示する設定 (動作確認用)
+// -------------------------------------------------------------------
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require '../common/db_connect.php'; 
 
-// 2. データの初期化
-$transaction_id = 0;
-$show_roulette = false; // ルーレットを表示するか
-$prizes_for_js = [];    // ルーレットの景品リスト (JS用)
-$error_message = '';
-
+// 全体を try-catch で囲み、致命的なエラーもキャッチする
 try {
-    // 3. 顧客IDと取引IDを取得
+    // 1. セッション開始
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // 2. DB接続ファイルの読み込み (絶対パスで指定)
+    $db_path = __DIR__ . '/../common/db_connect.php';
+    
+    if (!file_exists($db_path)) {
+        throw new Exception("DB接続ファイルが見つかりません: " . $db_path);
+    }
+    require $db_path;
+
+    // 3. データの初期化
+    $transaction_id = 0;
+    $show_roulette = false;
+    $prizes_for_js = [];
+    $error_message = '';
+
+    // 4. ログイン & IDチェック
     $customer_id = $_SESSION['customer']['id'] ?? null;
     if ($customer_id === null) {
-        throw new Exception('ログイン情報が確認できません。');
+        throw new Exception('ログインしていません。<a href="G-1_login.php">ログイン画面へ</a>');
     }
     if (!isset($_GET['id'])) {
-        throw new Exception('取引IDが指定されていません。');
+        throw new Exception('取引ID(id)がURLに指定されていません。');
     }
     $transaction_id = $_GET['id'];
 
-    // 4. このレンタルが「抽選可能」か、DBを確認
+    // 5. レンタル情報の確認
     $sql_check = "SELECT 
                     r.coupon_claimed, 
                     p.category_id,
@@ -34,46 +48,40 @@ try {
                 WHERE r.transaction_id = :tid 
                   AND t.customer_id = :cid
                 LIMIT 1";
+    
     $stmt_check = $pdo->prepare($sql_check);
     $stmt_check->execute([':tid' => $transaction_id, ':cid' => $customer_id]);
     $rental_info = $stmt_check->fetch(PDO::FETCH_ASSOC);
 
     if (!$rental_info) {
-        throw new Exception('対象のレンタル履歴が見つかりません。');
+        throw new Exception('該当するレンタル履歴が見つかりません。(ID不一致)');
     }
     if ($rental_info['delivery_status'] !== '返却済み') {
-        throw new Exception('このレンタルはまだ返却が完了していません。');
+        throw new Exception('返却済みではありません。現在のステータス: ' . htmlspecialchars($rental_info['delivery_status']));
     }
     if ($rental_info['coupon_claimed'] == 1) {
         throw new Exception('このレンタルでは既にルーレットを回しています。');
     }
 
-    // 5. すべてOKなら、ルーレットを表示
+    // 6. ルーレット表示許可
     $show_roulette = true;
     
-    // 6. 景品リストをDBから取得 (ID 2〜7)
-    // 抽選ロジックと並び順を揃えるため、coupon_id ASC に変更
+    // 7. 景品リスト取得
     $sql_prizes = "SELECT coupon_name FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
                    ORDER BY coupon_id ASC";
-    
     $stmt_prizes = $pdo->prepare($sql_prizes);
     $stmt_prizes->execute();
     $prizes_for_js = $stmt_prizes->fetchAll(PDO::FETCH_COLUMN, 0);
     
     if (count($prizes_for_js) < 6) {
-        throw new Exception('景品がDBに正しく登録されていません (ID 2-7が必要です)。');
+        throw new Exception('景品データ(couponテーブル)が不足しています。');
     }
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    // エラーキャッチ
     $error_message = $e->getMessage();
-}
-
-// ステータス色分け関数
-function getStatusClass($status) {
-    if ($status == 'キャンセル済み') return 'status-cancelled';
-    if ($status == '配達完了' || $status == '返却済み') return 'status-delivered';
-    return 'status-processing'; 
+    $show_roulette = false;
 }
 ?>
 <!DOCTYPE html>
@@ -84,24 +92,40 @@ function getStatusClass($status) {
     <title>割引ルーレット!!!</title>
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
+    <style>
+        /* 念のためHTML内にもスタイルを記述 (CSS読み込み失敗対策) */
+        #roulette {
+            border: 2px solid #1f2937; /* 黒枠線 */
+            border-radius: 50%;
+            /* CSSファイルのマージン設定が優先されるよう、ここは最低限に */
+        }
+    </style>
 </head>
 <body>
-    <?php require '../common/header.php'; // ヘッダーを読み込む ?>
+    <?php 
+    if (file_exists(__DIR__ . '/../common/header.php')) {
+        require __DIR__ . '/../common/header.php';
+    }
+    ?>
+    
     <div class="container">
-
         <header class="header">
-        <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
+            <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>">
+                <img src="../img/modoru.png" alt="戻る" class="back-link">
+            </a>
             <h1 class="header-title">ルーレット</h1>
             <span class="header-dummy"></span>
         </header>
 
         <main class="main-content">
-
             <?php if (!empty($error_message)): ?>
                 <div class="error-box">
-                    <p><?php echo htmlspecialchars($error_message); ?></p>
+                    <h3>システムエラー</h3>
+                    <p><?php echo $error_message; ?></p>
                 </div>
-                <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette-back">履歴詳細に戻る</a>
+                <div style="text-align:center; margin-top:20px;">
+                    <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette-back" style="background:#999; padding:10px 20px; color:white; text-decoration:none; border-radius:5px;">履歴詳細に戻る</a>
+                </div>
 
             <?php elseif ($show_roulette && !empty($prizes_for_js)): ?>
                 <section id="roulette-container">
@@ -116,9 +140,7 @@ function getStatusClass($status) {
                     <button id="spin">スピンする</button>
                     <p id="result"></p>
                 </section>
-                
             <?php endif; ?>
-
         </main>
     </div> 
     
@@ -129,11 +151,11 @@ function getStatusClass($status) {
         if (!canvas) return;
         
         const ctx = canvas.getContext('2d');
-        const pointer = document.getElementById('pointer');
         const spinButton = document.getElementById('spin');
         const resultP = document.getElementById('result');
         const rouletteContainer = document.getElementById('roulette-container');
         
+        // PHPデータをJSONで受け取る
         const sectors = <?php echo json_encode($prizes_for_js); ?>; 
         const transactionId = <?php echo $transaction_id; ?>;
         
@@ -143,19 +165,21 @@ function getStatusClass($status) {
         const sectorAngle = 2 * Math.PI / sectors.length;
 
         function setCanvasSize() {
-            canvasSize = rouletteContainer.clientWidth * 0.8;
+            if(rouletteContainer.clientWidth > 0){
+                canvasSize = rouletteContainer.clientWidth * 0.8;
+            } else {
+                canvasSize = 300; 
+            }
             if (canvasSize < 200) canvasSize = 200;
             if (canvasSize > 320) canvasSize = 320;
             
             canvas.width = canvasSize;
             canvas.height = canvasSize;
-            
-            // 矢印の位置調整はCSSで行うためJSでの調整は不要
-            
             drawRoulette();
         }
 
         function drawRoulette() {
+            if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height); 
             ctx.save();
             ctx.translate(canvasSize / 2, canvasSize / 2);
@@ -173,10 +197,7 @@ function getStatusClass($status) {
                 ctx.rotate((index + 0.5) * sectorAngle);
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
-                
-                // ★ 文字色を黒 (#000000) に設定
-                ctx.fillStyle = "#000000"; 
-                
+                ctx.fillStyle = "#000000"; // ★黒文字
                 ctx.textBaseline = "middle";
                 ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
                 ctx.restore();
@@ -195,7 +216,7 @@ function getStatusClass($status) {
             })
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => Promise.reject(err));
+                    return response.text().then(text => { throw new Error(text) });
                 }
                 return response.json();
             })
@@ -203,52 +224,44 @@ function getStatusClass($status) {
                 if (data.status === 'success') {
                     const prizeIndex = data.prize_index;
                     const prizeName = data.prize_name;
-
                     let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
-                    // 12時の位置(270度 = 1.5PI)に合わせる計算式
+                    // 12時の位置 (270度 = 1.5PI) に合わせる
                     let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI);
                     
                     const totalRotation = 10 * (2 * Math.PI) + targetAngle;
                     animateSpin(totalRotation, prizeName);
-
                 } else {
                     resultP.textContent = `エラー: ${data.message}`;
                     spinButton.disabled = false;
                 }
             })
             .catch(error => {
-                resultP.textContent = `エラー: ${error.message || '通信に失敗しました。'}`;
+                resultP.textContent = `通信エラー: ${error.message}`;
                 spinButton.disabled = false;
-                console.error('通信エラー:', error);
+                console.error('Fetch Error:', error);
             });
         }
         
         function animateSpin(targetAngle, prizeName) {
             const spinDuration = 3000;
             const startTime = performance.now();
-
             function animate(time) {
                 const elapsed = time - startTime;
                 if (elapsed < spinDuration) {
                     const t = elapsed / spinDuration;
                     const easedT = 1 - Math.pow(1 - t, 3);
                     angle = (targetAngle * easedT) % (2 * Math.PI);
-                    
                     drawRoulette();
                     requestAnimationFrame(animate);
                 } else {
                     angle = targetAngle % (2 * Math.PI);
                     drawRoulette(); 
-                    
                     resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
                     spinButton.style.display = 'none'; 
-
-                    // クーポン一覧へのリンクを表示
                     const link = document.createElement('a');
                     link.href = 'G-25_coupon-list.php';
                     link.textContent = 'クーポン一覧ページへ移動';
-                    link.className = 'coupon-list-link'; // CSSでスタイリング
-                    
+                    link.className = 'coupon-list-link'; 
                     resultP.after(link); 
                 }
             }
@@ -257,10 +270,9 @@ function getStatusClass($status) {
 
         spinButton.addEventListener('click', spinRoulette);
         window.addEventListener('resize', setCanvasSize);
-        setCanvasSize(); // 最初の描画
+        setCanvasSize();
     });
     </script>
     <?php endif; ?>
-
 </body>
 </html>
