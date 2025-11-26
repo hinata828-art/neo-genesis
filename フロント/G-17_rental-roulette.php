@@ -75,19 +75,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>割引ルーレット!!!</title>
-    <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
-    <style>
-        /* ルーレットの黒枠線 */
-        #roulette {
-            border: 2px solid #1f2937;
-            border-radius: 50%;
-        }
-    </style>
 </head>
 <body>
-    <?php require '../common/header.php'; ?>
-    
     <div class="container">
         <header class="header">
             <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>">
