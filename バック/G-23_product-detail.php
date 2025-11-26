@@ -74,7 +74,7 @@ $history = $historyStmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>商品詳細（編集）</title>
+    <title>商品詳細</title>
 
     <!-- ❗ ここが重要：CSS ファイルは ../css/ 以下 -->
     <link rel="stylesheet" href="../css/G-23_product-detail.css">
@@ -83,7 +83,7 @@ $history = $historyStmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
 <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
-<h2>商品詳細（編集）</h2>
+<h2>商品詳細</h2>
 
 <form method="POST">
 <div class="container">
