@@ -1,6 +1,6 @@
 <?php
 // DB接続
-require 'db_connect.php';
+require '../common/db_connect.php';
 
 // --- フィルター入力の取得（GET） ---
 $search     = trim($_GET['search'] ?? '');
