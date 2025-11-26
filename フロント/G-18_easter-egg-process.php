@@ -3,9 +3,9 @@
 // イースターエッグの判定とクーポン発行を行うサーバー側スクリプト
 
 session_start();
-// 本番ではエラー表示をオフにしますが、開発中はオンでOK
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// エラーを表示しない設定（JSONを壊さないため）
+ini_set('display_errors', 0); 
+error_reporting(0);
 
 require '../common/db_connect.php'; 
 
