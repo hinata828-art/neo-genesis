@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------------
-// エラーを強制表示する設定 (本番環境では消すべきですが、今は必須)
+// エラーを強制表示する設定 (動作確認用)
 // -------------------------------------------------------------------
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -13,11 +13,9 @@ try {
         session_start();
     }
 
-    // 2. ファイルパスを絶対パスで指定 (読み込みミスの防止)
+    // 2. DB接続ファイルの読み込み (絶対パスで指定)
     $db_path = __DIR__ . '/../common/db_connect.php';
-    $header_path = __DIR__ . '/../common/header.php';
-
-    // ファイルが存在するかチェック
+    
     if (!file_exists($db_path)) {
         throw new Exception("DB接続ファイルが見つかりません: " . $db_path);
     }
@@ -59,7 +57,6 @@ try {
         throw new Exception('該当するレンタル履歴が見つかりません。(ID不一致)');
     }
     if ($rental_info['delivery_status'] !== '返却済み') {
-        // デバッグ用に、ステータスが何になっているか表示
         throw new Exception('返却済みではありません。現在のステータス: ' . htmlspecialchars($rental_info['delivery_status']));
     }
     if ($rental_info['coupon_claimed'] == 1) {
@@ -82,7 +79,7 @@ try {
     }
 
 } catch (Throwable $e) {
-    // PHP7以降の致命的エラー(Error)と例外(Exception)の両方をキャッチ
+    // エラーキャッチ
     $error_message = $e->getMessage();
     $show_roulette = false;
 }
@@ -96,19 +93,18 @@ try {
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
     <style>
-        /* 万が一CSSが読み込めない場合の緊急スタイル */
-        body { font-family: sans-serif; text-align: center; padding-top: 120px;}
-        .error-box { color: red; background: #ffe6e6; padding: 20px; border: 1px solid red; margin: 20px auto; max-width: 600px; }
-        #roulette { border: 2px solid #1f2937; border-radius: 50%; margin: 80px auto 50px auto; }
+        /* 念のためHTML内にもスタイルを記述 (CSS読み込み失敗対策) */
+        #roulette {
+            border: 2px solid #1f2937; /* 黒枠線 */
+            border-radius: 50%;
+            /* CSSファイルのマージン設定が優先されるよう、ここは最低限に */
+        }
     </style>
 </head>
 <body>
     <?php 
-    // ヘッダー読み込み
     if (file_exists(__DIR__ . '/../common/header.php')) {
         require __DIR__ . '/../common/header.php';
-    } else {
-        echo '<div style="background:#ccc;padding:10px;">(ヘッダー読み込み失敗)</div>';
     }
     ?>
     
@@ -124,10 +120,12 @@ try {
         <main class="main-content">
             <?php if (!empty($error_message)): ?>
                 <div class="error-box">
-                    <h3>エラーが発生しました</h3>
+                    <h3>システムエラー</h3>
                     <p><?php echo $error_message; ?></p>
                 </div>
-                <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette-back" style="display:inline-block; padding:10px; background:#999; color:#fff; text-decoration:none;">履歴詳細に戻る</a>
+                <div style="text-align:center; margin-top:20px;">
+                    <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette-back" style="background:#999; padding:10px 20px; color:white; text-decoration:none; border-radius:5px;">履歴詳細に戻る</a>
+                </div>
 
             <?php elseif ($show_roulette && !empty($prizes_for_js)): ?>
                 <section id="roulette-container">
@@ -170,7 +168,7 @@ try {
             if(rouletteContainer.clientWidth > 0){
                 canvasSize = rouletteContainer.clientWidth * 0.8;
             } else {
-                canvasSize = 300; // フォールバック
+                canvasSize = 300; 
             }
             if (canvasSize < 200) canvasSize = 200;
             if (canvasSize > 320) canvasSize = 320;
@@ -199,7 +197,7 @@ try {
                 ctx.rotate((index + 0.5) * sectorAngle);
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
-                ctx.fillStyle = "#000000"; // 黒文字
+                ctx.fillStyle = "#000000"; // ★黒文字
                 ctx.textBaseline = "middle";
                 ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
                 ctx.restore();
@@ -218,7 +216,6 @@ try {
             })
             .then(response => {
                 if (!response.ok) {
-                    // サーバーエラーの場合、テキストとしてエラーを受け取る
                     return response.text().then(text => { throw new Error(text) });
                 }
                 return response.json();
@@ -228,7 +225,9 @@ try {
                     const prizeIndex = data.prize_index;
                     const prizeName = data.prize_name;
                     let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
+                    // 12時の位置 (270度 = 1.5PI) に合わせる
                     let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI);
+                    
                     const totalRotation = 10 * (2 * Math.PI) + targetAngle;
                     animateSpin(totalRotation, prizeName);
                 } else {
