@@ -8,16 +8,16 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // 3. 共通のデータベース接続ファイルを読み込む
-require '../common/db_connect.php'; // $pdo 変数がここで作成されると仮定
+require '../common/db_connect.php'; 
 
 // 4. 表示するデータを初期化
-$products = []; // 商品リスト用の配列
-$order_info = null; // 注文・レンタル共通情報用
+$products = [];
+$order_info = null;
 $error_message = '';
 $is_cancellable = false; 
 $transaction_id = 0; 
 
-// ▼▼▼ ルーレット表示フラグ ▼▼▼
+// ルーレット表示フラグ
 $show_roulette_button = false;
 
 try {
@@ -28,7 +28,6 @@ try {
     $transaction_id = $_GET['id'];
     
     // 6. データベースからレンタル情報を取得
-    // ▼▼▼ r.coupon_claimed を SELECT に追加 ▼▼▼
     $sql = "SELECT 
                 t.transaction_date, 
                 t.payment,
@@ -40,7 +39,7 @@ try {
                 p.price,
                 r.rental_start,
                 r.rental_end,
-                r.coupon_claimed  /* ★ ルーレット回数制限に使う */
+                r.coupon_claimed 
             FROM transaction_table AS t
             JOIN rental AS r ON t.transaction_id = r.transaction_id
             JOIN product AS p ON r.product_id = p.product_id
@@ -58,11 +57,9 @@ try {
     
     $order_info = $products[0];
     
-    // 日付フォーマットの整形
     $order_info['start_date_formatted'] = date('Y/m/d H:i', strtotime($order_info['rental_start']));
     $order_info['return_date_formatted'] = date('Y/m/d', strtotime($order_info['rental_end']));
     
-    // ステータスに応じて表示テキストと「キャンセル可否」を決定
     switch ($order_info['delivery_status']) { 
         case '注文受付':
             $order_info['return_status_text'] = '発送準備中です';
@@ -73,14 +70,10 @@ try {
             break;
         case '返却済み':
             $order_info['return_status_text'] = '返却完了済み';
-            
-            // ▼▼▼ ルーレットボタン表示判定 ▼▼▼
             if ($order_info['coupon_claimed'] == 0) {
-                // 「返却済み」かつ「未抽選」の場合
                 $show_roulette_button = true;
             }
             break;
-
         case 'キャンセル済み':
             $order_info['return_status_text'] = 'この取引はキャンセルされました';
             break;
@@ -93,11 +86,10 @@ try {
     $error_message = $e->getMessage();
 }
 
-// G-16/G-4 と同じステータス色分け関数
 function getStatusClass($status) {
     if ($status == 'キャンセル済み') return 'status-cancelled';
     if ($status == '配達完了' || $status == '返却済み') return 'status-delivered';
-    return 'status-processing'; // 注文受付、レンタル中 など
+    return 'status-processing'; 
 }
 ?>
 <!DOCTYPE html>
@@ -208,7 +200,6 @@ function getStatusClass($status) {
     </div>
     
     <script>
-    // モーダル制御スクリプト (変更なし)
     document.addEventListener('DOMContentLoaded', function() {
         const openBtn = document.getElementById('open-cancel-modal');
         if (openBtn) {
