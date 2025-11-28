@@ -2,32 +2,30 @@
 // 1. セッションを開始
 session_start();
 
-// 2. デバッグ（エラー表示）設定 (開発中のみ)
+// 2. エラー表示設定
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 3. 共通のデータベース接続ファイルを読み込む
-require '../common/db_connect.php'; 
+// 3. 共通DB接続
+require '../common/db_connect.php';
 
-// 4. 表示するデータを初期化
+// 4. データ初期化
 $products = [];
 $order_info = null;
 $error_message = '';
 $is_cancellable = false; 
 $transaction_id = 0; 
-
-// ルーレット表示フラグ
 $show_roulette_button = false;
 
 try {
-    // 5. URLから表示したい「取引ID」を取得
+    // 5. ID取得
     if (!isset($_GET['id'])) {
         throw new Exception('取引IDが指定されていません。');
     }
     $transaction_id = $_GET['id'];
     
-    // 6. データベースからレンタル情報を取得
+    // 6. データ取得
     $sql = "SELECT 
                 t.transaction_date, 
                 t.payment,
@@ -102,6 +100,8 @@ function getStatusClass($status) {
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
 </head>
 <body>
+    <?php require '../common/header.php'; ?>
+    
     <div class="container">
 
         <header class="header">
