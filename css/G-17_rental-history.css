@@ -4,11 +4,12 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
-    /* ★ 修正点: 共通ヘッダー削除により余白をゼロにする */
+    
+    /* ★ 修正: 共通ヘッダーがないので余白はゼロ ★ */
     padding-top: 0; 
 }
 
-/* --- 全体コンテナ (スマホ幅) --- */
+/* --- 全体コンテナ --- */
 .container {
     max-width: 480px;
     min-height: 100vh;
@@ -17,11 +18,30 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ヘッダー (ルーレット画面では非表示にする) --- */
-/* ★ 修正点: ローカルヘッダーも表示したくない場合は none、表示したい場合は flex */
-/* ここでは「ヘッダーも消したい」というご要望に合わせて none にします */
+/* --- ローカルヘッダー (両方のページで表示する) --- */
 .header {
-    display: none; 
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+}
+.back-link {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+    width: 24px;
+}
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    flex-grow: 1;
+}
+.header-dummy {
+    width: 24px;
 }
 
 /* --- メインコンテンツ --- */
@@ -38,11 +58,6 @@ body {
     border-radius: 8px;
     text-align: center;
 }
-
-/* ==============================
-G-17 履歴詳細/ルーレット用スタイル 
-==============================
-*/
 
 /* --- 商品カード --- */
 .product-card {
@@ -283,6 +298,7 @@ G-17 ルーレット用スタイル
 /* G-17 履歴詳細ページ の「ルーレットへ進む」ボタン */
 .roulette-link-section {
     margin-top: 24px;
+    text-align: center;
 }
 .btn-roulette {
     display: block;
@@ -329,12 +345,12 @@ G-17 ルーレット用スタイル
     position: relative;
     margin: 80px auto 50px auto; 
     
-    /* ★ 修正点: 黒枠線を完全に削除 */
+    /* ★ 修正: 黒枠線を完全に削除 */
     border: none; 
     border-radius: 50%;
 }
 
-/* ★★★ 矢印のCSS (上から下向き) ★★★ */
+/* 矢印 (上から下向き) */
 #pointer {
     width: 0;
     height: 0;

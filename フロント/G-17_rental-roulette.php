@@ -72,8 +72,11 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>割引ルーレット!!!</title>
-    
+    <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
+    <style>
+        body { padding-top: 0 !important; }
+    </style>
 </head>
 <body>
     <div class="container">
