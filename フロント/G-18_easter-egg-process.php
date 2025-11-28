@@ -27,8 +27,11 @@ try {
     $coupon = $stmt->fetch(PDO::FETCH_ASSOC);
     $discount_rate = $coupon['discount_rate'];
 
-    // 3. DBに保存 (トランザクションを削除し、シンプルなINSERT実行)
-    // ★重要: 全カテゴリ対応のため applicable_category_id は NULL
+    // ★★★ 修正点: トランザクション開始（保存準備） ★★★
+    $pdo->beginTransaction();
+
+    // 3. DBに保存
+    // ★全カテゴリ対応のため applicable_category_id は NULL
     $sql_insert = "INSERT INTO customer_coupon 
                     (customer_id, coupon_id, acquired_at, used_at, applicable_category_id)
                    VALUES 
@@ -41,20 +44,30 @@ try {
     ]);
 
     if ($result) {
-        // 保存に成功した場合、そのIDを取得
+        // IDを取得
         $inserted_id = $pdo->lastInsertId();
+
+        // ★★★ 修正点: コミット（ここで初めてデータベースに確定保存されます） ★★★
+        $pdo->commit();
         
         echo json_encode([
             'status' => 'success',
             'discount_rate' => $discount_rate,
-            // ★ デバッグ用メッセージを追加
-            'message' => "保存成功！ID: {$inserted_id} / 顧客: {$customer_id}"
+            'message' => "保存成功！ID: {$inserted_id}"
         ]);
     } else {
+        // 失敗したらロールバック（取り消し）
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw new Exception("保存処理に失敗しました。");
     }
 
 } catch (Exception $e) {
+    // エラー時もロールバック
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     echo json_encode(['status' => 'error', 'message' => 'システムエラー: ' . $e->getMessage()]);
 }
 ?>

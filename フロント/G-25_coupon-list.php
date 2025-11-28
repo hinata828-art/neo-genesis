@@ -23,27 +23,29 @@ SELECT
     c.coupon_id, 
     c.discount_rate, 
     
-    -- 修正点 1: customer_coupon テーブルからカテゴリIDを取得し、
     -- HTML側で使えるよう 'category_id' という別名を付けます
     cc.applicable_category_id AS category_id, 
     
     c.expiration_date,
+    
+    -- ★ 修正点 1: LEFT JOIN に変更 (NULLでもクーポン情報自体は残す)
     cat.category_name, 
     p.product_image
 FROM customer_coupon cc
 JOIN coupon c ON cc.coupon_id = c.coupon_id
 
--- 修正点 2: c.category_id ではなく cc.applicable_category_id で結合します
-JOIN category cat ON cat.category_id = cc.applicable_category_id 
+-- ★ 修正点 2: LEFT JOIN に変更
+LEFT JOIN category cat ON cat.category_id = cc.applicable_category_id 
 
--- 修正点 3: c.category_id ではなく cc.applicable_category_id で結合します
-JOIN (
+-- ★ 修正点 3: LEFT JOIN に変更
+LEFT JOIN (
     SELECT category_id, MIN(product_id) AS min_product_id
     FROM product
     GROUP BY category_id
 ) first_product ON first_product.category_id = cc.applicable_category_id
 
-JOIN product p ON p.product_id = first_product.min_product_id
+-- ★ 修正点 4: LEFT JOIN に変更
+LEFT JOIN product p ON p.product_id = first_product.min_product_id
 
 WHERE cc.customer_id = :customer_id
   AND cc.used_at IS NULL
@@ -89,14 +91,16 @@ $coupons = $stmt->fetchAll();
 
     <?php foreach ($coupons as $coupon): ?>
       <div class="coupon-card">
-
-        <img src="<?= htmlspecialchars($coupon['product_image']) ?>" alt="商品画像">
-        <div class="coupon-info">
-          <h3><?= htmlspecialchars($coupon['category_name']) ?>製品</h3>
-          <p class="discount"><?= htmlspecialchars($coupon['discount_rate']) ?>% OFF！！</p>
-          <p class="note">※購入時のみ適用可能</p>
-          <a href="G-10_product-list.php?category=<?= $coupon['category_id'] ?>" class="coupon-link">対象商品一覧へ</a>
-        </div>
+          <img src="<?= htmlspecialchars($coupon['product_image'] ?? '../img/coupon.png') ?>" alt="商品画像（クーポン対象）">
+              
+          <div class="coupon-info">
+              <h3><?= htmlspecialchars($coupon['category_name'] ?? '全商品対象') ?>製品</h3>
+              
+              <p class="discount"><?= htmlspecialchars($coupon['discount_rate']) ?>% OFF！！</p>
+              <p class="note">※購入時のみ適用可能</p>
+              
+              <a href="G-10_product-list.php?category=<?= htmlspecialchars($coupon['category_id'] ?? '') ?>" class="coupon-link">対象商品一覧へ</a>
+          </div>
       </div>
     <?php endforeach; ?>
 
