@@ -91,14 +91,16 @@ $coupons = $stmt->fetchAll();
 
     <?php foreach ($coupons as $coupon): ?>
       <div class="coupon-card">
-
-        <img src="<?= htmlspecialchars($coupon['product_image']) ?>" alt="商品画像">
-        <div class="coupon-info">
-          <h3><?= htmlspecialchars($coupon['category_name']) ?>製品</h3>
-          <p class="discount"><?= htmlspecialchars($coupon['discount_rate']) ?>% OFF！！</p>
-          <p class="note">※購入時のみ適用可能</p>
-          <a href="G-10_product-list.php?category=<?= $coupon['category_id'] ?>" class="coupon-link">対象商品一覧へ</a>
-        </div>
+          <img src="<?= htmlspecialchars($coupon['product_image'] ?? '../img/coupon.png') ?>" alt="商品画像（クーポン対象）">
+              
+          <div class="coupon-info">
+              <h3><?= htmlspecialchars($coupon['category_name'] ?? '全商品対象') ?>製品</h3>
+              
+              <p class="discount"><?= htmlspecialchars($coupon['discount_rate']) ?>% OFF！！</p>
+              <p class="note">※購入時のみ適用可能</p>
+              
+              <a href="G-10_product-list.php?category=<?= htmlspecialchars($coupon['category_id'] ?? '') ?>" class="coupon-link">対象商品一覧へ</a>
+          </div>
       </div>
     <?php endforeach; ?>
 
