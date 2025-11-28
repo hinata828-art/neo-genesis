@@ -4,8 +4,8 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
-    /* header.css との競合を避けるために必要に応じて padding-top を追加してください */
-    padding-top: 120px; 
+    /* ★ 修正点: サイト共通ヘッダーを削除したため、余白を0にする */
+    padding-top: 0; 
 }
 
 /* --- 全体コンテナ (スマホ幅) --- */
@@ -17,34 +17,15 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ヘッダー（戻るボタンなど） --- */
+/* --- ★★★ 修正点 1: ルーレット画面のローカルヘッダーを非表示 ★★★ */
+/* G-17_rental-roulette.php のローカルヘッダーを完全に隠す */
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-    background-color: #ffffff;
-}
-.back-link {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffffff;
-    text-decoration: none;
-    width: 24px;
-}
-.header-title {
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    flex-grow: 1;
-}
-.header-dummy {
-    width: 24px;
+    display: none; 
 }
 
 /* --- メインコンテンツ --- */
 .main-content {
+    /* ヘッダーが消えた分、上部の余白を調整 */
     padding: 24px 16px;
 }
 
@@ -60,7 +41,6 @@ body {
 
 /* ==============================
 G-17 履歴詳細/ルーレット用スタイル 
-(欠落していた共通部品も含む)
 ==============================
 */
 
@@ -296,7 +276,7 @@ G-17 履歴詳細/ルーレット用スタイル
 
 /*
 ==============================
-G-17 ルーレット用スタイル
+G-17 ルーレットページ用スタイル
 ==============================
 */
 
@@ -349,10 +329,13 @@ G-17 ルーレット用スタイル
     position: relative;
     /* 修正前のマージン設定に戻す */
     margin: 80px auto 50px auto; 
-    /* 枠線は削除 */
+    
+    /* ★★★ 修正点: 黒枠線を完全に削除 ★★★ */
+    border: none; 
+    border-radius: 50%;
 }
 
-/* ★★★ 矢印のCSS (上から下向き) ★★★ */
+/* ★★★ 矢印のCSS (上から下向き) は維持 ★★★ */
 #pointer {
     width: 0;
     height: 0;
