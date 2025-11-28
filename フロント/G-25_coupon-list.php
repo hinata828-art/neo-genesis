@@ -23,27 +23,29 @@ SELECT
     c.coupon_id, 
     c.discount_rate, 
     
-    -- 修正点 1: customer_coupon テーブルからカテゴリIDを取得し、
     -- HTML側で使えるよう 'category_id' という別名を付けます
     cc.applicable_category_id AS category_id, 
     
     c.expiration_date,
+    
+    -- ★ 修正点 1: LEFT JOIN に変更 (NULLでもクーポン情報自体は残す)
     cat.category_name, 
     p.product_image
 FROM customer_coupon cc
 JOIN coupon c ON cc.coupon_id = c.coupon_id
 
--- 修正点 2: c.category_id ではなく cc.applicable_category_id で結合します
-JOIN category cat ON cat.category_id = cc.applicable_category_id 
+-- ★ 修正点 2: LEFT JOIN に変更
+LEFT JOIN category cat ON cat.category_id = cc.applicable_category_id 
 
--- 修正点 3: c.category_id ではなく cc.applicable_category_id で結合します
-JOIN (
+-- ★ 修正点 3: LEFT JOIN に変更
+LEFT JOIN (
     SELECT category_id, MIN(product_id) AS min_product_id
     FROM product
     GROUP BY category_id
 ) first_product ON first_product.category_id = cc.applicable_category_id
 
-JOIN product p ON p.product_id = first_product.min_product_id
+-- ★ 修正点 4: LEFT JOIN に変更
+LEFT JOIN product p ON p.product_id = first_product.min_product_id
 
 WHERE cc.customer_id = :customer_id
   AND cc.used_at IS NULL
