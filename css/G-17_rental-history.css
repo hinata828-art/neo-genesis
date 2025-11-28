@@ -1,14 +1,15 @@
 /* --- 基本設定 --- */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
-    /* ★ 修正点 1: 共通ヘッダーを削除したため、padding-top を 0 にする */
-    padding-top: 0; 
+    
+    /* ★ 強制的に余白をゼロにする ★ */
+    padding-top: 0 !important; 
 }
 
-/* --- 全体コンテナ (スマホ幅) --- */
+/* --- 全体コンテナ --- */
 .container {
     max-width: 480px;
     min-height: 100vh;
@@ -17,14 +18,15 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ★★★ 修正点 2: サイト共通ヘッダー削除により、ローカルヘッダーを残す ★★★ */
+/* --- ローカルヘッダー (表示する) --- */
 .header {
-    display: flex;
+    display: flex !important; /* 強制表示 */
     align-items: center;
     justify-content: space-between;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
     background-color: #ffffff;
+    height: auto !important;
 }
 .back-link {
     font-size: 24px;
@@ -38,6 +40,7 @@ body {
     font-weight: 700;
     text-align: center;
     flex-grow: 1;
+    margin: 0;
 }
 .header-dummy {
     width: 24px;
@@ -45,7 +48,6 @@ body {
 
 /* --- メインコンテンツ --- */
 .main-content {
-    /* ローカルヘッダーが残るため、上部に少し余白が必要 */
     padding: 24px 16px;
 }
 
@@ -60,17 +62,8 @@ body {
 }
 
 /* ==============================
-G-17 履歴詳細/ルーレット用スタイル 
-==============================
-*/
-
-/* --- 商品カード (履歴詳細用) --- */
-.product-card {
-    display: grid; /* ... (維持) ... */
-    /* ... */
-}
-/* ... (中略: 詳細セクションのスタイル) ... */
-
+   ルーレット用スタイル 
+   ============================== */
 
 /* ルーレット本体のラッパー */
 #roulette-container {
@@ -85,14 +78,16 @@ G-17 履歴詳細/ルーレット用スタイル
 /* ルーレット（矢印とキャンバス） */
 #roulette {
     position: relative;
-    /* 枠線（黒線）を完全に削除 */
-    border: none; 
-    border-radius: 50%;
-    /* 矢印を上に配置するためのマージン */
     margin: 80px auto 50px auto; 
+    
+    /* ★★★ 強制的に黒線を消す ★★★ */
+    border: none !important; 
+    box-shadow: none !important;
+    outline: none !important;
+    border-radius: 50%;
 }
 
-/* ★★★ 矢印のCSS (上から下向き) は維持 ★★★ */
+/* 矢印 */
 #pointer {
     width: 0;
     height: 0;
@@ -124,8 +119,6 @@ G-17 履歴詳細/ルーレット用スタイル
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
-/* ... (中略: その他のルーレット関連スタイル) ... */
 #spin:hover {
     background-color: #218838;
 }
