@@ -9,10 +9,7 @@
     <h1>ニシムラ Online</h1>
   </div>
 
-  <!-- 右側：ユーザーアイコン画像 -->
-  <div class="user-icon">
-    <img src="../img/icon.png" alt="ユーザーアイコン">
-  </div>
+  
 
   <!-- スライドメニュー -->
   <nav id="sideMenu" class="side-menu">
