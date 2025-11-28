@@ -1,73 +1,37 @@
 <?php
-session_start();
-require '../common/db_connect.php';
+// アップロード先ディレクトリ（バックの1つ上 → img）
+$upload_dir = __DIR__ . '/../img/';
 
-// 必須チェック
-if (
-    !isset($_POST['product_name'], $_POST['price'], $_POST['category_id'],
-            $_POST['maker'], $_POST['color'], $_POST['stock_quantity'],
-            $_POST['product_detail'], $_POST['jan_code'])
-) {
-    echo "入力エラーが発生しました。";
-    exit;
+// フォルダが存在しない場合はエラー
+if (!is_dir($upload_dir)) {
+    die("画像保存先のディレクトリが存在しません: " . $upload_dir);
 }
 
-$product_name = $_POST['product_name'];
-$price = intval($_POST['price']);
-$category_id = $_POST['category_id'];
-$maker = $_POST['maker'];
-$color = $_POST['color'];
-$stock_quantity = intval($_POST['stock_quantity']);
-$product_detail = $_POST['product_detail'];
-$jan_code = $_POST['jan_code'];
-
-// ---------- 画像アップロード処理 ----------
+// ファイルが送信されているかチェック
 if (!isset($_FILES['product_image']) || $_FILES['product_image']['error'] !== UPLOAD_ERR_OK) {
-    echo "画像アップロードに失敗しました。";
-    exit;
+    die("ファイルのアップロードに失敗しました。");
 }
 
-// 保存先フォルダ（G-26 と同階層の img）
-$uploadDir = '../img/';
+$file = $_FILES['product_image'];
+$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-// ファイル名（重複対策）
-$ext = pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION);
-$filename = 'product_' . time() . '.' . $ext;
-$savePath = $uploadDir . $filename;
-
-// DB にはブラウザ参照用パスを保存
-$dbImagePath = 'img/' . $filename;
-
-// 実際に保存
-if (!move_uploaded_file($_FILES['product_image']['tmp_name'], $savePath)) {
-    echo "画像保存に失敗しました。";
-    exit;
+// 画像だけ許可
+$allowed = ['jpg', 'jpeg', 'png', 'gif'];
+if (!in_array($ext, $allowed)) {
+    die("許可されていないファイル形式です。");
 }
 
-// ---------- INSERT 実行 ----------
-$sql = "
-    INSERT INTO product
-    (product_name, price, category_id, color, maker, product_detail,
-     stock_quantity, jan_code, product_image)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-";
+// ファイル名を一意に（重複対策）
+$filename = uniqid('img_', true) . '.' . $ext;
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute([
-    $product_name,
-    $price,
-    $category_id,
-    $color,
-    $maker,
-    $product_detail,
-    $stock_quantity,
-    $jan_code,
-    $dbImagePath
-]);
+// 保存パス
+$save_path = $upload_dir . $filename;
 
-echo "<script>
-        alert('新規商品を登録しました。');
-        window.location.href='G-22_product.php';
-      </script>";
-exit;
+// 保存処理
+if (!move_uploaded_file($file['tmp_name'], $save_path)) {
+    die("画像の保存に失敗しました。");
+}
+
+// 呼び出し元にファイル名を返す
+echo $filename;
 ?>
