@@ -1,72 +1,78 @@
 body {
     font-family: sans-serif;
     background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
 }
 
 h2 {
-    margin-bottom: 25px;
-    text-align: center; /* 見出しを中央寄せ */
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-size: 28px;
 }
 
-/* 全体中央寄せ & 幅を拡大 */
 .form-wrapper {
-    max-width: 900px;    /* ← これでフォームの実質幅が広がる */
-    margin: 0 auto;
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px #ccc;
+    width: 60%;
+    max-width: 800px;
+    margin: 0 auto;  /* 中央寄せ */
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    justify-content: center; /* 中央揃え */
-}
-
-.left-area,
-.right-area {
-    width: 48%; /* テキスト幅を広げる */
+.form-group {
+    margin-bottom: 20px;
 }
 
 label {
     font-weight: bold;
     display: block;
-    margin-top: 12px;
+    margin-bottom: 8px;
 }
 
-input, select, textarea {
-    width: 100%;        /* テキストボックス最大幅 */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;      /* テキストボックスの幅を広げる */
     padding: 10px;
-    margin-top: 4px;
-    border-radius: 6px;
+    font-size: 16px;
     border: 1px solid #aaa;
-    font-size: 16px;    /* 文字大きく */
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
 textarea {
     height: 120px;
 }
 
-.button-area {
-    width: 100%;
-    text-align: center; /* ボタンも中央 */
-    margin-top: 40px;
+.image-area {
+    text-align: center;
+    margin-top: 20px;
 }
 
-.btn {
-    padding: 12px 35px;
-    border-radius: 8px;
-    background: #007bff;
-    color: white;
-    border: none;
+button {
+    padding: 12px 28px;
     font-size: 17px;
+    border-radius: 8px;
+    border: none;
     cursor: pointer;
+}
+
+.btn-submit {
+    background-color: #007bff;
+    color: #fff;
     margin-right: 20px;
 }
 
 .btn-cancel {
-    background: #ccc;
-    color: black;
+    background-color: #ccc;
+    color: #000;
+}
+
+.button-area {
+    text-align: center;   /* ボタン中央寄せ */
+    margin-top: 40px;
 }
