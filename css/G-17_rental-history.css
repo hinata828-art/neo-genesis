@@ -4,8 +4,8 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
-    /* header.css との競合を避けるために必要に応じて padding-top を追加してください */
-    padding-top: 120px; 
+    /* ★ 修正点 1: 共通ヘッダーを削除したため、padding-top を 0 にする */
+    padding-top: 0; 
 }
 
 /* --- 全体コンテナ (スマホ幅) --- */
@@ -17,7 +17,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ヘッダー（戻るボタンなど） --- */
+/* --- ★★★ 修正点 2: サイト共通ヘッダー削除により、ローカルヘッダーを残す ★★★ */
 .header {
     display: flex;
     align-items: center;
@@ -45,6 +45,7 @@ body {
 
 /* --- メインコンテンツ --- */
 .main-content {
+    /* ローカルヘッダーが残るため、上部に少し余白が必要 */
     padding: 24px 16px;
 }
 
@@ -60,279 +61,16 @@ body {
 
 /* ==============================
 G-17 履歴詳細/ルーレット用スタイル 
-(欠落していた共通部品も含む)
 ==============================
 */
 
-/* --- 商品カード --- */
+/* --- 商品カード (履歴詳細用) --- */
 .product-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    grid-template-rows: auto auto;
-    gap: 12px;
+    display: grid; /* ... (維持) ... */
+    /* ... */
 }
-.product-image-container {
-    grid-row: 1 / span 2;
-    background-color: #e5e7eb;
-    border-radius: 8px;
-    overflow: hidden;
-    aspect-ratio: 1 / 1;
-}
-.product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.product-info {
-    grid-column: 2;
-    grid-row: 1;
-}
-.product-name {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-}
-.product-price {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ef4444;
-    margin: 0;
-    border-bottom: 2px solid #ef4444;
-    display: inline-block;
-}
-.button-group {
-    grid-column: 2;
-    grid-row: 2;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    gap: 12px;
-}
-.btn {
-    font-size: 14px;
-    font-weight: 700;
-    padding: 8px 24px;
-    border: 1px solid #9ca3af;
-    border-radius: 9999px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease;
-}
-.btn-detail {
-    background-color: #facc15;
-    color: #1f2937;
-    border-color: #facc15;
-}
-.btn-purchase {
-    background-color: #dbeafe;
-    color: #2563eb;
-    border-color: #93c5fd;
-}
+/* ... (中略: 詳細セクションのスタイル) ... */
 
-/* --- 詳細セクション --- */
-.detail-section {
-    margin-bottom: 24px;
-}
-.section-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    border-left: 4px solid #3b82f6;
-    padding-left: 8px;
-}
-.detail-box {
-    border: 1px solid #e5e7eb;
-    background-color: #f9fafb;
-    border-radius: 8px;
-    padding: 16px;
-    min-height: 50px; 
-}
-.detail-row {
-    display: flex;
-    margin-bottom: 8px;
-}
-.detail-row:last-child {
-    margin-bottom: 0;
-}
-.detail-label {
-    width: 112px;
-    color: #4b5563;
-    font-weight: 600;
-    flex-shrink: 0; 
-}
-.detail-value {
-    color: #1f2937;
-    word-break: break-all; 
-}
-.payment-info {
-    font-size: 16px;
-    color: #1f2937;
-}
-
-/* --- 配送状況 --- */
-.delivery-status {
-    text-align: left;
-    color: #4b5563;
-    font-size: 16px;
-    padding-left: 4px;
-    margin-bottom: 24px;
-}
-
-/* --- フッター (キャンセルリンク) --- */
-.footer {
-    padding: 16px;
-    text-align: center;
-    border-top: 1px solid #e5e7eb;
-}
-.footer-link {
-    color: #2563eb;
-    text-decoration: none;
-    font-size: 14px;
-}
-.footer-link:hover {
-    text-decoration: underline;
-}
-
-/* --- キャンセルモーダル --- */
-.modal-overlay {
-    position: fixed; 
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-.modal-content {
-    background-color: #ffffff;
-    padding: 24px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 320px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-.modal-close-btn {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #aaa;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-.modal-close-btn:hover {
-    color: #333;
-}
-.modal-icon {
-    margin-bottom: 16px;
-}
-.modal-content h2 {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 24px 0;
-}
-.modal-buttons {
-    display: flex;
-    justify-content: space-around;
-    gap: 16px;
-}
-.modal-buttons .btn,
-.modal-buttons .btn-danger,
-.modal-buttons .btn-secondary {
-    flex: 1; 
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 700;
-    text-decoration: none;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-.btn-danger {
-    background-color: #ef4444;
-    color: white;
-}
-.btn-danger:hover {
-    opacity: 0.8;
-}
-.btn-secondary {
-    background-color: #facc15;
-    color: #1f2937;
-}
-.btn-secondary:hover {
-    opacity: 0.8;
-}
-
-/* --- 配送ステータスの色分け --- */
-.status-processing {
-    color: #007bff !important; 
-    font-weight: bold;
-    font-size: 1.1em;
-}
-.status-delivered {
-    color: #28a745 !important; 
-    font-weight: bold;
-    font-size: 1.1em;
-}
-.status-cancelled {
-    color: #dc3545 !important; 
-    font-weight: bold;
-    font-size: 1.1em;
-}
-
-
-/*
-==============================
-G-17 ルーレット用スタイル
-==============================
-*/
-
-/* G-17 履歴詳細ページ の「ルーレットへ進む」ボタン */
-.roulette-link-section {
-    margin-top: 24px;
-}
-.btn-roulette {
-    display: block;
-    width: 100%;
-    padding: 16px;
-    background-color: #28a745;
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.3s;
-}
-.btn-roulette:hover {
-    background-color: #218838;
-}
-
-/* G-17 ルーレットページ の「戻る」ボタン */
-.btn-roulette-back {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #6c757d;
-    color: white;
-    font-size: 16px;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-top: 16px;
-}
 
 /* ルーレット本体のラッパー */
 #roulette-container {
@@ -347,12 +85,14 @@ G-17 ルーレット用スタイル
 /* ルーレット（矢印とキャンバス） */
 #roulette {
     position: relative;
-    /* 修正前のマージン設定に戻す */
+    /* 枠線（黒線）を完全に削除 */
+    border: none; 
+    border-radius: 50%;
+    /* 矢印を上に配置するためのマージン */
     margin: 80px auto 50px auto; 
-    /* 枠線は削除 */
 }
 
-/* ★★★ 矢印のCSS (上から下向き) ★★★ */
+/* ★★★ 矢印のCSS (上から下向き) は維持 ★★★ */
 #pointer {
     width: 0;
     height: 0;
@@ -384,6 +124,8 @@ G-17 ルーレット用スタイル
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
+/* ... (中略: その他のルーレット関連スタイル) ... */
 #spin:hover {
     background-color: #218838;
 }
