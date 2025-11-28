@@ -5,7 +5,7 @@ body {
     background-color: #f3f4f6;
     color: #1f2937;
     /* header.css との競合を避けるため、必要に応じて padding-top を調整 */
-    padding-top: 120px; 
+    padding-top: 0px; 
 }
 
 /* --- 全体コンテナ (スマホ幅) --- */
