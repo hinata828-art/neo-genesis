@@ -22,7 +22,7 @@ try {
     }
     $transaction_id = $_GET['id'];
 
-    // DBチェックロジック (省略せず記述)
+    // DBチェックロジック
     $sql_check = "SELECT 
                     r.coupon_claimed, 
                     p.category_id,
@@ -72,7 +72,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>割引ルーレット!!!</title>
-    <link rel="stylesheet" href="../css/header.css">
+    
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
 </head>
 <body>
@@ -162,10 +162,7 @@ try {
                 ctx.rotate((index + 0.5) * sectorAngle);
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
-                
-                // 文字色を黒 (#000000) に設定
                 ctx.fillStyle = "#000000"; 
-                
                 ctx.textBaseline = "middle";
                 ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
                 ctx.restore();
@@ -192,13 +189,10 @@ try {
                 if (data.status === 'success') {
                     const prizeIndex = data.prize_index;
                     const prizeName = data.prize_name;
-
                     let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
-                    let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI); // 12時の位置補正
-                    
+                    let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI); 
                     const totalRotation = 10 * (2 * Math.PI) + targetAngle;
                     animateSpin(totalRotation, prizeName);
-
                 } else {
                     resultP.textContent = `エラー: ${data.message}`;
                     spinButton.disabled = false;
@@ -214,28 +208,23 @@ try {
         function animateSpin(targetAngle, prizeName) {
             const spinDuration = 3000;
             const startTime = performance.now();
-
             function animate(time) {
                 const elapsed = time - startTime;
                 if (elapsed < spinDuration) {
                     const t = elapsed / spinDuration;
                     const easedT = 1 - Math.pow(1 - t, 3);
                     angle = (targetAngle * easedT) % (2 * Math.PI);
-                    
                     drawRoulette();
                     requestAnimationFrame(animate);
                 } else {
                     angle = targetAngle % (2 * Math.PI);
                     drawRoulette(); 
-                    
                     resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
                     spinButton.style.display = 'none'; 
-
                     const link = document.createElement('a');
                     link.href = 'G-25_coupon-list.php';
                     link.textContent = 'クーポン一覧ページへ移動';
-                    link.className = 'coupon-list-link';
-                    
+                    link.className = 'coupon-list-link'; 
                     resultP.after(link); 
                 }
             }
@@ -244,7 +233,7 @@ try {
 
         spinButton.addEventListener('click', spinRoulette);
         window.addEventListener('resize', setCanvasSize);
-        setCanvasSize(); 
+        setCanvasSize();
     });
     </script>
     <?php endif; ?>
