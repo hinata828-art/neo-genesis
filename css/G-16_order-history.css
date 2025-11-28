@@ -4,6 +4,8 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
+    /* ★ 修正点: 共通ヘッダーの高さ分(約120px)の余白を追加 */
+    padding-top: 120px; 
 }
 
 /* --- 全体コンテナ (スマホ幅) --- */
