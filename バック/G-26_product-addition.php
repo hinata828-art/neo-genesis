@@ -53,8 +53,8 @@ $categoryList = [
         <label>色</label>
         <input type="text" name="color" required>
 
-        <label>JANコード（8桁）</label>
-        <input type="text" name="jan_code" pattern="\d{8}" required>
+        <label>JANコード（13桁）</label>
+        <input type="text" name="jan_code" pattern="\d{13}" required>
 
         <label>在庫数</label>
         <input type="number" name="stock_quantity" min="0" required>

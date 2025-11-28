@@ -1,7 +1,6 @@
 body {
     font-family: sans-serif;
     background-color: #f7f7f7;
-    padding: 20px;
 }
 
 h2 {
@@ -9,12 +8,15 @@ h2 {
 }
 
 .container {
+    max-width: 1200px;   /* 画面中央に寄せる */
+    margin: 0 auto;      /* 中央寄せ */
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
 }
 
-.left-area, .right-area {
+.left-area,
+.right-area {
     width: 45%;
 }
 
@@ -37,22 +39,8 @@ textarea {
     height: 100px;
 }
 
-.product-image-box {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 80%;
-    text-align: center;
-    background: #fff;
-    border-radius: 6px;
-    margin-top: 5px;
-}
-
-.product-image-box img {
-    width: 100%;
-    max-width: 260px;
-}
-
 .button-area {
+    width: 100%;
     margin-top: 40px;
 }
 
