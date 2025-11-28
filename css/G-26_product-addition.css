@@ -1,0 +1,73 @@
+body {
+    font-family: sans-serif;
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 25px;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
+.left-area, .right-area {
+    width: 45%;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 12px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+    font-size: 15px;
+}
+
+textarea {
+    height: 100px;
+}
+
+.product-image-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 80%;
+    text-align: center;
+    background: #fff;
+    border-radius: 6px;
+    margin-top: 5px;
+}
+
+.product-image-box img {
+    width: 100%;
+    max-width: 260px;
+}
+
+.button-area {
+    margin-top: 40px;
+}
+
+.btn {
+    padding: 10px 25px;
+    border-radius: 8px;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.btn-cancel {
+    background: #ccc;
+    color: black;
+}
