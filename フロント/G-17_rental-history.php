@@ -100,7 +100,6 @@ function getStatusClass($status) {
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
 </head>
 <body>
-    <?php require '../common/header.php'; ?>
     
     <div class="container">
 
