@@ -43,9 +43,8 @@
 /* ===== カート商品全体を中央に寄せ最大幅を2/3に ===== */
 .item {
     background: #fff;
-    border: 1px solid #ddd;
     border-radius: 12px;
-    padding: 20px;
+    padding: 40px;
     margin: 20px auto;
     width: 80%;             /* ← 2/3 の幅 */
     max-width: 700px;       /* ← PC で広すぎるのを防止 */
@@ -101,10 +100,10 @@
 
 /* 削除ボタン（赤） */
 .delete-btn {
-    padding: 8px 20px;
+    padding: 15px 30px;
     border: none;
     border-radius: 9999px;
-    font-size: 14px;
+    font-size:25px;
     font-weight: bold;
     cursor: pointer;
     background: #ff3333;
@@ -114,10 +113,10 @@
 /* 購入ボタン（削除ボタンの色反転＝青に白文字） */
 .item-right .buy-btn {
     display: inline-block;  
-    padding: 8px 20px ;
+    padding: 15px 30px ;
     border: none;
     border-radius: 9999px;
-    font-size: 14px;
+    font-size: 25px;
     font-weight: bold;
     cursor: pointer;
     background: #5c85d6 !important;   /* 青 */
@@ -133,13 +132,35 @@
     background: #4a6db8;
 }
 
-@media (max-width: 600px) {
-    .cart-summary {
-        top: 150px;
-        padding: 12px 15px;
+/* カード全体 */
+    .item {
+        width: 95%;           /* ← スマホでは画面ほぼいっぱい */
+        padding: 15px;        /* ← 余白を少し減らす */
+        flex-direction: column; /* ← 縦並びにする */
     }
+    
+    /* 画像 */
     .item-left {
-        width: 100px;
-        height: 100px;
+        width: 100%;          /* ← 横幅いっぱい */
+        max-width: none;      /* ← 最大幅制限を解除 */
+        height: 200px;        /* ← 高さを固定 */
     }
-}
+    
+    .product-img {
+        height: 100%;
+        object-fit: cover;    /* ← はみ出さないように */
+    }
+    
+    /* ボタン */
+    .delete-btn,
+    .item-right .buy-btn {
+        padding: 15px 25px;   /* ← スマホ用サイズ */
+        font-size: 18px;
+        flex: 1;              /* ← 同じ幅に */
+    }
+    
+    .buttons {
+        display: flex;
+        gap: 8px;
+        width: 100%;          /* ← ボタンを横並びで画面いっぱい */
+    }
