@@ -131,7 +131,7 @@
 .item-right .buy-btn:hover {
     background: #4a6db8;
 }
-
+@media (max-width: 600px) {
 /* カード全体 */
     .item {
         width: 95%;           /* ← スマホでは画面ほぼいっぱい */
@@ -164,3 +164,4 @@
         gap: 8px;
         width: 100%;          /* ← ボタンを横並びで画面いっぱい */
     }
+}
