@@ -44,6 +44,7 @@
 .item {
     background: #fff;
     border-radius: 12px;
+     border-bottom: 1px solid #a8a8a8;
     padding: 40px;
     margin: 20px auto;
     width: 80%;             /* ← 2/3 の幅 */
