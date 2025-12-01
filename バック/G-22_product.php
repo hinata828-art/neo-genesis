@@ -143,7 +143,19 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <label>商品名<br><input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="例: テレビ"></label>
           <label>最低価格<br><input type="text" name="min_price" value="<?= htmlspecialchars($min_price) ?>" placeholder="例: 5000"></label>
           <label>最高価格<br><input type="text" name="max_price" value="<?= htmlspecialchars($max_price) ?>" placeholder="例: 20000"></label>
-          <label>カテゴリー<br><input type="text" name="category" value="<?= htmlspecialchars($category) ?>" placeholder="例: 1"></label>
+          <label>カテゴリー<br>
+          <select name="category">
+            <option value="">すべて</option>
+            <option value="C01" <?= $category==='C01'?'selected':''; ?>>テレビ</option>
+            <option value="C02" <?= $category==='C02'?'selected':''; ?>>冷蔵庫</option>
+            <option value="C03" <?= $category==='C03'?'selected':''; ?>>電子レンジ</option>
+            <option value="C04" <?= $category==='C04'?'selected':''; ?>>カメラ</option>
+            <option value="C05" <?= $category==='C05'?'selected':''; ?>>ヘッドホン</option>
+            <option value="C06" <?= $category==='C06'?'selected':''; ?>>洗濯機</option>
+            <option value="C07" <?= $category==='C07'?'selected':''; ?>>ノートPC</option>
+            <option value="C08" <?= $category==='C08'?'selected':''; ?>>スマートフォン</option>
+          </select>
+          </label>
           <label>メーカー<br><input type="text" name="maker" value="<?= htmlspecialchars($maker) ?>" placeholder="例: AQUAVIEW"></label>
           <button class="apply-btn" type="submit">適用</button>
         </form>
