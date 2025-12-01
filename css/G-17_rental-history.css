@@ -4,7 +4,7 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
-    /* header.css との競合を避けるために必要に応じて padding-top を追加してください */
+    /* header.css との競合を避けるため、必要に応じて padding-top を調整 */
     padding-top: 120px; 
 }
 
@@ -17,7 +17,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ヘッダー（戻るボタンなど） --- */
+/* --- ヘッダー --- */
 .header {
     display: flex;
     align-items: center;
@@ -57,12 +57,6 @@ body {
     border-radius: 8px;
     text-align: center;
 }
-
-/* ==============================
-G-17 履歴詳細/ルーレット用スタイル 
-(欠落していた共通部品も含む)
-==============================
-*/
 
 /* --- 商品カード --- */
 .product-card {
@@ -183,7 +177,7 @@ G-17 履歴詳細/ルーレット用スタイル
     margin-bottom: 24px;
 }
 
-/* --- フッター (キャンセルリンク) --- */
+/* --- フッター --- */
 .footer {
     padding: 16px;
     text-align: center;
@@ -251,7 +245,7 @@ G-17 履歴詳細/ルーレット用スタイル
 .modal-buttons .btn,
 .modal-buttons .btn-danger,
 .modal-buttons .btn-secondary {
-    flex: 1; 
+    flex: 1;
     padding: 12px;
     font-size: 16px;
     font-weight: 700;
@@ -296,19 +290,20 @@ G-17 履歴詳細/ルーレット用スタイル
 
 /*
 ==============================
-G-17 ルーレット用スタイル
+G-17 ルーレット用スタイル (新規追加)
 ==============================
 */
 
 /* G-17 履歴詳細ページ の「ルーレットへ進む」ボタン */
 .roulette-link-section {
     margin-top: 24px;
+    text-align: center;
 }
 .btn-roulette {
     display: block;
     width: 100%;
     padding: 16px;
-    background-color: #28a745;
+    background-color: #28a745; /* 緑色 */
     color: white;
     font-size: 18px;
     font-weight: 700;
@@ -322,7 +317,9 @@ G-17 ルーレット用スタイル
     background-color: #218838;
 }
 
-/* G-17 ルーレットページ の「戻る」ボタン */
+/* --- 以下、ルーレットページ本体のスタイル --- */
+
+/* 戻るボタン (ルーレット画面用) */
 .btn-roulette-back {
     display: inline-block;
     padding: 12px 24px;
@@ -347,12 +344,11 @@ G-17 ルーレット用スタイル
 /* ルーレット（矢印とキャンバス） */
 #roulette {
     position: relative;
-    /* 修正前のマージン設定に戻す */
+    /* ルーレットの上部にもう少しスペースを確保 (矢印の高さ + 余白) */
     margin: 80px auto 50px auto; 
-    /* 枠線は削除 */
 }
 
-/* ★★★ 矢印のCSS (上から下向き) ★★★ */
+/* 矢印 (上から下向き) */
 #pointer {
     width: 0;
     height: 0;
@@ -361,6 +357,7 @@ G-17 ルーレット用スタイル
     border-top: 40px solid red; 
     
     position: absolute;
+    /* ルーレットの親要素の上端からマイナス値で配置し、ルーレットの外に出す */
     top: -40px; 
     left: 50%;
     transform: translateX(-50%); 
