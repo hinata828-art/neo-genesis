@@ -58,7 +58,7 @@ if ($id !== '') {
 <body>
   <div class="center-box">
     <!-- 警告アイコン画像 -->
-    <img src="img/alert.png" alt="削除完了アイコン">
+    <img src="../img/alert.png" alt="削除完了アイコン">
     
     <p>商品の削除が完了しました。</p>
     <a href="G-22_product.php" class="back-btn">商品管理画面に戻る</a>
