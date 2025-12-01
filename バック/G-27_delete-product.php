@@ -31,7 +31,7 @@ if ($id !== '') {
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .center-box img {
-      width: 80px;
+    
       height: 80px;
       margin-bottom: 1em;
     }
