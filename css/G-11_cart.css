@@ -17,6 +17,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    border-bottom: 2px solid #ccc;
 }
 .cart-summary .total {
     font-size: 18px;
@@ -44,7 +45,7 @@
 .item {
     background: #fff;
     border-radius: 12px;
-     border-bottom: 1px solid #a8a8a8;
+     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 40px;
     margin: 20px auto;
     width: 80%;             /* ← 2/3 の幅 */
