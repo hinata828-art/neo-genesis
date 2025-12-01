@@ -23,30 +23,6 @@ $categoryList = [
     <link rel="stylesheet" href="../css/G-26_product-addition.css">
     <link rel="stylesheet" href="../css/staff_header.css">
 </head>
-<script>
-function uploadImage(input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('product_image', file);
-
-    fetch('G-26_upload.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.text())
-    .then(filename => {
-        if (filename.startsWith("img_")) {
-            document.getElementById('image_filename').value = filename;
-            alert("画像アップロード成功: " + filename);
-        } else {
-            alert("アップロードエラー: " + filename);
-        }
-    });
-}
-</script>
-
 <body>
 
 <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
@@ -54,7 +30,7 @@ function uploadImage(input) {
 <h2>新規商品追加</h2>
 
 <div class="container">
-<form method="POST" action="G-26_upload.php" enctype="multipart/form-data">
+<form method="POST" action="G-26_product-register.php" enctype="multipart/form-data">
 
     <div class="left-area">
 
