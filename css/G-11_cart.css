@@ -1,98 +1,145 @@
-/* ▼ カートページ全体のレイアウト調整 */
-.cart-page-wrapper {
-    padding-top: 120px; /* ヘッダー高さ 70 + 固定バー 50 くらいを考慮 */
+ .cart-page-wrapper {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding-top: 80px;
 }
-
-/* ▼ 小計＋レジボタンの固定バー */
 .cart-summary {
     position: fixed;
-    top: 70px; /* ← header.css のヘッダーの高さに合わせる。必要なら調整 */
+    top: 120px;
     left: 0;
+    right: 0;
+    background: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.cart-summary .total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000 !important;
+}
+.cart-summary .checkout-btn {
+    display: inline-block;
+    padding: 12px 20px;  
+    border-radius: 9999px;
+    background: #0021f9;
+    color: #fff !important;
+    font-size: 16px;
+    text-decoration: none !important;
+    font-weight: bold;
+    text-align: center; 
+    width: 90%;      /* または 100% でもOK */
+    max-width: 400px;
+}
+.cart {
     width: 100%;
-    background: white;
-    z-index: 999;
-    padding: 10px 15px;
-    border-bottom: 1px solid #ccc;
+    padding: 0 10px 20px;
+}
+/* ===== カート商品全体を中央に寄せ最大幅を2/3に ===== */
+.item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;             /* ← 2/3 の幅 */
+    max-width: 700px;       /* ← PC で広すぎるのを防止 */
+    display: flex;
+    gap: 20px;
 }
 
-.cart-summary .total {
+/* ===== 左側：商品画像をサイトの半分以下に縮小 ===== */
+.item-left {
+    width: 45%;             /* ← 画面の半分以下に調整 */
+    max-width: 300px;       /* ← 必要以上に大きくならない */
+    height: auto;
+}
+
+.product-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+/* ===== 右側：商品名・価格・ボタン ===== */
+.item-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+/* 商品名 */
+.item-right .name {
     font-size: 18px;
     font-weight: bold;
     color: #333;
 }
 
-.cart-summary .buy-btn {
-    display: block;
-    width: 90%;
-    margin: 10px auto 0;
-    padding: 10px;
-    text-align: center;
-    background: #cce2ff;
-    border-radius: 20px;
-    border: 1px solid #88aaff;
-    font-size: 16px;
-}
-
-/* ▼ 商品ブロック（スマホ用） */
-.cart .item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #eef7ff;
-    margin-bottom: 12px;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-/* 左側（名前・価格・削除・購入） */
-.item-left {
-    width: 60%;
-}
-
-.item-left .name {
-    font-size: 18px;
+/* 価格 */
+.item-right .price {
+    font-size: 20px;
     font-weight: bold;
+    color: #ff3333 ;
 }
-
-.item-left .price {
-    color: red;
-    font-size: 18px;
-    margin: 5px 0;
+.item .price {
+    color: #ff3333 !important;
 }
-
-/* 削除 & 購入ボタン並べる */
+/* ===== ボタン配置 ===== */
 .buttons {
     display: flex;
-    gap: 12px;
-    margin-top: 5px;
+    gap: 10px;
+    margin-top: 10px;
 }
 
+/* 削除ボタン（赤） */
 .delete-btn {
-    background: red;
-    color: white;
+    padding: 8px 20px;
     border: none;
-    padding: 6px 15px;
-    border-radius: 12px;
+    border-radius: 9999px;
     font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #ff3333;
+    color: #fff;
 }
 
-.buy-btn {
-    background: #d9eafa;
-    padding: 6px 15px;
-    border-radius: 12px;
-    border: 1px solid #88aaff;
+/* 購入ボタン（削除ボタンの色反転＝青に白文字） */
+.item-right .buy-btn {
+    display: inline-block;  
+    padding: 8px 20px ;
+    border: none;
+    border-radius: 9999px;
     font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #5c85d6 !important;   /* 青 */
+    color: #fff !important;
+    text-decoration: none !important;
 }
 
-/* 右側（画像） */
-.item-right {
-    width: 40%;
-    display: flex;
-    justify-content: flex-end;
+/* ボタン hover */
+.delete-btn:hover {
+    background: #cc0000;
+}
+.item-right .buy-btn:hover {
+    background: #4a6db8;
 }
 
-.product-img {
-    width: 100px;
-    height: auto;
-    border-radius: 6px;
+@media (max-width: 600px) {
+    .cart-summary {
+        top: 150px;
+        padding: 12px 15px;
+    }
+    .item-left {
+        width: 100px;
+        height: 100px;
+    }
 }
