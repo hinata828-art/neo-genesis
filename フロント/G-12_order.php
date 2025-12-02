@@ -7,56 +7,137 @@ require '../common/db_connect.php';
 
 // 2. ログイン状態の確認
 $customer_info = null;
-$customer_id = 0; // クーポン検索用にIDを初期化
+$customer_id = 0;
 if (isset($_SESSION['customer'])) {
     $customer_info = $_SESSION['customer'];
-    $customer_id = $_SESSION['customer']['id']; // ログインしているIDを取得
+    $customer_id = $_SESSION['customer']['id'];
 } else {
     $customer_info = ['name' => '（ゲスト）', 'address' => '（住所未登録）'];
 }
 
-// 3. URLから商品IDとカラーを取得
-$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'original';
-
-// 4. 商品IDを使ってDBから商品情報を取得
-try {
-    // product.category_id も取得
-    $sql = "SELECT product_name, price, product_image, color, category_id 
-            FROM product WHERE product_id = :id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo '商品データ取得エラー: ' . $e->getMessage();
-    exit;
-}
-
-// 5. 商品が存在しない場合
-if (!$product) {
-    echo "<p>商品が見つかりません。</p>";
-    exit;
-}
-
-// 6. カラー名を取得 (逆引きマップ)
+// 3. カラー名マップ
 $color_display_map = [
     'original' => 'オリジナル', '白色' => 'ホワイト', '青' => 'ブルー',
     'ゲーミング' => 'ゲーミング', '黄色' => 'イエロー', '赤' => 'レッド',
     '緑' => 'グリーン', 'ブラック' => 'ブラック', 'ピンク' => 'ピンク',
     'グレー' => 'グレー'
 ];
-$color_name = $color_display_map[$color_value] ?? $color_value;
 
-// 7. ご請求額を計算（小計）
-$total_price = $product['price'];
+// 4. 購入モード判定：単品購入 or カート購入
+$is_cart_purchase = isset($_GET['cart_items']) && is_array($_GET['cart_items']);
 
+$cart_items = [];
+$total_price = 0;
 
-// ★★★ 適用可能なクーポンを探すロジック (変更なし) ★★★
+if ($is_cart_purchase) {
+    // === カート購入モード ===
+    $cart = $_SESSION['cart'] ?? [];
+    
+    foreach ($_GET['cart_items'] as $key) {
+        if (!isset($cart[$key])) continue;
+        
+        list($product_id, $color_value) = explode('_', $key);
+        $qty = $cart[$key];
+        
+        // 商品情報を取得
+        $sql = "SELECT product_id, product_name, price, product_image, color, category_id 
+                FROM product WHERE product_id = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':id' => $product_id]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$product) continue;
+        
+        // 画像パス調整
+        $base_image = $product['product_image'] ?? '';
+        if (!empty($base_image)) {
+            $true_base_url = preg_replace('/-[^-]+$/u', '', $base_image);
+            if ($color_value === 'original') {
+                $image_to_display = $true_base_url;
+            } else {
+                $image_to_display = $true_base_url . '-' . $color_value;
+            }
+        } else {
+            $image_to_display = '../img/no_image.jpg';
+        }
+        
+        $cart_items[] = [
+            'product_id' => $product_id,
+            'product_name' => $product['product_name'],
+            'price' => $product['price'],
+            'qty' => $qty,
+            'color' => $color_value,
+            'color_display' => $color_display_map[$color_value] ?? $color_value,
+            'image' => $image_to_display,
+            'category_id' => $product['category_id']
+        ];
+        
+        $total_price += $product['price'] * $qty;
+    }
+    
+    if (empty($cart_items)) {
+        echo "<p>カートが空です。</p>";
+        exit;
+    }
+    
+} else {
+    // === 単品購入モード ===
+    $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    $color_value = isset($_GET['color']) ? htmlspecialchars($_GET['color']) : 'original';
+    
+    try {
+        $sql = "SELECT product_name, price, product_image, color, category_id 
+                FROM product WHERE product_id = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':id', $product_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo '商品データ取得エラー: ' . $e->getMessage();
+        exit;
+    }
+    
+    if (!$product) {
+        echo "<p>商品が見つかりません。</p>";
+        exit;
+    }
+    
+    // 画像パス調整
+    $base_image = $product['product_image'] ?? '';
+    if (!empty($base_image)) {
+        $true_base_url = preg_replace('/-[^-]+$/u', '', $base_image);
+        if ($color_value === 'original') {
+            $image_to_display = $true_base_url;
+        } else {
+            $image_to_display = $true_base_url . '-' . $color_value;
+        }
+    } else {
+        $image_to_display = '../img/no_image.jpg';
+    }
+    
+    $cart_items[] = [
+        'product_id' => $product_id,
+        'product_name' => $product['product_name'],
+        'price' => $product['price'],
+        'qty' => 1,
+        'color' => $color_value,
+        'color_display' => $color_display_map[$color_value] ?? $color_value,
+        'image' => $image_to_display,
+        'category_id' => $product['category_id']
+    ];
+    
+    $total_price = $product['price'];
+}
+
+// ================================================================
+// ★★★ 既存のクーポンロジックをそのまま使用（変更なし） ★★★
+// ================================================================
 $best_coupon = null;
 $discount_amount = 0;
 $customer_coupon_id_to_use = 0;
-$product_category_id = $product['category_id'];
+
+// 最初の商品のカテゴリーIDを使用（複数商品の場合も最初の1つだけ）
+$product_category_id = $cart_items[0]['category_id'];
 
 // ログインしている場合のみクーポンを検索
 if ($customer_id > 0) {
@@ -80,7 +161,7 @@ if ($customer_id > 0) {
     $best_coupon = $stmt_coupon->fetch(PDO::FETCH_ASSOC);
 }
 
-// 8. 割引額と最終合計額を計算
+// 割引額と最終合計額を計算
 if ($best_coupon) {
     $discount_rate = $best_coupon['discount_rate'];
     $discount_amount = floor(($total_price * $discount_rate) / 100);
@@ -88,24 +169,7 @@ if ($best_coupon) {
 }
 
 $final_total_price = $total_price - $discount_amount;
-
-
-// 9. 画像表示ロジック (変更なし)
-$base_image_url_from_db = $product['product_image'] ?? '';
-$selected_color_filename = $color_value; 
-$image_to_display = '';
-
-if (!empty($base_image_url_from_db)) {
-    $true_base_url = preg_replace('/-[^-]+$/u', '', $base_image_url_from_db);
-    
-    if ($selected_color_filename === 'original') {
-        $image_to_display = $true_base_url;
-    } else {
-        $image_to_display = $true_base_url . '-' . $selected_color_filename;
-    }
-} else {
-    $image_to_display = '../img/no_image.jpg';
-}
+// ================================================================
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -120,48 +184,43 @@ if (!empty($base_image_url_from_db)) {
 <body>
     <?php require __DIR__ . '/../common/header.php'; ?>
     
-    <?php
-    // パンくずリスト
-    $breadcrumbs = [
-        ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        ['name' => htmlspecialchars($product['product_name']), 'url' => 'G-9_product-detail.php?id=' . $product_id],
-        ['name' => '注文情報入力']
-    ];
-    /*
-    require __DIR__ . '/../common/breadcrumb.php';
-    */
-    ?>
-    
 <div class="container">
     <p>注文内容</p>
     <hr>
     
+    <!-- 商品リスト表示 -->
+    <?php foreach ($cart_items as $item): ?>
     <div class="product-section">
-        <img src="<?php echo htmlspecialchars($image_to_display); ?>" alt="商品画像" class="product-image">
+        <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="商品画像" class="product-image">
         
         <div class="product-info">
-            <label class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></label>
+            <label class="product-name"><?php echo htmlspecialchars($item['product_name']); ?></label>
             <div class="product-color-row">
                 <label class="product-color-label">商品カラー：</label>
-                <label class="product-color"><?php echo htmlspecialchars($color_name); ?></label>
+                <label class="product-color"><?php echo htmlspecialchars($item['color_display']); ?></label>
             </div>
+            <?php if ($item['qty'] > 1): ?>
+            <div class="product-qty-row">
+                <label>数量：<?php echo $item['qty']; ?>個</label>
+            </div>
+            <?php endif; ?>
         </div>
-        
-    </div> <div class="price-section">
+    </div>
+    <?php endforeach; ?>
+    
+    <div class="price-section">
         <p>商品の小計：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
-        
         <p>割引額：<span class="price-discount">-￥<?php echo number_format($discount_amount); ?></span></p>
-        
         <p>ご請求額：<span class="price" id="total_price_display">￥<?php echo number_format($final_total_price); ?></span></p>
     </div>
 
     <hr>
     
     <form action="G-13_order-complete.php" method="POST">
-
-        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-        <input type="hidden" name="color" value="<?php echo htmlspecialchars($color_value); ?>">
+        <!-- 商品情報をJSON形式で送信 -->
+        <input type="hidden" name="cart_items_json" value="<?php echo htmlspecialchars(json_encode($cart_items)); ?>">
         
+        <!-- クーポンIDは単一のまま（既存形式） -->
         <input type="hidden" name="customer_coupon_id" value="<?php echo $customer_coupon_id_to_use; ?>">
         
         <input type="hidden" name="total_amount" id="total_amount_hidden" value="<?php echo $final_total_price; ?>">
@@ -220,7 +279,6 @@ if (!empty($base_image_url_from_db)) {
         </div>
         
         <button type="submit" class="confirm-button">購入を確定する</button>
-
     </form> 
 </div>
 
