@@ -61,10 +61,7 @@ foreach ($cart as $key => $qty) {
     <!-- 小計・レジボタン -->
     <div class="cart-summary">
         <p class="total">小計：￥<?= number_format($total) ?></p>
-          <form action="G-12_order.php" method="POST">
-            <input type="hidden" name="checkout_cart" value="1">
-            <button type="submit" class="checkout-btn">レジへ進む（<?= $cart_total_qty ?>個の商品）</button>
-        </form>
+          <a href="G-12_order.php?<?= $cart_query ?>" class="checkout-btn">レジへ進む</a>
 <hr>
     <div class="cart">
         <?php if (empty($cart_items)): ?>
