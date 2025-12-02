@@ -61,7 +61,12 @@ foreach ($cart as $key => $qty) {
     <!-- 小計・レジボタン -->
     <div class="cart-summary">
         <p class="total">小計：￥<?= number_format($total) ?></p>
-          <a href="G-12_order.php?<?= $cart_query ?>" class="checkout-btn">レジへ進む</a>
+        <?php
+        $cart_query = http_build_query([
+            'cart_items' => array_keys($cart)
+            ]);
+            ?>
+          <a href="G-12_order.php?<?= $cart_query ?>" class="checkout-btn">レジへ進む（<?= $cart_total_qty ?>個の商品）</a>
 <hr>
     <div class="cart">
         <?php if (empty($cart_items)): ?>
@@ -79,8 +84,8 @@ foreach ($cart as $key => $qty) {
                                 <input type="hidden" name="key" value="<?= $item['product_id'] . '_' . $item['color'] ?>">
                                 <button type="submit" class="delete-btn">削除</button>
                             </form>
-                            <a href="G-12_order.php?id=<?= $item['product_id'] ?>&color=<?= $item['color'] ?>"
-                               class="buy-btn" onclick="event.stopPropagation();">購入</a>
+                            <a href="G-12_order.php?id=<?= urlencode($item['product_id']) ?>&color=<?= urlencode($item['color']) ?>"
+   class="buy-btn" onclick="event.stopPropagation();">購入</a>
                         </div>
                     </div>
 
