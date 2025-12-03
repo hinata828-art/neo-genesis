@@ -76,3 +76,19 @@ button:hover {
   background-color: #275ab0;
 }
 
+fieldset {
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  font-size: 16px;
+}

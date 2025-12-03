@@ -17,6 +17,7 @@
   <form action="G-19_admin-login-process.php" method="post">
     <h1>社員ログイン</h1>
     <fieldset>
+
       <label for="staff_id">社員ID</label>
       <input id="staff_id" name="staff_id" type="text" required placeholder="例: S00123">
 
@@ -34,6 +35,7 @@
           }
       }
       ?>
+
     </fieldset>
   </form>
 
