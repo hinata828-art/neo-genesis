@@ -112,11 +112,29 @@ try {
     $order_info['transaction_id'] = $new_transaction_id;
 
     // 3. transaction_detail への INSERT
+
+
+    
+    $new_transaction_id = $pdo->lastInsertId();
+    $order_info['transaction_id'] = $new_transaction_id;
+
+    // ★★★ デバッグコード開始 ★★★
+    echo "<h1>デバッグ情報</h1>";
+    echo "受け取ったID: " . $base_product_id . "<br>";
+    echo "色の名前: " . $selected_color_display_name . "<br>";
+    echo "最終決定ID: " . $final_product_id . "<br>";
+    var_dump($final_product_id);
+    exit;
+
+
+
+
     $sql_detail = "INSERT INTO transaction_detail 
                         (transaction_id, product_id, quantity)
                    VALUES
                         (?, ?, 1)";
     
+
     $stmt_detail = $pdo->prepare($sql_detail);
     $stmt_detail->execute([
         $new_transaction_id,
