@@ -29,7 +29,7 @@ try {
         ];
 
         // 社員用ダッシュボードへ
-        header('Location: G-20_admin-dashboard.php');
+        header('Location: G-20_customer-management.php');
         exit();
     } else {
         header('Location: G-19_admin-login.php?error=2');
