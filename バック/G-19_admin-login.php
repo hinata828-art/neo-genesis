@@ -1,43 +1,41 @@
-<?php
-session_start();
-require '../common/db_connect.php'; // DB接続
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社員ログイン</title>
+  <link rel="stylesheet" href="../css/admin_login.css">
+  <style>
+    h1 { color: #d32f2f; }
+    body { background-color: #f8f8f8; }
+  </style>
+</head>
+<body>
 
-// 入力チェック（未入力）
-if (empty($_POST['staff_id']) || empty($_POST['password'])) {
-    header('Location: G-19_admin-login.php?error=1');
-    exit();
-}
+  <img src="../img/NishimuraOnline.png" alt="企業ロゴ" class="logo">
 
-$staff_id = $_POST['staff_id'];
-$password = $_POST['password'];
+  <form action="G-19_admin-login-process.php" method="post">
+    <h1>社員ログイン</h1>
+    <fieldset>
+      <label for="staff_id">社員ID</label>
+      <input id="staff_id" name="staff_id" type="text" required placeholder="例: S00123">
 
-try {
-    // 社員情報取得
-    $sql = "SELECT * FROM staff WHERE staff_id = :staff_id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':staff_id', $staff_id, PDO::PARAM_STR);
-    $stmt->execute();
-    $staff = $stmt->fetch(PDO::FETCH_ASSOC);
+      <label for="password">パスワード</label>
+      <input id="password" name="password" type="password" required placeholder="パスワードを入力">
 
-    // パスワード照合（平文比較）
-    if ($staff && $password === $staff['password']) {
+      <button type="submit">ログイン</button>
 
-        // セッションにスタッフ情報を保存
-        $_SESSION['staff'] = [
-            'id'   => $staff['staff_id'],
-            'name' => $staff['staff_name']
-        ];
+      <?php
+      if (isset($_GET['error'])) {
+          if ($_GET['error'] == 1) {
+              echo '<p style="color:red;">社員IDとパスワードを入力してください。</p>';
+          } else if ($_GET['error'] == 2) {
+              echo '<p style="color:red;">社員IDまたはパスワードが間違っています。</p>';
+          }
+      }
+      ?>
+    </fieldset>
+  </form>
 
-        // ✔ ログイン成功 → 顧客管理画面へ
-        header('Location: G-20_customer-management.php');
-        exit();
-
-    } else {
-        // IDまたはPWが間違い
-        header('Location: G-19_admin-login.php?error=2');
-        exit();
-    }
-
-} catch (PDOException $e) {
-    echo 'データベースエラー: ' . $e->getMessage();
-}
+</body>
+</html>

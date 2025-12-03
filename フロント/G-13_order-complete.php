@@ -10,15 +10,29 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('不正なアクセスです。');
 }
 
-// 顧客ID (G-1のログイン処理に合わせて 'id' を使用)
+// 顧客ID
 $customer_id = $_SESSION['customer']['id'] ?? null; 
 if ($customer_id === null) {
     exit('ログイン情報（顧客ID）がセッションに見つかりません。');
 }
 
-// G-12から送られてきた「ベース」の商品ID、「選択された」色、「合計金額」
-$base_product_id = $_POST['product_id'] ?? 0;
-$selected_color_file_name = $_POST['color'] ?? 'original';
+// ★★★ 修正点: JSONデータを受け取って分解する ★★★
+// G-12からは 'cart_items_json' という名前でデータが送られてきています
+$json_items = $_POST['cart_items_json'] ?? '';
+$items = json_decode($json_items, true);
+
+// JSONから1つ目の商品データを取り出す
+if (!empty($items) && is_array($items)) {
+    $first_item = $items[0]; // 1つ目の商品
+    $base_product_id = $first_item['product_id'] ?? 0;
+    $selected_color_file_name = $first_item['color'] ?? 'original';
+} else {
+    // データがない場合の安全策
+    $base_product_id = 0;
+    $selected_color_file_name = 'original';
+}
+// ★★★ 修正ここまで ★★★
+
 $total_amount = $_POST['total_amount'] ?? 0;
 $payment_method = $_POST['payment'] ?? '不明';
 
@@ -26,7 +40,7 @@ $payment_method = $_POST['payment'] ?? '不明';
 $option_warranty = $_POST['option_warranty'] ?? null;
 $option_delivery = $_POST['option_delivery'] ?? null;
 
-// ★★★ 修正点 1: G-12から「使用したクーポンのID」を受け取る ★★★
+// クーポンID
 $customer_coupon_id = $_POST['customer_coupon_id'] ?? 0; 
 
 
@@ -44,7 +58,7 @@ $color_display_map = [
     'グレー'     => 'グレー'
 ];
 
-// 選択された色の「表示名」(DBのcolorカラムと一致する名前)
+// 選択された色の「表示名」
 $selected_color_display_name = $color_display_map[$selected_color_file_name] ?? $selected_color_file_name;
 
 
@@ -63,7 +77,7 @@ try {
     $pdo = new PDO($connect, USER, PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // === 4. 正しい商品IDを検索する (変更なし) ===
+    // === 4. 正しい商品IDを検索する ===
 
     if ($selected_color_display_name !== 'オリジナル') {
         // (A) 色が選択された場合
@@ -86,7 +100,7 @@ try {
         }
 
     } else {
-        // (B) 'オリジナル' が選択された場合 (何もしない)
+        // (B) 'オリジナル' が選択された場合 (そのまま使用)
     }
 
 
@@ -124,14 +138,14 @@ try {
     ]);
 
     
-    // ★★★ 修正点 2: クーポンを使用済みにする UPDATE 処理を追加 ★★★
+    // 4. クーポンを使用済みにする UPDATE 処理
     if ($customer_coupon_id > 0) {
         
         $sql_coupon_update = "UPDATE customer_coupon 
                               SET used_at = NOW() 
                               WHERE customer_coupon_id = :ccid 
                               AND customer_id = :cid
-                              AND used_at IS NULL"; // 念のため未使用か確認
+                              AND used_at IS NULL"; 
                               
         $stmt_coupon = $pdo->prepare($sql_coupon_update);
         $stmt_coupon->execute([
@@ -139,10 +153,9 @@ try {
             ':cid' => $customer_id
         ]);
     }
-    // ★★★ 修正ここまで ★★★
 
 
-    // 4. すべて成功したら、トランザクションを「コミット」（確定）
+    // 5. すべて成功したら、トランザクションを「コミット」（確定）
     $pdo->commit();
 
     // === 6. 配送日数SELECT処理 ===
