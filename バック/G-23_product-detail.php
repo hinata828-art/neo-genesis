@@ -1,13 +1,16 @@
 <?php
-require '../common/db_connect.php';
+require 'db_connect.php';
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// 商品ID取得
-if (!isset($_GET['product_id'])) {
-    header("Location: G-22_product.php");
+// 商品ID取得（GETまたはPOST）
+if (!isset($_GET['product_id']) && !isset($_POST['product_id'])) {
+    header("Location: G22.php");
     exit;
 }
-$product_id = intval($_GET['product_id']);
+$product_id = intval($_GET['product_id'] ?? $_POST['product_id']);
 
 // カテゴリID → 名称
 $categoryList = [
@@ -21,7 +24,35 @@ $categoryList = [
     "C08" => "スマートフォン"
 ];
 
-// 商品情報取得
+// --- 更新処理（POST送信時） ---
+$message = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $sql = "UPDATE product 
+            SET product_name = :name,
+                price = :price,
+                category_id = :cat,
+                maker = :maker,
+                color = :color,
+                stock_quantity = :stock,
+                product_image = :image,
+                product_detail = :detail
+            WHERE product_id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':name'   => $_POST['product_name'],
+        ':price'  => $_POST['price'],
+        ':cat'    => $_POST['category_id'],
+        ':maker'  => $_POST['maker'],
+        ':color'  => $_POST['color'],
+        ':stock'  => $_POST['stock_quantity'],
+        ':image'  => $_POST['product_image'],
+        ':detail' => $_POST['product_detail'],
+        ':id'     => $product_id
+    ]);
+    $message = "商品情報を更新しました。";
+}
+
+// 商品情報取得（更新後も再取得）
 $sql = "SELECT * FROM product WHERE product_id = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$product_id]);
@@ -66,121 +97,137 @@ $orderStmt = $pdo->prepare($orderSql);
 $orderStmt->execute([$product_id]);
 $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>商品詳細</title>
+    <title>商品編集</title>
     <link rel="stylesheet" href="../css/G-23_product-detail.css">
     <link rel="stylesheet" href="../css/staff_header.css">
 </head>
 <body>
-<?php require_once __DIR__ . '/../common/staff_header.php'; ?>
+    <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
-<h2>商品詳細</h2>
+<h2>商品編集</h2>
 
-<div class="container">
-    <!-- 左エリア -->
-    <div class="left-area">
-        <label>商品ID</label>
-        <input type="text" value="<?= htmlspecialchars($product['product_id']) ?>" disabled>
+<?php if ($message): ?>
+    <p style="color:green; font-weight:bold;"><?= htmlspecialchars($message) ?></p>
+<?php endif; ?>
 
-        <label>商品名</label>
-        <input type="text" value="<?= htmlspecialchars($product['product_name']) ?>" disabled>
+<form action="" method="post">
+    <input type="hidden" name="product_id" value="<?= $product_id ?>">
+    <div class="container">
+    
 
-        <label>価格(税込)</label>
-        <input type="text" value="<?= number_format($product['price']) ?>" disabled>
+        <!-- 左エリア -->
+        <div class="left-area">
+            <label>商品ID</label>
+            <input type="text" value="<?= htmlspecialchars($product['product_id']) ?>" disabled>
 
-        <label>商品カテゴリー</label>
-        <input type="text" value="<?= $categoryList[$product['category_id']] ?? $product['category_id'] ?>" disabled>
+            <label>商品名</label>
+            <input type="text" name="product_name" value="<?= htmlspecialchars($product['product_name']) ?>">
 
-        <label>メーカー</label>
-        <input type="text" value="<?= htmlspecialchars($product['maker']) ?>" disabled>
+            <label>価格(税込)</label>
+            <input type="text" name="price" value="<?= htmlspecialchars($product['price']) ?>">
 
-        <label>色</label>
-        <input type="text" value="<?= htmlspecialchars($product['color']) ?>" disabled>
+            <label>商品カテゴリー</label>
+            <select name="category_id">
+                <?php foreach ($categoryList as $id => $name): ?>
+                    <option value="<?= $id ?>" <?= $product['category_id']===$id?'selected':''; ?>>
+                        <?= $name ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
 
-        <label>在庫数</label>
-        <input type="text" value="<?= htmlspecialchars($product['stock_quantity']) ?>" disabled>
-    </div>
+            <label>メーカー</label>
+            <input type="text" name="maker" value="<?= htmlspecialchars($product['maker']) ?>">
 
-    <!-- 右エリア -->
-    <div class="right-area">
-        <label>商品画像</label>
-        <div class="product-image-box">
-            <img src="<?= htmlspecialchars($product['product_image']) ?>" alt="商品画像">
-        </div>
+            <label>色</label>
+            <input type="text" name="color" value="<?= htmlspecialchars($product['color']) ?>">
 
-        <label>商品詳細</label>
-        <textarea readonly><?= htmlspecialchars($product['product_detail']) ?></textarea>
+            <label>在庫数</label>
+            <input type="text" name="stock_quantity" value="<?= htmlspecialchars($product['stock_quantity']) ?>" disabled>
 
-        <!-- 履歴エリア -->
-        <div class="history-container">
-            <!-- 発注・入荷履歴 -->
+            <!-- 履歴エリア（表示専用） -->
             <div class="order-history-box">
                 <label>発注・入荷履歴</label>
-                <?php if ($orderHistory): ?>
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>発注日</th>
-                                <th>入荷日</th>
-                                <th>入荷数</th>
-                                <th>担当者</th>
-                                <th>備考</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($orderHistory as $oh): ?>
+                    <?php if ($orderHistory): ?>
+                        <table class="history-table">
+                            <thead>
                                 <tr>
-                                    <td><?= date("n/j", strtotime($oh['order_date'])) ?></td>
-                                    <td><?= $oh['arrival_date'] ? date("n/j", strtotime($oh['arrival_date'])) : '未入荷' ?></td>
-                                    <td><?= htmlspecialchars($oh['arrival_quantity']) ?>台</td>
-                                    <td><?= htmlspecialchars($oh['staff_name'] ?? '-') ?></td>
-                                    <td><?= nl2br(htmlspecialchars($oh['note'] ?? '')) ?></td>
+                                    <th>発注日</th>
+                                    <th>入荷日</th>
+                                    <th>入荷数</th>
+                                    <th>担当者</th>
+                                    <th>備考</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p>発注・入荷履歴はありません。</p>
-                <?php endif; ?>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($orderHistory as $oh): ?>
+                                    <tr>
+                                        <td><?= date("n/j", strtotime($oh['order_date'])) ?></td>
+                                        <td><?= $oh['arrival_date'] ? date("n/j", strtotime($oh['arrival_date'])) : '未入荷' ?></td>
+                                        <td><?= htmlspecialchars($oh['arrival_quantity']) ?>台</td>
+                                        <td><?= htmlspecialchars($oh['staff_name'] ?? '-') ?></td>
+                                        <td><?= nl2br(htmlspecialchars($oh['note'] ?? '')) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p>発注・入荷履歴はありません。</p>
+                    <?php endif; ?>
             </div>
+        </div>
 
-            <!-- 購入履歴 -->
+        <!-- 右エリア -->
+        <div class="right-area">
+            <label>商品画像</label>
+            <div class="product-image-box">
+                <img src="<?= htmlspecialchars($product['product_image']) ?>" alt="商品画像">
+            </div>
+            <input type="text" name="product_image" value="<?= htmlspecialchars($product['product_image']) ?>">
+
+            <label>商品詳細</label>
+            <textarea name="product_detail"><?= htmlspecialchars($product['product_detail']) ?></textarea>
+
+            
+            
+
             <div class="history-box">
-                <label>購入履歴</label>
-                <?php if ($history): ?>
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>購入日</th>
-                                <th>数量</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($history as $h): ?>
+                    <label>購入履歴</label>
+                    <?php if ($history): ?>
+                        <table class="history-table">
+                            <thead>
                                 <tr>
-                                    <td><?= date("n/j", strtotime($h['transaction_date'])) ?></td>
-                                    <td><?= htmlspecialchars($h['quantity']) ?>台</td>
+                                    <th>購入日</th>
+                                    <th>数量</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p>購入履歴はありません。</p>
-                <?php endif; ?>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($history as $h): ?>
+                                    <tr>
+                                        <td><?= date("n/j", strtotime($h['transaction_date'])) ?></td>
+                                        <td><?= htmlspecialchars($h['quantity']) ?>台</td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p>購入履歴はありません。</p>
+                    <?php endif; ?>
             </div>
+             <!-- ボタンエリア -->
+            <div class="button-area">
+                <a class="btn" href="G-24_product-arrival.php?product_id=<?= $product_id ?>">入荷登録</a>
+                <button type="submit" class="btn">更新</button>
+                <a class="btn-cancel" href="G-22_product.php">戻る</a>
+            </div>
+    
         </div>
-
-        <!-- ボタンエリア -->
-        <div class="button-area">
-            <a class="btn" href="G-24_product-arrival.php?product_id=<?= $product_id ?>">入荷登録</a>
-            <a class="btn-cancel" href="G-22_product.php">戻る</a>
-        </div>
-    </div>
+    </form>
 </div>
+            
 
 </body>
 </html>

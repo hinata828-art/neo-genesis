@@ -110,6 +110,8 @@ $rows = $stmt->fetchAll();
   <link rel="stylesheet" href="../css/staff_header.css">
 </head>
 <body>
+    <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
+
   <main class="page">
     <div class="page-title">
       <h1>顧客管理</h1>
@@ -183,7 +185,7 @@ $rows = $stmt->fetchAll();
                     </td>
                     <td><?php echo $ageDisplay; ?></td>
                     <td>
-                      <form action="customer_detail.php" method="get" style="display:inline;">
+                      <form action="G-21_customer-detail.php" method="get" style="display:inline;">
                         <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['customer_id'], ENT_QUOTES, 'UTF-8'); ?>" />
                         <button class="btn btn-detail" type="submit">詳細</button>
                       </form>
