@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>社員ログイン</title>
-  <link rel="stylesheet" href="../css/admin_login.css">
+  <link rel="stylesheet" href="../css/G-19_admin-login.css">
   <style>
     h1 { color: #d32f2f; }
     body { background-color: #f8f8f8; }
@@ -17,6 +17,7 @@
   <form action="G-19_admin-login-process.php" method="post">
     <h1>社員ログイン</h1>
     <fieldset>
+
       <label for="staff_id">社員ID</label>
       <input id="staff_id" name="staff_id" type="text" required placeholder="例: S00123">
 
@@ -34,6 +35,7 @@
           }
       }
       ?>
+
     </fieldset>
   </form>
 
