@@ -183,11 +183,12 @@ $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- 右エリア -->
         <div class="right-area">
             <label>商品画像</label>
-<div class="product-image-box">
-    <img src="../img/<?= htmlspecialchars($product['product_image']) ?>"
-     alt="商品画像"
-     onerror="this.src='../img/noimage.png'">
-</div>
+<?php if (!empty($row['image'])): ?>
+    <img src="../img/<?php echo htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8'); ?>" 
+         alt="商品画像" width="150">
+<?php else: ?>
+    <p>画像なし</p>
+<?php endif; ?>
 
 <!-- 画像名の編集欄（通常は変更しない） -->
 <input type="text" name="product_image" 
