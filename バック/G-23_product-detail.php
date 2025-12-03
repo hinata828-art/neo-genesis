@@ -184,9 +184,9 @@ $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="right-area">
             <label>商品画像</label>
 <div class="product-image-box">
-    <img src="../img/<?= htmlspecialchars($product['product_image']) ?>" 
-         alt="商品画像" 
-         style="max-width: 100%; height: auto; border:1px solid #ccc;">
+    <img src="<?= htmlspecialchars($imagePath) ?>" 
+     alt="商品画像" 
+     onerror="this.src='../img/noimage.png'">
 </div>
 
 <!-- 画像名の編集欄（通常は変更しない） -->
