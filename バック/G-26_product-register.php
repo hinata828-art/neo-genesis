@@ -28,8 +28,8 @@ if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPL
 }
 
 // DB保存
-$sql = "INSERT INTO product (product_name, price, category_id, maker, color, jan_code, stock_quantity, product_detail, image_filename)
-        VALUES (:product_name, :price, :category_id, :maker, :color, :jan_code, :stock_quantity, :product_detail, :image_filename)";
+$sql = "INSERT INTO product (product_name, price, category_id, maker, color, jan_code, stock_quantity, product_detail, product_image)
+        VALUES (:product_name, :price, :category_id, :maker, :color, :jan_code, :stock_quantity, :product_detail, :product_image)";
 $stmt = $pdo->prepare($sql);
 
 $stmt->bindValue(':product_name', $_POST['product_name']);
@@ -40,7 +40,7 @@ $stmt->bindValue(':color', $_POST['color']);
 $stmt->bindValue(':jan_code', $_POST['jan_code']);
 $stmt->bindValue(':stock_quantity', $_POST['stock_quantity']);
 $stmt->bindValue(':product_detail', $_POST['product_detail']);
-$stmt->bindValue(':image_filename', $filename);
+$stmt->bindValue(':product_image', $filename);
 
 $stmt->execute();
 
