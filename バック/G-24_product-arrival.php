@@ -1,6 +1,6 @@
 <?php
-require '../common/db_connect.php';
 session_start();
+require '../common/db_connect.php';
 
 // --- product_id 取得 ---
 if (!isset($_GET['product_id'])) {
@@ -10,7 +10,8 @@ if (!isset($_GET['product_id'])) {
 $product_id = intval($_GET['product_id']);
 
 // --- スタッフID（ログイン中の管理者） ---
-$staff_id = $_SESSION['staff_id'] ?? 1;
+$staff_id = $_SESSION['staff']['id'];
+$staff_name = $_SESSION['staff']['name'];
 
 // --- 発注日（今日） ---
 $order_date = date('Y-m-d');
@@ -92,6 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label>入荷日（自動）</label>
         <input type="text" name="arrival_date" value="<?= $arrival_date ?>" readonly class="narrow-input">
+
+        <label>担当者（自動）</label>
+        <input type="text" value="<?= htmlspecialchars($staff_name) ?>" readonly class="narrow-input">
+        <input type="hidden" name="staff_id" value="<?= $staff_id ?>">
 
         <label>入荷数量</label>
         <input type="number" name="quantity" min="1" required class="narrow-input">
