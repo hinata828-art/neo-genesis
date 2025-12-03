@@ -23,8 +23,8 @@ $categoryList = [
     <link rel="stylesheet" href="../css/G-26_product-addition.css">
     <link rel="stylesheet" href="../css/staff_header.css">
 </head>
-<body>
 
+<body>
 <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
 <h2>新規商品追加</h2>
