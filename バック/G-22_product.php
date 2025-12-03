@@ -98,7 +98,21 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
               <div class="product-main">
                 <!-- 商品画像 -->
-                <img src="<?= htmlspecialchars($p['product_image']) ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
+                <?php
+// 商品画像パスの判定（既存URL or imgフォルダ）
+$imagePath = $p['product_image'];
+
+// 既存データ：URL で保存されている場合（https:// or http://）
+if (preg_match('/^https?:\/\//', $imagePath)) {
+    // そのまま使用
+} else {
+    // 新規登録商品：ファイル名のみ → imgフォルダを付与
+    $imagePath = "../img/" . $imagePath;
+}
+?>
+<img src="<?= htmlspecialchars($imagePath) ?>" 
+     alt="商品画像" 
+     onerror="this.src='../img/noimage.png'">
                 <!-- 商品情報 -->
                 <div class="product-info">
                   <h4><?= htmlspecialchars($p['product_name']) ?></h4>
