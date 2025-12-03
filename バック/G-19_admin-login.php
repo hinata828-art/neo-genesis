@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>社員ログイン</title>
-  <link rel="stylesheet" href="../css/admin_login.css">
+  <link rel="stylesheet" href="../css/G-19_admin-login.css">
   <style>
     h1 { color: #d32f2f; }
     body { background-color: #f8f8f8; }
