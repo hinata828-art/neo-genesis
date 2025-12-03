@@ -98,7 +98,21 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
               <div class="product-main">
                 <!-- 商品画像 -->
-                <img src="<?= htmlspecialchars($p['product_image']) ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
+                <?php
+// 商品画像パスの判定（既存URL or imgフォルダ）
+$imagePath = $p['product_image'];
+
+// 既存データ：URL で保存されている場合（https:// or http://）
+if (preg_match('/^https?:\/\//', $imagePath)) {
+    // そのまま使用
+} else {
+    // 新規登録商品：ファイル名のみ → imgフォルダを付与
+    $imagePath = "../img/" . $imagePath;
+}
+?>
+<img src="<?= htmlspecialchars($imagePath) ?>" 
+     alt="商品画像" 
+     onerror="this.src='../img/noimage.png'">
                 <!-- 商品情報 -->
                 <div class="product-info">
                   <h4><?= htmlspecialchars($p['product_name']) ?></h4>
@@ -127,7 +141,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
               <div class="product-actions">
                 <button onclick="location.href='G-23_product-detail.php?product_id=<?= $p['product_id'] ?>'">編集</button>
-                <button onclick="if(confirm('削除しますか？')) location.href='delete_product.php?id=<?= $p['product_id'] ?>'">削除</button>
+                <button onclick="if(confirm('削除しますか？')) location.href='G-27_delete-product.php?id=<?= $p['product_id'] ?>'">削除</button>
               </div>
             </div>
           <?php endforeach; ?>
@@ -143,7 +157,19 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <label>商品名<br><input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="例: テレビ"></label>
           <label>最低価格<br><input type="text" name="min_price" value="<?= htmlspecialchars($min_price) ?>" placeholder="例: 5000"></label>
           <label>最高価格<br><input type="text" name="max_price" value="<?= htmlspecialchars($max_price) ?>" placeholder="例: 20000"></label>
-          <label>カテゴリー<br><input type="text" name="category" value="<?= htmlspecialchars($category) ?>" placeholder="例: 1"></label>
+          <label>カテゴリー<br>
+          <select name="category">
+            <option value="">すべて</option>
+            <option value="C01" <?= $category==='C01'?'selected':''; ?>>テレビ</option>
+            <option value="C02" <?= $category==='C02'?'selected':''; ?>>冷蔵庫</option>
+            <option value="C03" <?= $category==='C03'?'selected':''; ?>>電子レンジ</option>
+            <option value="C04" <?= $category==='C04'?'selected':''; ?>>カメラ</option>
+            <option value="C05" <?= $category==='C05'?'selected':''; ?>>ヘッドホン</option>
+            <option value="C06" <?= $category==='C06'?'selected':''; ?>>洗濯機</option>
+            <option value="C07" <?= $category==='C07'?'selected':''; ?>>ノートPC</option>
+            <option value="C08" <?= $category==='C08'?'selected':''; ?>>スマートフォン</option>
+          </select>
+          </label>
           <label>メーカー<br><input type="text" name="maker" value="<?= htmlspecialchars($maker) ?>" placeholder="例: AQUAVIEW"></label>
           <button class="apply-btn" type="submit">適用</button>
         </form>

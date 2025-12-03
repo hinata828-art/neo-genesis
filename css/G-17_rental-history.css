@@ -4,11 +4,13 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
-    /* ★ 修正点: サイト共通ヘッダーを削除したため、余白を0にする */
-    padding-top: 0; 
+    
+    /* 履歴詳細ページ（共通ヘッダーあり）用の余白 */
+    /* ルーレットページではPHP内の style で 0 に上書きされます */
+    padding-top: 120px; 
 }
 
-/* --- 全体コンテナ (スマホ幅) --- */
+/* --- 全体コンテナ --- */
 .container {
     max-width: 480px;
     min-height: 100vh;
@@ -17,16 +19,47 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ★★★ 修正点 1: ルーレット画面のローカルヘッダーを非表示 ★★★ */
-/* G-17_rental-roulette.php のローカルヘッダーを完全に隠す */
+/* --- ★★★ 修正点 1: ローカルヘッダーのスタイルを強力に上書き ★★★ */
 .header {
-    display: none; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    
+    /* header.css の "position: fixed" を打ち消す */
+    position: relative !important; 
+    top: auto !important;
+    z-index: 1 !important;
+    
+    /* ★ 下に余白を追加して、中身との距離を離す */
+    margin-bottom: 30px; 
+}
+
+.back-link {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+    width: 24px;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    flex-grow: 1;
+    margin: 0; /* 余計なマージンをリセット */
+}
+
+.header-dummy {
+    width: 24px;
 }
 
 /* --- メインコンテンツ --- */
 .main-content {
-    /* ヘッダーが消えた分、上部の余白を調整 */
-    padding: 24px 16px;
+    padding: 0 16px 24px 16px; /* 上の余白は .header の margin-bottom に任せる */
 }
 
 /* --- エラー表示 --- */
@@ -37,12 +70,12 @@ body {
     border: 1px solid #fca5a5;
     border-radius: 8px;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 /* ==============================
-G-17 履歴詳細/ルーレット用スタイル 
-==============================
-*/
+   履歴詳細 / ルーレット用スタイル 
+   ============================== */
 
 /* --- 商品カード --- */
 .product-card {
@@ -163,11 +196,12 @@ G-17 履歴詳細/ルーレット用スタイル
     margin-bottom: 24px;
 }
 
-/* --- フッター (キャンセルリンク) --- */
+/* --- フッター --- */
 .footer {
     padding: 16px;
     text-align: center;
     border-top: 1px solid #e5e7eb;
+    margin-top: 40px; /* フッター前にも少し余白を追加 */
 }
 .footer-link {
     color: #2563eb;
@@ -256,33 +290,19 @@ G-17 履歴詳細/ルーレット用スタイル
     opacity: 0.8;
 }
 
-/* --- 配送ステータスの色分け --- */
-.status-processing {
-    color: #007bff !important; 
-    font-weight: bold;
-    font-size: 1.1em;
-}
-.status-delivered {
-    color: #28a745 !important; 
-    font-weight: bold;
-    font-size: 1.1em;
-}
-.status-cancelled {
-    color: #dc3545 !important; 
-    font-weight: bold;
-    font-size: 1.1em;
-}
+/* --- 配送ステータス色分け --- */
+.status-processing { color: #007bff !important; font-weight: bold; font-size: 1.1em; }
+.status-delivered { color: #28a745 !important; font-weight: bold; font-size: 1.1em; }
+.status-cancelled { color: #dc3545 !important; font-weight: bold; font-size: 1.1em; }
 
 
-/*
-==============================
-G-17 ルーレットページ用スタイル
-==============================
-*/
+/* ==============================
+   ルーレット画面用スタイル
+   ============================== */
 
-/* G-17 履歴詳細ページ の「ルーレットへ進む」ボタン */
 .roulette-link-section {
     margin-top: 24px;
+    text-align: center;
 }
 .btn-roulette {
     display: block;
@@ -301,8 +321,6 @@ G-17 ルーレットページ用スタイル
 .btn-roulette:hover {
     background-color: #218838;
 }
-
-/* G-17 ルーレットページ の「戻る」ボタン */
 .btn-roulette-back {
     display: inline-block;
     padding: 12px 24px;
@@ -314,9 +332,8 @@ G-17 ルーレットページ用スタイル
     margin-top: 16px;
 }
 
-/* ルーレット本体のラッパー */
 #roulette-container {
-    margin: 30px auto;
+    margin: 0 auto 30px auto; /* 上マージンを0に */
     text-align: center;
     padding: 16px;
     background-color: #f9fafb;
@@ -327,15 +344,15 @@ G-17 ルーレットページ用スタイル
 /* ルーレット（矢印とキャンバス） */
 #roulette {
     position: relative;
-    /* 修正前のマージン設定に戻す */
-    margin: 80px auto 50px auto; 
+    /* ★★★ 修正点 2: ルーレット上の余白を調整（矢印のスペース確保） ★★★ */
+    margin: 60px auto 50px auto; 
     
-    /* ★★★ 修正点: 黒枠線を完全に削除 ★★★ */
-    border: none; 
+    /* 枠線を消す */
+    border: none !important; 
     border-radius: 50%;
 }
 
-/* ★★★ 矢印のCSS (上から下向き) は維持 ★★★ */
+/* 矢印 (上から下向き) */
 #pointer {
     width: 0;
     height: 0;
@@ -375,7 +392,6 @@ G-17 ルーレットページ用スタイル
     cursor: not-allowed;
 }
 
-/* 結果表示 */
 #result {
     margin-top: 20px;
     font-size: 1.2em;
@@ -383,7 +399,6 @@ G-17 ルーレットページ用スタイル
     color: #d9534f;
 }
 
-/* クーポン一覧への遷移リンク */
 .coupon-list-link {
     display: block;
     margin-top: 24px;

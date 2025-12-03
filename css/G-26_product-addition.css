@@ -1,73 +1,78 @@
 body {
     font-family: sans-serif;
     background-color: #f7f7f7;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 h2 {
-    margin-bottom: 25px;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-size: 28px;
 }
 
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 50px;
+.form-wrapper {
+    width: 60%;
+    max-width: 800px;
+    margin: 0 auto;  /* 中央寄せ */
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.left-area, .right-area {
-    width: 45%;
+.form-group {
+    margin-bottom: 20px;
 }
 
 label {
     font-weight: bold;
     display: block;
-    margin-top: 12px;
+    margin-bottom: 8px;
 }
 
-input, select, textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 4px;
-    border-radius: 6px;
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;      /* テキストボックスの幅を広げる */
+    padding: 10px;
+    font-size: 16px;
     border: 1px solid #aaa;
-    font-size: 15px;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
 textarea {
-    height: 100px;
+    height: 120px;
 }
 
-.product-image-box {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 80%;
+.image-area {
     text-align: center;
-    background: #fff;
-    border-radius: 6px;
-    margin-top: 5px;
+    margin-top: 20px;
 }
 
-.product-image-box img {
-    width: 100%;
-    max-width: 260px;
-}
-
-.button-area {
-    margin-top: 40px;
-}
-
-.btn {
-    padding: 10px 25px;
+button {
+    padding: 12px 28px;
+    font-size: 17px;
     border-radius: 8px;
-    background: #007bff;
-    color: white;
     border: none;
-    font-size: 16px;
     cursor: pointer;
+}
+
+.btn-submit {
+    background-color: #007bff;
+    color: #fff;
     margin-right: 20px;
 }
 
 .btn-cancel {
-    background: #ccc;
-    color: black;
+    background-color: #ccc;
+    color: #000;
+}
+
+.button-area {
+    text-align: center;   /* ボタン中央寄せ */
+    margin-top: 40px;
 }

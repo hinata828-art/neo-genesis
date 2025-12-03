@@ -23,14 +23,14 @@ $categoryList = [
     <link rel="stylesheet" href="../css/G-26_product-addition.css">
     <link rel="stylesheet" href="../css/staff_header.css">
 </head>
-<body>
 
+<body>
 <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
 <h2>新規商品追加</h2>
 
 <div class="container">
-<form method="POST" action="G-26_upload.php" enctype="multipart/form-data">
+<form method="POST" action="G-26_product-register.php" enctype="multipart/form-data">
 
     <div class="left-area">
 
@@ -53,8 +53,8 @@ $categoryList = [
         <label>色</label>
         <input type="text" name="color" required>
 
-        <label>JANコード（8桁）</label>
-        <input type="text" name="jan_code" pattern="\d{8}" required>
+        <label>JANコード（13桁）</label>
+        <input type="text" name="jan_code" pattern="\d{13}" required>
 
         <label>在庫数</label>
         <input type="number" name="stock_quantity" min="0" required>

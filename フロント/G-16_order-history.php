@@ -2,27 +2,27 @@
 // 1. セッションを開始
 session_start();
 
-// 2. デバッグ（エラー表示）設定 (開発中のみ)
+// 2. デバッグ（エラー表示）設定
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 3. 共通のデータベース接続ファイルを読み込む
-require '../common/db_connect.php'; // $pdo 変数がここで作成されると仮定
+// 3. 共通DB接続
+require '../common/db_connect.php';
 
-// 4. 表示するデータを初期化
-$products = []; // ★商品リスト用の配列に変更
-$order_info = null; // 注文共通情報用
+// 4. データ初期化
+$products = [];
+$order_info = null;
 $error_message = '';
-$transaction_id = $_GET['id'] ?? 0; // ★ transaction_id を初期化
+$transaction_id = $_GET['id'] ?? 0;
 
 try {
-    // 5. URLから表示したい取引IDを取得
+    // 5. ID取得
     if (empty($transaction_id)) {
         throw new Exception('取引IDが指定されていません。');
     }
     
-    // 6. データベースから注文情報を取得
+    // 6. データ取得
     $sql = "SELECT 
                 t.transaction_date, 
                 t.payment,
@@ -47,30 +47,19 @@ try {
         throw new Exception('該当する注文が見つかりません。');
     }
     
-    // 注文共通情報（日付、支払い方法など）を $products の最初の要素から取得
     $order_info = $products[0];
-    
-    // 日付フォーマットの整形
     $order_info['purchase_date_formatted'] = date('Y/m/d H:i', strtotime($order_info['transaction_date']));
     
-    
-    // ▼▼▼ ここから修正 ▼▼▼
-    // 62行目あたり
-    // 配達状況のテキストとCSSクラスを決定
     if ($order_info['delivery_status'] == '配達完了') {
          $order_info['delivery_status_text'] = date('Y/m/d', strtotime('+5 days', strtotime($order_info['transaction_date']))) . 'に配達済み';
-         $order_info['status_class'] = 'status-delivered'; // (緑色)
-
+         $order_info['status_class'] = 'status-delivered'; 
     } else if ($order_info['delivery_status'] == 'キャンセル済み') {
          $order_info['delivery_status_text'] = 'この注文はキャンセル済みです';
-         $order_info['status_class'] = 'status-cancelled'; // (★ 赤色)
-
+         $order_info['status_class'] = 'status-cancelled'; 
     } else {
-         $order_info['delivery_status_text'] = '配達ステータス: ' . htmlspecialchars($order_info['delivery_status']); // (例: 注文受付)
-         $order_info['status_class'] = 'status-processing'; // (青色)
+         $order_info['delivery_status_text'] = '配達ステータス: ' . htmlspecialchars($order_info['delivery_status']);
+         $order_info['status_class'] = 'status-processing'; 
     }
-    // ▲▲▲ 修正ここまで ▲▲▲
-
 
 } catch (Exception $e) {
     $error_message = $e->getMessage();
@@ -82,9 +71,12 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ご購入履歴</title>
+    <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-16_order-history.css">
 </head>
 <body>
+    <?php require '../common/header.php'; ?>
+
     <div class="container">
 
         <header class="header">
@@ -94,12 +86,10 @@ try {
         </header>
 
         <main class="main-content">
-
             <?php if (!empty($error_message)): ?>
                 <div class="error-box">
                     <p><?php echo htmlspecialchars($error_message); ?></p>
                 </div>
-                
             <?php elseif (!empty($products)): ?>
                 <?php foreach ($products as $product): ?>
                     <section class="product-card">
@@ -124,7 +114,7 @@ try {
                             <span class="detail-label">購入日時</span>
                             <span class="detail-value"><?php echo htmlspecialchars($order_info['purchase_date_formatted']); ?></span>
                         </div>
-                        </div>
+                    </div>
                 </section>
 
                 <section class="detail-section">
@@ -139,71 +129,56 @@ try {
                         <?php echo htmlspecialchars($order_info['delivery_status_text']); ?>
                     </p>
                 </section>
-                <?php endif; ?>
-
+            <?php endif; ?>
         </main>
 
        <footer class="footer">
             <a href="#" id="open-cancel-modal" class="footer-link">購入キャンセルはコチラ</a>
-        </footer>
+       </footer>
 
-    </div> <div id="cancel-modal" class="modal-overlay" style="display: none;">
+    </div> 
+    
+    <div id="cancel-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            
             <button id="close-modal" class="modal-close-btn">&times;</button>
-            
             <div class="modal-icon">
                 <img src="../img/alert.png" alt="" style="width: 60px; height: 60px;">
             </div>
-
             <h2>キャンセルしますか？</h2>
-            
             <div class="modal-buttons">
                 <a href="G_transaction-cancel.php?id=<?php echo htmlspecialchars($transaction_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
-                
                 <button id="confirm-no" class="btn btn-secondary">いいえ</button>
             </div>
         </div>
     </div>
     
     <script>
-    // ページのHTMLが読み込まれたら実行
+    // モーダル制御 (変更なし)
     document.addEventListener('DOMContentLoaded', function() {
-        
-        // 必要な部品（HTML要素）を取得
         const modal = document.getElementById('cancel-modal');
         const openBtn = document.getElementById('open-cancel-modal');
         const closeBtn = document.getElementById('close-modal');
         const noBtn = document.getElementById('confirm-no');
-
-        // 「購入キャンセルはコチラ」リンクがクリックされた時
-        // ★ openBtn が null でないか（要素が存在するか）確認
         if (openBtn) {
             openBtn.addEventListener('click', function(e) {
-                e.preventDefault(); // リンクのデフォルト動作（ページ遷移）を止める
-                modal.style.display = 'flex'; // モーダルを表示する
+                e.preventDefault(); 
+                modal.style.display = 'flex'; 
             });
         }
-
-        // 「いいえ」ボタンがクリックされた時
         if (noBtn) {
             noBtn.addEventListener('click', function() {
-                modal.style.display = 'none'; // モーダルを非表示にする
+                modal.style.display = 'none'; 
             });
         }
-
-        // 「×」ボタンがクリックされた時
         if (closeBtn) {
             closeBtn.addEventListener('click', function() {
-                modal.style.display = 'none'; // モーダルを非表示にする
+                modal.style.display = 'none'; 
             });
         }
-
-        // モーダルの背景（黒い部分）がクリックされた時
         if (modal) {
             modal.addEventListener('click', function(e) {
-                if (e.target === modal) { // クリックされたのが背景自身か確認
-                    modal.style.display = 'none'; // モーダルを非表示にする
+                if (e.target === modal) { 
+                    modal.style.display = 'none'; 
                 }
             });
         }
