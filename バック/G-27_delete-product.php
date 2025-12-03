@@ -5,25 +5,22 @@ $id = $_GET['id'] ?? '';
 
 if ($id !== '') {
 
-    // ① まず画像ファイル名を取得
+    // ① 画像ファイル名を取得
     $stmt = $pdo->prepare("SELECT product_image FROM product WHERE product_id = :id");
     $stmt->execute([':id' => $id]);
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    $image = $stmt->fetchColumn();
 
-    if ($product && !empty($product['product_image'])) {
-        $imagePath = "../img/product/" . $product['product_image'];
-
-        // ② 画像ファイルが存在すれば削除
-        if (file_exists($imagePath)) {
-            unlink($imagePath);
-        }
-    }
-
-    // ③ 商品データを削除
+    // ② DB本体を削除
     $stmt = $pdo->prepare("DELETE FROM product WHERE product_id = :id");
     $stmt->execute([':id' => $id]);
+
+    // ③ 画像ファイルも削除
+    if ($image && file_exists(__DIR__ . '/../img/' . $image)) {
+        unlink(__DIR__ . '/../img/' . $image);
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
