@@ -114,18 +114,7 @@ $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <div class="right-area">
-            <label>商品画像</label>
-            <div class="product-image-box">
-                <?php if ($imageUrl): ?>
-                    <img src="<?= $imageUrl ?>" alt="商品画像">
-                <?php else: ?>
-                    <p>画像がありません</p>
-                <?php endif; ?>
-                </div>
-            <input type="text" name="product_image" value="<?= $productImagePath ?>">
-
-            <label>商品詳細</label>
+    <label>商品詳細</label>
     <meta charset="UTF-8">
     <title>商品編集</title>
     <link rel="stylesheet" href="../css/G-23_product-detail.css">
@@ -210,9 +199,13 @@ $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="right-area">
             <label>商品画像</label>
             <div class="product-image-box">
-                <img src="<?= htmlspecialchars($product['product_image']) ?>" alt="商品画像">
-            </div>
-            <input type="text" name="product_image" value="<?= htmlspecialchars($product['product_image']) ?>">
+                <?php if ($imageUrl): ?>
+                    <img src="<?= $imageUrl ?>" alt="商品画像">
+                <?php else: ?>
+                    <p>画像がありません</p>
+                <?php endif; ?>
+                </div>
+            <input type="text" name="product_image" value="<?= $productImagePath ?>">
 
             <label>商品詳細</label>
             <textarea name="product_detail"><?= htmlspecialchars($product['product_detail']) ?></textarea>
