@@ -73,7 +73,7 @@ $categoryList = [
 
     <div class="button-area">
         <button type="button" class="btn-cancel" onclick="location.href='G-22_product.php'">キャンセル</button>
-        <button type="submit" class="btn">登録</button>
+        <button type="submit" class="btn-submit">登録</button>
     </div>
 
 </form>

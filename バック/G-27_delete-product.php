@@ -4,10 +4,23 @@ require '../common/db_connect.php';
 $id = $_GET['id'] ?? '';
 
 if ($id !== '') {
+
+    // ① 画像ファイル名を取得
+    $stmt = $pdo->prepare("SELECT product_image FROM product WHERE product_id = :id");
+    $stmt->execute([':id' => $id]);
+    $image = $stmt->fetchColumn();
+
+    // ② DB本体を削除
     $stmt = $pdo->prepare("DELETE FROM product WHERE product_id = :id");
     $stmt->execute([':id' => $id]);
+
+    // ③ 画像ファイルも削除
+    if ($image && file_exists(__DIR__ . '/../img/' . $image)) {
+        unlink(__DIR__ . '/../img/' . $image);
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -31,7 +44,6 @@ if ($id !== '') {
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .center-box img {
-    
       height: 80px;
       margin-bottom: 1em;
     }
@@ -57,9 +69,7 @@ if ($id !== '') {
 </head>
 <body>
   <div class="center-box">
-    <!-- 警告アイコン画像 -->
     <img src="../img/alert.png" alt="削除完了アイコン">
-    
     <p>商品の削除が完了しました。</p>
     <a href="G-22_product.php" class="back-btn">商品管理画面に戻る</a>
   </div>
