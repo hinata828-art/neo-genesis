@@ -139,7 +139,6 @@ foreach ($cart as $key => $qty) {
                             <label for="qty_<?= htmlspecialchars($key) ?>">数量:</label>
                             <input type="number" id="qty_<?= htmlspecialchars($key) ?>" name="quantity" 
                                    value="<?= htmlspecialchars($item['quantity']) ?>" min="1" required>
-                            <button type="submit" class="update-btn">更新</button>
                         </form>
                         
                         <div class="action-buttons">
