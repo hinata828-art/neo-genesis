@@ -78,10 +78,10 @@ button:hover {
   background-color: #275ab0;
 }
 /* パスワード欄だけ個別にサイズ調整（競合なし） */
-form input#password {
+#password {
+  width: 10% !important;   /* ← これで確実に上書きされる */
+  max-width: 260px;
   font-size: 1.1em;
   padding: 12px;
   height: 44px;
-  width: 50%;
-  max-width: 260px;
 }
