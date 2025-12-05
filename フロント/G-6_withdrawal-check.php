@@ -15,7 +15,7 @@
 
         <main class="confirm-box">
             <div class="alert-icon">⚠️</div>
-            <p class="confirm-text">退会しますか？</p>
+            <p class="confirm-text">ログアウトしますか？</p>
             <div class="button-group">
                 <form action="G-7_withdrawal-complete.php" method="post">
                     <button type="submit" class="btn btn-red">はい</button>

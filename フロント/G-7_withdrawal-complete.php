@@ -11,7 +11,7 @@
     <?php require __DIR__ . '/../common/header.php'; ?>
     <img src="../img/NishimuraOnline.png" alt="ニシムラOnlineロゴ" class="logo">
     <div class="message">
-        退会が完了しました！<br>
+        ログアウトが完了しました！<br>
         ご利用ありがとうございました！
     </div>
     <a href="G-1_customer-form.php" class="btn">ログイン画面へ</a>
