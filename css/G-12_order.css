@@ -1,3 +1,5 @@
+/* G-12_order.css - 現行デザイン維持のための修正版 */
+
 /* --- 基本設定 --- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
@@ -32,24 +34,56 @@ hr {
     margin: 24px 0;
 }
 
-/* --- 商品情報セクション --- */
-.product-section {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
+
+/* ================================================= */
+/* ★★★ 注文商品リストの構造修正 ★★★ */
+/* ------------------------------------------------- */
+/* 複数の商品に対応するため、商品ごとの区切りを定義します */
+.product-list-section {
+    /* セクション全体の余白調整 */
+    padding: 16px 0;
 }
 
-.product-image {
+/* G-12_order.phpのHTMLに合わせた、商品ごとのラッパー */
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 15px; /* 商品間の下マージン */
+}
+
+/* 最後の商品の下線は削除 (デザイン維持) */
+.order-item:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* 商品画像コンテナ (元の .product-section のスタイルを流用) */
+.item-img-box {
     width: 100px;
     height: 100px;
+    flex-shrink: 0;
+    display: flex; /* 画像を中央に配置するためのFlexbox */
+    justify-content: center;
+    align-items: center;
+}
+
+.product-img {
+    /* 画像のサイズとスタイルを維持 */
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #e5e7eb;
-    flex-shrink: 0;
 }
 
-.product-info {
+/* 商品詳細 (元の .product-info を流用) */
+.item-details {
     flex-grow: 1;
+    padding-right: 10px; /* 小計との間に少しスペース */
 }
 
 .product-name {
@@ -58,25 +92,45 @@ hr {
     margin: 0 0 8px 0;
 }
 
-.product-color-row {
-    display: flex;
-    gap: 8px;
+.product-color, .product-qty {
     font-size: 14px;
     color: #4b5563;
+    margin: 4px 0;
+}
+.product-price {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    margin-top: 8px;
 }
 
-/* --- 金額表示セクション --- */
-.price-section p {
+/* 小計エリア */
+.item-subtotal {
+    font-weight: 700;
+    text-align: right;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+/* ================================================= */
+
+
+/* --- 金額表示セクション (total-section) --- */
+.total-section p {
     display: flex;
     justify-content: space-between;
     font-size: 16px;
     margin: 8px 0;
 }
 
-.price-section p:last-child {
-    font-size: 18px;
+/* 最終合計金額の表示 */
+.total-section .total-price {
+    font-size: 22px; /* 少し大きめに調整 */
     font-weight: 700;
     margin-top: 12px;
+    color: #1f2937;
+    /* justify-content: space-between; を維持するため display: flex を適用 */
+    display: flex;
+    justify-content: space-between;
 }
 
 .price {
@@ -84,31 +138,33 @@ hr {
     color: #1f2937;
 }
 
-/* ★★★ 追加: 割引額のスタイル ★★★ */
+/* ★★★ 割引額のスタイル ★★★ */
 .price-discount {
     font-weight: 700;
-    color: #ef4444; /* 赤色 */
+    color: #ef4444; /* 赤色を維持 */
 }
 
 /* --- 共通入力フォームスタイル --- */
-.delivery-section label,
+/* info-section, payment-section などの見出しPタグ */
+.info-section > p,
 .payment-section > p,
 .option-section > p,
-.credit-details label {
+.credit-details label,
+.delivery-section label {
     font-size: 16px;
     font-weight: 700;
     display: block;
     margin-bottom: 8px;
 }
 
-/* ★★★ 追加: input-text のスタイル ★★★ */
+/* ★★★ input-text のスタイルを維持 ★★★ */
 .input-text {
     width: 100%;
     padding: 12px;
     font-size: 16px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    box-sizing: border-box; /* 幅計算の基準を統一 */
+    box-sizing: border-box; 
     margin-bottom: 16px;
 }
 .input-text:focus {
@@ -150,7 +206,7 @@ hr {
     margin-bottom: 0;
 }
 
-/* ★★★ 追加: input-small のスタイル ★★★ */
+/* ★★★ input-small のスタイルを維持 ★★★ */
 .input-small {
     width: 70px;
     padding: 12px;
@@ -162,7 +218,7 @@ hr {
 }
 
 /* --- 追加オプション --- */
-/* ★★★ 追加: option-box のスタイル ★★★ */
+/* ★★★ option-box のスタイルを維持 ★★★ */
 .option-box {
     border: 1px solid #d1d5db;
     border-radius: 8px;
@@ -179,13 +235,14 @@ hr {
     width: 18px;
     height: 18px;
 }
+/* ------------------------------------------------- */
 
-/* --- 確定ボタン --- */
+/* --- 確定ボタンのスタイルを維持 --- */
 .confirm-button {
     display: block;
     width: 100%;
     padding: 16px;
-    background-color: #28a745;
+    background-color: #28a745; /* 緑色を維持 */
     color: white;
     font-size: 18px;
     font-weight: 700;
@@ -199,4 +256,12 @@ hr {
 }
 .confirm-button:hover {
     background-color: #218838;
+}
+
+/* ゲスト購入時の注意書き */
+.guest-note {
+    font-size: 14px;
+    color: #9f1239; /* 赤系の注意を引く色 */
+    padding: 8px 0;
+    font-weight: 500;
 }
