@@ -53,11 +53,38 @@ $categoryList = [
         <label>色</label>
         <input type="text" name="color" required>
 
-        <label>JANコード（13桁）</label>
-        <input type="text" name="jan_code" pattern="\d{13}" required>
+        <label>JANコード（自動生成）</label>
+        <p id="jan_preview">カテゴリーとメーカー選択後に自動生成されます</p>
 
-        <label>在庫数</label>
-        <input type="number" name="stock_quantity" min="0" required>
+        <script>
+        document.querySelector('select[name="category_id"]').addEventListener('change', updateJanPreview);
+        document.querySelector('input[name="maker"]').addEventListener('input', updateJanPreview);
+
+        function updateJanPreview() {
+            const cat = document.querySelector('select[name="category_id"]').value;
+            const maker = document.querySelector('input[name="maker"]').value;
+
+            let catSuffix = cat.slice(-2);
+            let makerCode1 = '000', makerCode2 = '0000';
+
+            switch (maker) {
+                case '外山ファクトリー':
+                    makerCode1 = '827'; makerCode2 = '0827'; break;
+                case '七味産業':
+                    makerCode1 = '823'; makerCode2 = '0823'; break;
+                case 'ツルヒドラッグ':
+                    makerCode1 = '121'; makerCode2 = '0121'; break;
+                case '晃輝工業':
+                    makerCode1 = '090'; makerCode2 = '0222'; break;
+                case 'ニシムラエレクトロニクス':
+                    makerCode1 = '128'; makerCode2 = '0828'; break;
+            }
+
+            // 商品IDは登録後に決まるのでここでは「XXXX」で仮表示
+            document.getElementById('jan_preview').textContent =
+                catSuffix + makerCode1 + makerCode2 + 'XXXX';
+        }
+        </script>
 
     </div>
 
