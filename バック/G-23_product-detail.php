@@ -33,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 category_id = :cat,
                 maker = :maker,
                 color = :color,
-                stock_quantity = :stock,
                 product_image = :image,
                 product_detail = :detail
             WHERE product_id = :id";
@@ -146,7 +145,7 @@ $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
             <input type="text" name="color" value="<?= htmlspecialchars($product['color']) ?>">
 
             <label>在庫数</label>
-            <input type="text" name="stock_quantity" value="<?= htmlspecialchars($product['stock_quantity']) ?>" disabled>
+            <input type="text" name="stock_quantity" value="<?= htmlspecialchars($product['stock_quantity']) ?>" readonly>
 
             <!-- 履歴エリア（表示専用） -->
             <div class="order-history-box">
