@@ -79,7 +79,7 @@ button:hover {
 }
 /* パスワード欄だけ個別にサイズ調整（競合なし） */
 #password {
-  width: 10% !important;   /* ← これで確実に上書きされる */
+  width: 50% !important;   /* ← これで確実に上書きされる */
   max-width: 260px;
   font-size: 1.1em;
   padding: 12px;
