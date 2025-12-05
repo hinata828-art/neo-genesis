@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- 右エリア：商品画像＋備考 -->
     <div>
         <label>商品画像</label>
-        div class="product-image-box">
+        <div class="product-image-box">
                 <?php if ($imageUrl): ?>
                     <img src="<?= $imageUrl ?>" alt="商品画像">
                 <?php else: ?>
