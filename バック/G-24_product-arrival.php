@@ -7,6 +7,23 @@ if (!isset($_GET['product_id'])) {
     echo "商品IDが指定されていません。";
     exit();
 }
+// 画像のパスを決定
+$productImagePath = htmlspecialchars($product['product_image']);
+$imageUrl = '';
+
+// 値が「http」で始まる場合はDB直接保存のURLと判断
+if (strpos($productImagePath, 'http') === 0) {
+    $imageUrl = $productImagePath;
+} else if ($productImagePath) {
+    // それ以外の場合はサーバーフォルダ保存のファイル名と判断し、パスを結合
+    // G-26_product-register.phpでは画像が '../img/' に保存されているため、
+    // G-23からの相対パスは '../img/' となります。
+    $imageUrl = '../img/' . $productImagePath;
+} else {
+    // 画像データがない場合のデフォルト画像を設定する場合はここに記述
+    // $imageUrl = 'path/to/default_image.png';
+}
+
 $product_id = intval($_GET['product_id']);
 
 // --- スタッフID（ログイン中の管理者） ---
@@ -110,9 +127,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- 右エリア：商品画像＋備考 -->
     <div>
         <label>商品画像</label>
-        <div class="product-image-box">
-            <img src="<?= htmlspecialchars($product['product_image']) ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
-        </div>
+        div class="product-image-box">
+                <?php if ($imageUrl): ?>
+                    <img src="<?= $imageUrl ?>" alt="商品画像">
+                <?php else: ?>
+                    <p>画像がありません</p>
+                <?php endif; ?>
+                </div>
 
         <label>備考</label>
         <textarea name="note" class="narrow-input"></textarea>
