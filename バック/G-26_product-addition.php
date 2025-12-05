@@ -29,11 +29,11 @@ $categoryList = [
 
 <h2>新規商品追加</h2>
 
-<div class="container">
 <form method="POST" action="G-26_product-register.php" enctype="multipart/form-data">
+<div class="container">
 
+    <!-- 左エリア：商品情報 -->
     <div class="left-area">
-
         <label>商品名</label>
         <input type="text" name="product_name" required>
 
@@ -55,56 +55,73 @@ $categoryList = [
 
         <label>JANコード（自動生成）</label>
         <p id="jan_preview">カテゴリーとメーカー選択後に自動生成されます</p>
-
-        <script>
-        document.querySelector('select[name="category_id"]').addEventListener('change', updateJanPreview);
-        document.querySelector('input[name="maker"]').addEventListener('input', updateJanPreview);
-
-        function updateJanPreview() {
-            const cat = document.querySelector('select[name="category_id"]').value;
-            const maker = document.querySelector('input[name="maker"]').value;
-
-            let catSuffix = cat.slice(-2);
-            let makerCode1 = '000', makerCode2 = '0000';
-
-            switch (maker) {
-                case '外山ファクトリー':
-                    makerCode1 = '827'; makerCode2 = '0827'; break;
-                case '七味産業':
-                    makerCode1 = '823'; makerCode2 = '0823'; break;
-                case 'ツルヒドラッグ':
-                    makerCode1 = '121'; makerCode2 = '0121'; break;
-                case '晃輝工業':
-                    makerCode1 = '090'; makerCode2 = '0222'; break;
-                case 'ニシムラエレクトロニクス':
-                    makerCode1 = '128'; makerCode2 = '0828'; break;
-            }
-
-            // 商品IDは登録後に決まるのでここでは「XXXX」で仮表示
-            document.getElementById('jan_preview').textContent =
-                catSuffix + makerCode1 + makerCode2 + 'XXXX';
-        }
-        </script>
-
     </div>
 
+    <!-- 右エリア：画像と説明 -->
     <div class="right-area">
-
         <label>商品画像（jpg/png）</label>
+        <div class="product-image-box">
+            <img id="preview" src="" alt="">
+        </div>
         <input type="file" name="product_image" accept="image/*" required>
+        <script>
+        document.querySelector('input[name="product_image"]').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('preview');
+
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    preview.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = ""; // 非画像なら空にする
+            }
+        });
+        </script>
+
 
         <label>商品説明</label>
         <textarea name="product_detail" required></textarea>
 
+        <div class="button-area">
+            <button type="button" class="btn-cancel" onclick="location.href='G-22_product.php'">キャンセル</button>
+            <button type="submit" class="btn">登録</button>
+        </div>
     </div>
 
-    <div class="button-area">
-        <button type="button" class="btn-cancel" onclick="location.href='G-22_product.php'">キャンセル</button>
-        <button type="submit" class="btn-submit">登録</button>
-    </div>
-
-</form>
 </div>
+</form>
+
+<script>
+document.querySelector('select[name="category_id"]').addEventListener('change', updateJanPreview);
+document.querySelector('input[name="maker"]').addEventListener('input', updateJanPreview);
+
+function updateJanPreview() {
+    const cat = document.querySelector('select[name="category_id"]').value;
+    const maker = document.querySelector('input[name="maker"]').value;
+
+    let catSuffix = cat.slice(-2);
+    let makerCode1 = '000', makerCode2 = '0000';
+
+    switch (maker) {
+        case '外山ファクトリー':
+            makerCode1 = '827'; makerCode2 = '0827'; break;
+        case '七味産業':
+            makerCode1 = '823'; makerCode2 = '0823'; break;
+        case 'ツルヒドラッグ':
+            makerCode1 = '121'; makerCode2 = '0121'; break;
+        case '晃輝工業':
+            makerCode1 = '090'; makerCode2 = '0222'; break;
+        case 'ニシムラエレクトロニクス':
+            makerCode1 = '128'; makerCode2 = '0828'; break;
+    }
+
+    document.getElementById('jan_preview').textContent =
+        catSuffix + makerCode1 + makerCode2 + 'XXXX';
+}
+</script>
 
 </body>
 </html>
