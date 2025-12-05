@@ -118,8 +118,8 @@ foreach ($cart as $key => $qty) {
             <p>合計点数：<?php echo $cart_total_qty; ?>点</p>
             <p>合計金額：¥<?php echo number_format($total); ?></p>
             <div class="button-area">
-                <a href="G-8_home.php" class="btn back">お買い物を続ける</a>
-                <a href="G-12_order.php" class="btn order">レジへ進む</a>
+                <a href="G-8_home.php" class="btn back-to-shop-btn">お買い物を続ける</a>
+                <a href="G-12_order.php" class="btn checkout-btn">レジへ進む</a>
             </div>
         </div>
 

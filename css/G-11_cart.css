@@ -46,18 +46,33 @@
     margin-top: 20px;
 }
 
-/* レジへ進むボタン (既存のスタイルを使用) */
-.checkout-btn { 
+/* --- 上部ボタンのスタイル定義（修正・追加） --- */
+.back-to-shop-btn, .checkout-btn {
     display: inline-block;
     padding: 12px 20px;  
     border-radius: 9999px;
-    background: #0021f9;
-    color: #fff !important;
     font-size: 16px;
     text-decoration: none !important;
     font-weight: bold;
     text-align: center; 
     max-width: 400px;
+    transition: background-color 0.2s;
+    border: none;
+}
+
+/* お買い物を続けるボタン（グレー系を適用） */
+.back-to-shop-btn {
+    background: #6c757d; /* 元のCSSに合わせた落ち着いた色 */
+    color: #fff !important;
+}
+.back-to-shop-btn:hover {
+    background: #5a6268;
+}
+
+/* レジへ進むボタン (既存の青いスタイルを維持) */
+.checkout-btn { 
+    background: #0021f9;
+    color: #fff !important;
 }
 .checkout-btn:hover {
     background: #001aa3;
@@ -89,7 +104,6 @@
 
 /* 4. 画像エリア (.item-left) */
 .item-left {
-    /* 画像を左に配置するためにFlexboxで順序を逆転しているため、ここは画像エリア */
     flex-basis: 150px; 
     flex-shrink: 0; 
     text-align: center;
@@ -106,7 +120,6 @@
 
 /* 5. 詳細エリア (.item-right) */
 .item-right {
-    /* 残りのスペースを占有 */
     flex-grow: 1; 
     padding-right: 20px; 
 }
@@ -129,7 +142,6 @@
     color: #dc3545; 
     font-weight: bold;
 }
-
 
 /* 数量フォーム */
 .quantity-form {
@@ -168,34 +180,33 @@
 .delete-btn {
     padding: 15px 30px;
     border: none;
-    border-radius: 9999px; /* 元のCSSの円形ボタンデザイン */
+    border-radius: 9999px; 
     font-size: 25px;
     font-weight: bold;
     cursor: pointer;
-    background: #ff3333; /* 元のCSSのカラー */
+    background: #ff3333; 
     color: #fff;
-    text-decoration: none; /* aタグの場合に備えて */
+    text-decoration: none; 
 }
 .delete-btn:hover {
-    background: #cc0000; /* 元のhoverカラー */
+    background: #cc0000; 
 }
 
 /* 購入ボタン（青） */
 .buy-btn {
-    /* 既存のCSSのセレクタは '.item-right .buy-btn' であったが、ここでは直接指定 */
     display: inline-block;  
     padding: 15px 30px;
     border: none;
-    border-radius: 9999px; /* 元のCSSの円形ボタンデザイン */
+    border-radius: 9999px; 
     font-size: 25px;
     font-weight: bold;
     cursor: pointer;
-    background: #5c85d6;   /* 元のCSSのカラー */
+    background: #5c85d6;   
     color: #fff;
     text-decoration: none;
 }
 .buy-btn:hover {
-    background: #4a6db8; /* 元のhoverカラー */
+    background: #4a6db8; 
 }
 
 
@@ -204,21 +215,20 @@
 /* ------------------------------------ */
 @media (max-width: 650px) {
     .cart-item {
-        flex-direction: column; /* 縦に積み重ねる */
+        flex-direction: column; 
     }
     
-    /* 画像を上に配置 */
     .item-left {
         flex-basis: auto;
         width: 100%;
         margin-right: 0;
         margin-bottom: 10px;
-        order: -1; /* Flexboxで強制的に上に移動 */
+        order: -1; 
     }
     
     .product-img {
         max-width: 150px;
-        margin: 0 auto; /* 中央寄せ */
+        margin: 0 auto; 
         display: block;
     }
 
@@ -230,5 +240,11 @@
     .delete-btn, .buy-btn {
         padding: 10px 20px;
         font-size: 18px;
+    }
+    
+    /* 上部ボタンの調整 */
+    .back-to-shop-btn, .checkout-btn {
+        padding: 10px 15px;
+        font-size: 14px;
     }
 }
