@@ -28,7 +28,22 @@ if (!$product) {
     echo "商品が見つかりません。";
     exit();
 }
+// 画像のパスを決定
+$productImagePath = htmlspecialchars($product['product_image']);
+$imageUrl = '';
 
+// 値が「http」で始まる場合はDB直接保存のURLと判断
+if (strpos($productImagePath, 'http') === 0) {
+    $imageUrl = $productImagePath;
+} else if ($productImagePath) {
+    // それ以外の場合はサーバーフォルダ保存のファイル名と判断し、パスを結合
+    // G-24からの相対パスも '../img/' となります。
+    $imageUrl = '../img/' . $productImagePath;
+} else {
+    // 画像データがない場合のデフォルト画像
+    // G-24のHTMLにあるonerrorに対応する画像パスを使用
+    $imageUrl = 'images/noimage.png'; 
+}
 // --- 入荷登録処理 ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantity    = intval($_POST['quantity']);
@@ -111,8 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div>
         <label>商品画像</label>
         <div class="product-image-box">
-            <img src="<?= htmlspecialchars($product['product_image']) ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
-        </div>
+            <img src="<?= $imageUrl ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
+            </div>
 
         <label>備考</label>
         <textarea name="note" class="narrow-input"></textarea>
