@@ -114,7 +114,6 @@ $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <label>商品詳細</label>
     <meta charset="UTF-8">
     <title>商品編集</title>
     <link rel="stylesheet" href="../css/G-23_product-detail.css">
