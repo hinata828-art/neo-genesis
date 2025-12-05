@@ -62,6 +62,22 @@ if (!$product) {
     echo "商品が見つかりません。";
     exit;
 }
+// 画像のパスを決定
+$productImagePath = htmlspecialchars($product['product_image']);
+$imageUrl = '';
+
+// 値が「http」で始まる場合はDB直接保存のURLと判断
+if (strpos($productImagePath, 'http') === 0) {
+    $imageUrl = $productImagePath;
+} else if ($productImagePath) {
+    // それ以外の場合はサーバーフォルダ保存のファイル名と判断し、パスを結合
+    // G-26_product-register.phpでは画像が '../img/' に保存されているため、
+    // G-23からの相対パスは '../img/' となります。
+    $imageUrl = '../img/' . $productImagePath;
+} else {
+    // 画像データがない場合のデフォルト画像を設定する場合はここに記述
+    // $imageUrl = 'path/to/default_image.png';
+}
 
 // 購入履歴取得
 $historySql = "
@@ -100,6 +116,18 @@ $orderHistory = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <div class="right-area">
+            <label>商品画像</label>
+            <div class="product-image-box">
+                <?php if ($imageUrl): ?>
+                    <img src="<?= $imageUrl ?>" alt="商品画像">
+                <?php else: ?>
+                    <p>画像がありません</p>
+                <?php endif; ?>
+                </div>
+            <input type="text" name="product_image" value="<?= $productImagePath ?>">
+
+            <label>商品詳細</label>
     <meta charset="UTF-8">
     <title>商品編集</title>
     <link rel="stylesheet" href="../css/G-23_product-detail.css">
