@@ -16,15 +16,19 @@ $filename = null;
 
 // 画像が送信されている場合
 if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
-
     $ext = pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION);
     $filename = 'img_' . time() . '.' . $ext;
-
     $targetPath = $targetDir . $filename;
 
     if (!move_uploaded_file($_FILES['product_image']['tmp_name'], $targetPath)) {
         die("画像の保存に失敗しました");
     }
+
+    // ★ 公開URLを生成してDBに保存する値を作成
+    $baseUrl = "https://aso2501223.chu.jp/AIimage/";
+    $dbPath = $baseUrl . $filename;
+} else {
+    $dbPath = null;
 }
 
 // 商品を仮登録（JANコードは後で生成）
@@ -38,8 +42,9 @@ $stmt->execute([
     ':maker'          => $_POST['maker'],
     ':color'          => $_POST['color'],
     ':product_detail' => $_POST['product_detail'],
-    ':product_image'  => $filename
+    ':product_image'  => $dbPath   // ← ここを $filename から $dbPath に変更
 ]);
+
 
 // 登録した商品IDを取得
 $product_id = $pdo->lastInsertId();
