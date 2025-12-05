@@ -43,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':cat'    => $_POST['category_id'],
         ':maker'  => $_POST['maker'],
         ':color'  => $_POST['color'],
-        ':stock'  => $_POST['stock_quantity'],
         ':image'  => $_POST['product_image'],
         ':detail' => $_POST['product_detail'],
         ':id'     => $product_id
