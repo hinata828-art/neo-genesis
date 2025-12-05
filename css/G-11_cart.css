@@ -62,20 +62,20 @@
 
 /* お買い物を続けるボタン（グレー系を適用） */
 .back-to-shop-btn {
-    background: #fff41a; /* 元のCSSに合わせた落ち着いた色 */
+    background: #f0e95b; /* 元のCSSに合わせた落ち着いた色 */
     color: #ffffff !important;
 }
 .back-to-shop-btn:hover {
-    background: #fff41a;
+    background: #f0e95b;
 }
 
 /* レジへ進むボタン (既存の青いスタイルを維持) */
 .checkout-btn { 
-    background: #0021f9;
-    color: #fff !important;
+    background: #5c85d6;
+    color: #ffffff !important;
 }
 .checkout-btn:hover {
-    background: #001aa3;
+    background: #5c85d6;
 }
 
 
