@@ -99,4 +99,36 @@ foreach ($cart as $key => $qty) {
     </div>
 </div>
 </body>
+<?php
+// ================================
+// ▼▼ G-11_cart.php の最後に追加 ▼▼
+// ================================
+
+// ▼ 1. レジへ進む（cart_items が来たらカートを空にする）
+if (isset($_GET['cart_items'])) {
+    // カートを空にする
+    $_SESSION['cart'] = [];
+
+    // そのまま G-12 に渡す
+    header("Location: G-12_order.php?cart_items=" . urlencode($_GET['cart_items']));
+    exit;
+}
+
+// ▼ 2. 個別購入（id + color が来たらその商品だけ削除）
+if (isset($_GET['id'], $_GET['color'])) {
+    $key = $_GET['id'] . '_' . $_GET['color'];
+
+    if (isset($_SESSION['cart'][$key])) {
+        unset($_SESSION['cart'][$key]);
+    }
+
+    // G-12 に遷移
+    header("Location: G-12_order.php?id=" . urlencode($_GET['id']) . "&color=" . urlencode($_GET['color']));
+    exit;
+}
+
+// ================================
+// ▲▲ 追加ここまで ▲▲
+// ================================
+?>
 </html>
