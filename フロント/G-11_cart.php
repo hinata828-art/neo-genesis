@@ -134,12 +134,6 @@ foreach ($cart as $key => $qty) {
                             <?php echo htmlspecialchars($color_display_map[$item['color']] ?? $item['color']); ?>
                         </p>
                         <p class="item-price">¥<?php echo number_format($item['price']) ?></p>
-                        <form method="POST" action="G-11_update_cart.php" class="quantity-form">
-                            <input type="hidden" name="key" value="<?= htmlspecialchars($key) ?>">
-                            <label for="qty_<?= htmlspecialchars($key) ?>">数量:</label>
-                            <input type="number" id="qty_<?= htmlspecialchars($key) ?>" name="quantity" 
-                                   value="<?= htmlspecialchars($item['quantity']) ?>" min="1" required>
-                        </form>
                         
                         <div class="action-buttons">
                             <form method="POST" action="G-11_delete-cart.php" class="delete-form">
