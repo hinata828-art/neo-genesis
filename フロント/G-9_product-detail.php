@@ -40,6 +40,23 @@ if (!$product) {
     exit;
 }
 
+// ★★★ 追記: メイン画像表示用のパス決定ロジック ★★★
+$productImagePath = $product['product_image'] ?? '';
+$imageUrl = '';
+
+// 値が「http」で始まる場合はDB直接保存のURLと判断
+if (strpos($productImagePath, 'http') === 0) {
+    $imageUrl = htmlspecialchars($productImagePath);
+} else if ($productImagePath) {
+    // それ以外の場合はサーバーフォルダ保存のファイル名と判断し、パスを結合
+    // G-9からの相対パスは '../img/'
+    $imageUrl = '../img/' . htmlspecialchars($productImagePath);
+} else {
+    // 画像データがない場合のデフォルト画像
+    $imageUrl = 'images/noimage.png'; // 適切なデフォルトパスを設定
+}
+// ★★★ 追記ここまで ★★★
+
 // ▼▼▼ カラーマップ定義 (変更なし) ▼▼▼
 $color_file_map = [
     'オリジナル' => 'original',
@@ -84,13 +101,18 @@ foreach ($color_names_for_category as $display_name) {
 $original_color_value = $color_file_map['オリジナル'] ?? 'original';
 
 
-// ▼▼▼ 画像URL生成ロジック (変更なし) ▼▼▼
-$base_image_url_from_db = $product['product_image'] ?? '';
+// ▼▼▼ 画像URL生成ロジック (既存コードを修正: JSが使用するベースURLを設定) ▼▼▼
 $js_base_url = '';
 
-if (!empty($base_image_url_from_db)) {
-    $js_base_url = preg_replace('/-[^-]+$/u', '', $base_image_url_from_db);
+if (strpos($productImagePath, 'http') === 0) {
+    // DB URL形式の場合: 既存のロジックでカラーサフィックスを削除
+    $js_base_url = preg_replace('/-[^-]+$/u', '', $productImagePath);
+} else if ($productImagePath) {
+    // ファイル名形式の場合: メイン画像のパス自体をベースとする
+    // JSで色変更しても画像が変わらないようにするが、エラーは出ない
+    $js_base_url = '../img/' . $productImagePath;
 }
+// -------------------------------------------------------------------
 
 
 // ===== 関連商品を3件取得 (変更なし) =====
@@ -138,7 +160,7 @@ try {
 
         <div class="product-image-area">
             <img id="mainImage"
-                    src="<?php echo htmlspecialchars($product['product_image'] ?? ''); ?>"
+                    src="<?php echo $imageUrl; ?>"
                     alt="<?php echo htmlspecialchars($product['product_name']); ?>">
         </div>
 
@@ -190,8 +212,19 @@ try {
                 <p>関連商品はありません。</p>
             <?php else: ?>
                 <?php foreach ($related_products as $related): ?>
+                    <?php
+                        // ★★★ 追記: 関連商品画像のパス決定ロジック ★★★
+                        $relatedImagePath = $related['product_image'] ?? '';
+                        $relatedImageUrl = '';
+                        if (strpos($relatedImagePath, 'http') === 0) {
+                            $relatedImageUrl = htmlspecialchars($relatedImagePath);
+                        } else if ($relatedImagePath) {
+                            $relatedImageUrl = '../img/' . htmlspecialchars($relatedImagePath);
+                        }
+                        // ★★★ 追記ここまで ★★★
+                    ?>
                     <a href="G-9_product-detail.php?id=<?php echo $related['product_id']; ?>" class="related-item">
-                        <img src="<?php echo htmlspecialchars($related['product_image'] ?? ''); ?>" 
+                        <img src="<?php echo $relatedImageUrl; ?>" 
                                 alt="<?php echo htmlspecialchars($related['product_name']); ?>">
                         <p><?php echo htmlspecialchars($related['product_name']); ?></p>
                     </a>
@@ -230,7 +263,7 @@ function goToOrder(pageUrl, productId) {
 // ▼▼▼ JavaScript (画像切り替えロジックは変更なし) ▼▼▼
 document.addEventListener('DOMContentLoaded', function() {
     
-    // 1. PHPから画像のベース情報を取得
+    // 1. PHPから画像のベース情報を取得 (PHP側で修正した $js_base_url が使用される)
     const trueBaseUrl = <?php echo json_encode($js_base_url); ?>; 
     // 'original' (ファイル名) を持つラジオボタンの value を取得
     const originalColorValue = <?php echo json_encode($original_color_value); ?>; 
@@ -247,9 +280,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (selectedColorName === originalColorValue) {
                 // 5a. 「オリジナル」が選ばれた場合
+                // DB URL形式の場合はサフィックスなしのURLが、ファイル名形式の場合はファイル名付きのパスが trueBaseUrl に入る
                 mainImage.src = trueBaseUrl;
             } else {
                 // 5b. 「オリジナル」以外 (例: '白色') が選ばれた場合
+                // DB URL形式の場合は 'https://.../カメラ1' + '-白色' となり、ファイル名形式の場合は '../img/img_12345.jpg' + '-白色' となる
                 mainImage.src = trueBaseUrl + '-' + selectedColorName;
             }
         });
