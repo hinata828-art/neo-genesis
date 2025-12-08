@@ -1,169 +1,242 @@
- .cart-page-wrapper {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    padding-top: 80px;
+/* G-11_cart.css - 最終修正版（ボタンデザイン維持） */
+
+/* ------------------------------------ */
+/* 1. 全体コンテナの基本設定 */
+/* ------------------------------------ */
+.cart-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.cart-summary {
-    position: fixed;
-    top: 120px;
-    left: 0;
-    right: 0;
-    background: #fff;
+
+.cart-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 2em;
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* ------------------------------------ */
+/* 2. 合計金額・ボタンエリア */
+/* ------------------------------------ */
+.summary-area {
     padding: 15px 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    z-index: 900;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 2px solid #ccc;
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    text-align: right; 
 }
-.cart-summary .total {
-    font-size: 18px;
+
+.summary-area p {
+    font-size: 1.2em;
     font-weight: bold;
-    color: #000000 !important;
+    margin: 8px 0;
 }
-.cart-summary .checkout-btn {
+
+.button-area {
+    display: flex;
+    justify-content: flex-end; /* ボタンを右揃え */
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* --- 上部ボタンのスタイル定義（修正・追加） --- */
+.back-to-shop-btn, .checkout-btn {
     display: inline-block;
     padding: 12px 20px;  
     border-radius: 9999px;
-    background: #0021f9;
-    color: #fff !important;
     font-size: 16px;
     text-decoration: none !important;
     font-weight: bold;
     text-align: center; 
-    width: 90%;      /* または 100% でもOK */
     max-width: 400px;
-}
-.cart {
-    width: 100%;
-    padding: 0 10px 20px;
-}
-/* ===== カート商品全体を中央に寄せ最大幅を2/3に ===== */
-.item {
-    background: #fff;
-    border-radius: 12px;
-     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    margin: 20px auto;
-    width: 80%;             /* ← 2/3 の幅 */
-    max-width: 700px;       /* ← PC で広すぎるのを防止 */
-    display: flex;
-    gap: 20px;
+    transition: background-color 0.2s;
+    border: none;
 }
 
-/* ===== 左側：商品画像をサイトの半分以下に縮小 ===== */
+/* お買い物を続けるボタン（グレー系を適用） */
+.back-to-shop-btn {
+    background: #f0e95b; /* 元のCSSに合わせた落ち着いた色 */
+    color: #ffffff !important;
+}
+.back-to-shop-btn:hover {
+    background: #f0e95b;
+}
+
+/* レジへ進むボタン (既存の青いスタイルを維持) */
+.checkout-btn { 
+    background: #5c85d6;
+    color: #ffffff !important;
+}
+.checkout-btn:hover {
+    background: #5c85d6;
+}
+
+
+/* ------------------------------------ */
+/* 3. カート商品リスト (.cart-items, .cart-item) */
+/* ------------------------------------ */
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+}
+
+.cart-item {
+    display: flex;
+    /* item-right (詳細) が HTML ソースで先、item-left (画像) が後のため、
+       これを逆転して [画像] [詳細] の順にする（Flexboxの行方向を逆転） */
+    flex-direction: row-reverse; 
+    align-items: center; /* 垂直方向中央揃え */
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 4. 画像エリア (.item-left) */
 .item-left {
-    width: 45%;             /* ← 画面の半分以下に調整 */
-    max-width: 300px;       /* ← 必要以上に大きくならない */
-    height: auto;
+    flex-basis: 150px; 
+    flex-shrink: 0; 
+    text-align: center;
+    margin-right: 20px;
 }
 
 .product-img {
     width: 100%;
+    max-width: 120px; 
     height: auto;
+    border-radius: 4px;
     object-fit: contain;
-    border-radius: 10px;
 }
 
-/* ===== 右側：商品名・価格・ボタン ===== */
+/* 5. 詳細エリア (.item-right) */
 .item-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    justify-content: flex-start;
+    flex-grow: 1; 
+    padding-right: 20px; 
 }
 
-/* 商品名 */
-.item-right .name {
-    font-size: 18px;
-    font-weight: bold;
+/* 商品名など */
+.item-right h3 {
+    margin: 0 0 10px 0;
+}
+.item-right a {
+    text-decoration: none;
     color: #333;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.item-color, .item-price {
+    margin: 5px 0;
+    font-size: 0.95em;
+}
+.item-price {
+    color: #dc3545; 
+    font-weight: bold;
 }
 
-/* 価格 */
-.item-right .price {
-    font-size: 20px;
-    font-weight: bold;
-    color: #ff3333 ;
+/* 数量フォーム */
+.quantity-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    font-size: 0.9em;
 }
-.item .price {
-    color: #ff3333 !important;
+.quantity-form input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    text-align: center;
 }
-/* ===== ボタン配置 ===== */
-.buttons {
+
+/* ------------------------------------ */
+/* 6. 削除・購入ボタンのスタイル (既存維持) */
+/* ------------------------------------ */
+.action-buttons {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 /* 削除ボタン（赤） */
 .delete-btn {
     padding: 15px 30px;
     border: none;
-    border-radius: 9999px;
-    font-size:25px;
-    font-weight: bold;
-    cursor: pointer;
-    background: #ff3333;
-    color: #fff;
-}
-
-/* 購入ボタン（削除ボタンの色反転＝青に白文字） */
-.item-right .buy-btn {
-    display: inline-block;  
-    padding: 15px 30px ;
-    border: none;
-    border-radius: 9999px;
+    border-radius: 9999px; 
     font-size: 25px;
     font-weight: bold;
     cursor: pointer;
-    background: #5c85d6 !important;   /* 青 */
-    color: #fff !important;
-    text-decoration: none !important;
+    background: #ff3333; 
+    color: #fff;
+    text-decoration: none; 
+}
+.delete-btn:hover {
+    background: #cc0000; 
 }
 
-/* ボタン hover */
-.delete-btn:hover {
-    background: #cc0000;
+/* 購入ボタン（青） */
+.buy-btn {
+    display: inline-block;  
+    padding: 15px 30px;
+    border: none;
+    border-radius: 9999px; 
+    font-size: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #5c85d6;   
+    color: #ffffff !important;
+    text-decoration: none;
 }
-.item-right .buy-btn:hover {
-    background: #4a6db8;
+.buy-btn:hover {
+    background: #4a6db8; 
 }
-@media (max-width: 600px) {
-/* カード全体 */
-    .item {
-        width: 95%;           /* ← スマホでは画面ほぼいっぱい */
-        padding: 15px;        /* ← 余白を少し減らす */
-        flex-direction: column; /* ← 縦並びにする */
+
+
+/* ------------------------------------ */
+/* 7. レスポンシブ対応 */
+/* ------------------------------------ */
+@media (max-width: 650px) {
+    .cart-item {
+        flex-direction: column; 
     }
     
-    /* 画像 */
     .item-left {
-        width: 100%;          /* ← 横幅いっぱい */
-        max-width: none;      /* ← 最大幅制限を解除 */
-        height: 200px;        /* ← 高さを固定 */
+        flex-basis: auto;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+        order: -1; 
     }
     
     .product-img {
-        height: 100%;
-        object-fit: cover;    /* ← はみ出さないように */
+        max-width: 150px;
+        margin: 0 auto; 
+        display: block;
     }
-    
-    /* ボタン */
-    .delete-btn,
-    .item-right .buy-btn {
-        padding: 15px 25px;   /* ← スマホ用サイズ */
+
+    .item-right {
+        padding-right: 0;
+    }
+
+    /* スマホでのボタンサイズ調整 */
+    .delete-btn, .buy-btn {
+        padding: 10px 20px;
         font-size: 18px;
-        flex: 1;              /* ← 同じ幅に */
     }
     
-    .buttons {
-        display: flex;
-        gap: 8px;
-        width: 100%;          /* ← ボタンを横並びで画面いっぱい */
+    /* 上部ボタンの調整 */
+    .back-to-shop-btn, .checkout-btn {
+        padding: 10px 15px;
+        font-size: 14px;
     }
 }
