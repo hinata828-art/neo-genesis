@@ -142,7 +142,7 @@ foreach ($cart as $key => $qty) {
                         </form>
                         
                         <div class="action-buttons">
-                            <form method="POST" action="G-11_delete_cart.php" class="delete-form">
+                            <form method="POST" action="G-11_delete-cart.php" class="delete-form">
                                 <input type="hidden" name="key" value="<?= htmlspecialchars($key) ?>">
                                 <button type="submit" class="delete-btn">削除</button>
                             </form>
