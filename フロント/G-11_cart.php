@@ -127,19 +127,6 @@ foreach ($cart as $key => $qty) {
             <?php foreach ($cart_items as $key => $item): ?>
                 <div class="cart-item">
                     <div class="item-right">
-<<<<<<< HEAD
-                        <p class="name"><?= htmlspecialchars($item['product_name']) ?></p>
-                        <p class="price">¥<?= number_format($item['price']) ?></p>
-                        <p class="color">カラー：<?= htmlspecialchars($item['color_display']) ?></p>
-                        <div class="buttons">
-                        <form action="G-11_delete-cart.php" method="POST" style="display:inline;" onsubmit="event.stopPropagation();">
-                            <input type="hidden" name="key" value="<?= htmlspecialchars($item['product_id'] . '_' . $item['color']) ?>">
-                            <button type="submit" class="delete-btn" 
-                                onclick="event.stopPropagation();">削除</button>
-                        </form>
-                        <a href="G-12_order.php?id=<?= urlencode($item['product_id']) ?>&color=<?= urlencode($item['color']) ?>"
-                        class="buy-btn" onclick="event.stopPropagation();">購入</a>
-=======
                         <h3>
                             <a href="G-9_product-detail.php?id=<?= $item['product_id'] ?>"><?= htmlspecialchars($item['product_name']) ?></a>
                         </h3>
@@ -155,13 +142,12 @@ foreach ($cart as $key => $qty) {
                         </form>
                         
                         <div class="action-buttons">
-                            <form method="POST" action="G-11_delete_cart.php" class="delete-form">
+                            <form method="POST" action="G-11_delete-cart.php" class="delete-form">
                                 <input type="hidden" name="key" value="<?= htmlspecialchars($key) ?>">
                                 <button type="submit" class="delete-btn">削除</button>
                             </form>
                             <a href="G-12_order.php?id=<?= urlencode($item['product_id']) ?>&color=<?= urlencode($item['color']) ?>"
    class="buy-btn" onclick="event.stopPropagation();">購入</a>
->>>>>>> main
                         </div>
                     </div>
 
