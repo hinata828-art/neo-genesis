@@ -134,15 +134,9 @@ foreach ($cart as $key => $qty) {
                             <?php echo htmlspecialchars($color_display_map[$item['color']] ?? $item['color']); ?>
                         </p>
                         <p class="item-price">¥<?php echo number_format($item['price']) ?></p>
-                        <form method="POST" action="G-11_update_cart.php" class="quantity-form">
-                            <input type="hidden" name="key" value="<?= htmlspecialchars($key) ?>">
-                            <label for="qty_<?= htmlspecialchars($key) ?>">数量:</label>
-                            <input type="number" id="qty_<?= htmlspecialchars($key) ?>" name="quantity" 
-                                   value="<?= htmlspecialchars($item['quantity']) ?>" min="1" required>
-                        </form>
                         
                         <div class="action-buttons">
-                            <form method="POST" action="G-11_delete_cart.php" class="delete-form">
+                            <form method="POST" action="G-11_delete-cart.php" class="delete-form">
                                 <input type="hidden" name="key" value="<?= htmlspecialchars($key) ?>">
                                 <button type="submit" class="delete-btn">削除</button>
                             </form>
@@ -165,15 +159,7 @@ foreach ($cart as $key => $qty) {
 // ▼▼ G-11_cart.php の最後に追加 ▼▼
 // ================================
 
-// ▼ 1. レジへ進む（cart_items が来たらカートを空にする）
-if (isset($_GET['cart_items'])) {
-    // カートを空にする
-    $_SESSION['cart'] = [];
 
-    // そのまま G-12 に渡す
-    header("Location: G-12_order.php?cart_items=" . urlencode($_GET['cart_items']));
-    exit;
-}
 
 // ▼ 2. 個別購入（id + color が来たらその商品だけ削除）
 if (isset($_GET['id'], $_GET['color'])) {
