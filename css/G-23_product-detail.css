@@ -1,81 +1,118 @@
 body {
-    font-family: sans-serif;
-    background-color: #f7f7f7;
+  font-family: sans-serif;
+  background-color: #f7f7f7;
 }
 
 h2 {
-    margin-bottom: 25px;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.left-area, .right-area {
-    width: 45%;
+.left-area {
+  flex: 1;
+  min-width: 400px;
+}
+
+.right-area {
+  flex: 1.2;
+  min-width: 500px;
 }
 
 label {
-    font-weight: bold;
-    display: block;
-    margin-top: 12px;
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
 }
 
 input, select, textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 4px;
-    border-radius: 6px;
-    border: 1px solid #aaa;
-    font-size: 15px;
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid #aaa;
+  font-size: 15px;
+  box-sizing: border-box;
 }
 
 textarea {
-    height: 100px;
+  height: 120px;
 }
 
 .product-image-box {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 80%;
-    text-align: center;
-    background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  background: #fff;
+  margin-top: 8px;
 }
 
 .product-image-box img {
-    width: 100%;
-    max-width: 260px;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
 }
 
-.history-box {
-    border: 1px solid #ccc;
-    padding: 15px;
-    width: 85%;
-    background-color: #fff;
-    height: 240px;
-    overflow-y: auto;
+.order-history-box, .history-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background-color: #fff;
+  margin-top: 15px;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
-.history-date {
-    color: red;
-    font-weight: bold;
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.history-table th, .history-table td {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+.history-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
 }
 
 .button-area {
-    margin-top: 40px;
+    margin-top: 20px;
+    display: flex;              /* 横並び */
+    justify-content: space-between; /* 均等配置 */
+    gap: 10px;                  /* ボタン間の余白 */
+    width: 100%;     
 }
 
-.btn {
-    padding: 10px 25px;
+.button-area .btn,
+.button-area .btn-cancel {
+    flex: 1;                    /* 均等に幅を取る */
+    text-align: center;         /* テキスト中央寄せ */
+    padding: 12px 0;            /* 高さを確保、横幅はflexで調整 */
+    font-size: 16px;
     border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    border: none;
+}
+
+/* 色だけ個別に分ける */
+.btn {
     background: #007bff;
     color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    margin-right: 20px;
 }
 
 .btn-cancel {

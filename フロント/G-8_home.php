@@ -1,5 +1,5 @@
 <?php
-// ★★★ 修正: session_start() を追加します ★★★
+// ★★★ 修正: session_start() を追加 ★★★
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -31,7 +31,7 @@ try {
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/breadcrumb.css">
     <link rel="stylesheet" href="../css/G-8_home.css">
-    </head>
+</head>
 
 <body>
     <?php require_once __DIR__ . '/../common/header.php'; ?>
@@ -39,9 +39,7 @@ try {
     $breadcrumbs = [
         ['name' => '現在のページ']
     ];
-    /*
-    require __DIR__ . '/../common/breadcrumb.php';
-    */
+    /* require __DIR__ . '/../common/breadcrumb.php'; */
     ?>
 
 <main>
@@ -57,8 +55,25 @@ try {
             <div class="pickapp-items" id="slider">
                 <?php if (!empty($products)): ?>
                     <?php foreach ($products as $p): ?>
+                        <?php
+                            // ★★★ 追記: 画像のパスを動的に決定するロジック ★★★
+                            $productImagePath = $p['product_image'];
+                            $imageUrl = '';
+                            
+                            // 値が「http」で始まる場合はDB直接保存のURLと判断
+                            if (strpos($productImagePath, 'http') === 0) {
+                                $imageUrl = htmlspecialchars($productImagePath);
+                            } else if ($productImagePath) {
+                                // それ以外の場合はサーバーフォルダ保存のファイル名と判断し、パスを結合
+                                $imageUrl = '../img/' . htmlspecialchars($productImagePath);
+                            } else {
+                                // 画像データがない場合のデフォルト画像 (必要に応じて設定)
+                                $imageUrl = 'path/to/default_image.png'; 
+                            }
+                            // ★★★ 追記ここまで ★★★
+                        ?>
                         <div class="item">
-                            <img src="<?php echo htmlspecialchars($p['product_image']); ?>" 
+                            <img src="<?php echo $imageUrl; ?>" 
                                  alt="<?php echo htmlspecialchars($p['product_name']); ?>">
                             <div class="item-info">
                                 <p class="item-title"><?php echo htmlspecialchars($p['product_name']); ?></p>
@@ -78,77 +93,38 @@ try {
         </div>
     </section>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const slider = document.getElementById('slider');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-
-        function getScrollAmount() {
-            return slider.clientWidth;
-        }
-
-        prevBtn.addEventListener('click', () => {
-            const scrollAmount = getScrollAmount();
-            slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-        });
-
-        nextBtn.addEventListener('click', () => {
-            const scrollAmount = getScrollAmount();
-            slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        });
-    });
-    </script>
-
-
     <section class="category-section">
         <div class="category-buttons">
             <a href="G-10_product-list.php?category=C01" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/tv.png" alt="テレビ">
-                </div>
+                <div class="category-icon-circle"><img src="../img/tv.png" alt="テレビ"></div>
                 <p>テレビ</p>
             </a>
             <a href="G-10_product-list.php?category=C02" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/refrigerator.png" alt="冷蔵庫">
-                </div>
+                <div class="category-icon-circle"><img src="../img/refrigerator.png" alt="冷蔵庫"></div>
                 <p>冷蔵庫</p>
             </a>
             <a href="G-10_product-list.php?category=C03" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/microwave.png" alt="電子レンジ">
-                </div>
+                <div class="category-icon-circle"><img src="../img/microwave.png" alt="電子レンジ"></div>
                 <p>電子レンジ</p>
             </a>
             <a href="G-10_product-list.php?category=C04" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/camera.png" alt="カメラ">
-                </div>
+                <div class="category-icon-circle"><img src="../img/camera.png" alt="カメラ"></div>
                 <p>カメラ</p>
             </a>
             <a href="G-10_product-list.php?category=C05" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/headphone.png" alt="ヘッドホン">
-                </div>
+                <div class="category-icon-circle"><img src="../img/headphone.png" alt="ヘッドホン"></div>
                 <p>ヘッドホン</p>
             </a>
             <a href="G-10_product-list.php?category=C06" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/washing.png" alt="洗濯機">
-                </div>
+                <div class="category-icon-circle"><img src="../img/washing.png" alt="洗濯機"></div>
                 <p>洗濯機</p>
             </a>
             <a href="G-10_product-list.php?category=C07" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/laptop.png" alt="ノートPC">
-                </div>
+                <div class="category-icon-circle"><img src="../img/laptop.png" alt="ノートPC"></div>
                 <p>ノートPC</p>
             </a>
             <a href="G-10_product-list.php?category=C08" class="category-item">
-                <div class="category-icon-circle">
-                    <img src="../img/smartphone.png" alt="スマートフォン">
-                </div>
+                <div class="category-icon-circle"><img src="../img/smartphone.png" alt="スマートフォン"></div>
                 <p>スマートフォン</p>
             </a>
         </div>
@@ -163,7 +139,7 @@ try {
     <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">
         レンタル<br>OK!!!
     </div>
-    <div class="footer-box">
+    <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
         今すぐ<br>チェック！
     </div>
 </footer>
@@ -173,13 +149,34 @@ try {
         <span class="close-btn">&times;</span>
         <h3 id="modal-title"></h3>
         <p id="modal-text">ここに詳細な情報が表示されます。</p>
-        </div>
+    </div>
 </div>
+
+<div id="rain-container"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // スライダー制御のスクリプトは既に記述済みとして、モーダル関連のスクリプトを記述
+    // ===== 1. スライダー制御 =====
+    const slider = document.getElementById('slider');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
+    function getScrollAmount() { return slider.clientWidth; }
+
+    if(prevBtn && slider) {
+        prevBtn.addEventListener('click', () => {
+            const scrollAmount = getScrollAmount();
+            slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+    }
+    if(nextBtn && slider) {
+        nextBtn.addEventListener('click', () => {
+            const scrollAmount = getScrollAmount();
+            slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+    }
+
+    // ===== 2. モーダル制御 (既存 + 拡張) =====
     const modal = document.getElementById('myModal');
     const closeBtn = document.getElementsByClassName('close-btn')[0];
     const rouletteBox = document.getElementById('roulette-box');
@@ -189,18 +186,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * モーダルを表示する関数
-     * @param {string} title - モーダルに表示するタイトル
-     * @param {string} text - モーダルに表示する本文
+     * @param {string} title - タイトル
+     * @param {string} text - 本文 (HTMLタグを含む場合は isHtml=true にする)
+     * @param {boolean} isHtml - trueならinnerHTML、falseならtextContentを使用
      */
-    function openModal(title, text) {
+    function openModal(title, text, isHtml = false) {
         modalTitle.textContent = title;
-        modalText.textContent = text;
-        modal.style.display = 'flex'; // CSSでflexを使うことで中央寄せを容易にする
+        if (isHtml) {
+            modalText.innerHTML = text; 
+        } else {
+            modalText.textContent = text;
+        }
+        modal.style.display = 'flex'; // CSSのflexと合わせて中央寄せ
     }
 
-    // --- イベントリスナーの設定 ---
+    // 閉じる処理
+    closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    window.addEventListener('click', (event) => { if (event.target === modal) modal.style.display = 'none'; });
 
-    // 1. ルーレットのボックスクリック
+    // 既存ボタンのクリックイベント
     rouletteBox.addEventListener('click', () => {
         openModal(
             'レンタルでお得なルーレット！！',
@@ -208,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
-    // 2. レンタルOKのボックスクリック
     rentalOkBox.addEventListener('click', () => {
         openModal(
             'レンタルOK!!!',
@@ -216,42 +219,87 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
-    // 3. 閉じるボタンクリックでモーダルを閉じる
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
 
-    // 4. モーダルの背景（モーダルコンテンツの外側）クリックでモーダルを閉じる
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
+    // ===== 3. ★★★ イースターエッグ機能 (新規追加) ★★★ =====
+    
+    const easterEggBtn = document.getElementById('easter-egg-btn'); 
+    let rainContainer = document.getElementById('rain-container');
+    
+    // 念のためJSでもコンテナを作る (HTMLにあれば不要だが安全策)
+    if (!rainContainer) {
+        rainContainer = document.createElement('div');
+        rainContainer.id = 'rain-container';
+        document.body.appendChild(rainContainer);
+    }
 
-    // 5. キーボード操作（Enter/Space）でもモーダルが開くようにする (アクセシビリティ対応)
-    function addKeyboardModalOpen(element, callback) {
-        element.addEventListener('keydown', (event) => {
-            // Enterキー(keyCode 13) または Spaceキー(keyCode 32)
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault(); // スクロールなどを防ぐ
-                callback();
-            }
+    let clickCount = 0;
+    const requiredClicks = 10;
+    
+    // 落下させる画像 (パスが正しいか要確認)
+    const itemImages = [
+        '../img/tv.png', '../img/refrigerator.png', '../img/microwave.png', 
+        '../img/camera.png', '../img/headphone.png', '../img/washing.png', 
+        '../img/laptop.png', '../img/smartphone.png'
+    ];
+
+    // ▼ アイテム落下関数
+    function dropItem() {
+        const img = document.createElement('img');
+        // ランダムに画像を選ぶ
+        img.src = itemImages[Math.floor(Math.random() * itemImages.length)];
+        img.className = 'falling-item'; // CSSでアニメーション定義
+        
+        // ランダムな位置 (横幅の0%〜90%)
+        img.style.left = Math.random() * 90 + 'vw'; 
+        // ランダムなサイズ (30px〜70px)
+        const size = Math.random() * 40 + 30; 
+        img.style.width = size + 'px';
+        img.style.height = 'auto';
+        
+        // アニメーション速度 (1秒〜2秒)
+        img.style.animationDuration = (Math.random() * 1 + 1) + 's'; 
+
+        rainContainer.appendChild(img);
+
+        // アニメーション終了後に要素を削除 (メモリ節約)
+        img.addEventListener('animationend', () => {
+            img.remove();
         });
     }
 
-    addKeyboardModalOpen(rouletteBox, () => {
-        openModal(
-            'レンタルでお得なルーレット！！',
-            'レンタル商品をご利用いただくと、お得な特典が当たるルーレットに挑戦できます！詳細はキャンペーンページをご確認ください。'
-        );
-    });
+    // ▼ クリック時の処理
+    if (easterEggBtn) {
+        easterEggBtn.addEventListener('click', () => {
+            clickCount++;
+            dropItem(); // 画像を降らせる
 
-    addKeyboardModalOpen(rentalOkBox, () => {
-        openModal(
-            'レンタルOK!!!',
-            '当社の多くの商品がレンタル可能です！最新の家電をお気軽に、必要な期間だけご利用いただけます。レンタル可能な商品の一覧はこちら。'
-        );
-    });
+            if (clickCount >= requiredClicks) {
+                // 10回達成
+                clickCount = 0;
+                
+                // サーバーへクーポン発行リクエスト
+                fetch('G-18_easter-egg-process.php', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // 成功時: 既存のモーダルを使ってメッセージを表示
+                        openModal(
+                            '🎉 よく見つけましたね！', 
+                            `おめでとうございます！<br>全商品に使える <strong>${data.discount_rate}% 割引クーポン</strong> をゲットしました！<br><br><a href="G-25_coupon-list.php" style="color:blue; text-decoration:underline;">クーポン一覧を確認する</a>`,
+                            true // HTMLタグを有効にする
+                        );
+                    } else {
+                        // 失敗時 (例: ログインしていない等)
+                        openModal('残念...', 'クーポンの獲得に失敗しました: ' + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    openModal('エラー', '通信エラーが発生しました。ログインしているか確認してください。');
+                });
+            }
+        });
+    }
 });
 </script>
 

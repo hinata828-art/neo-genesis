@@ -1,43 +1,28 @@
 <?php
-// -------------------------------------------------------------------
-// エラーを強制表示する設定 (動作確認用)
-// -------------------------------------------------------------------
+// G-17_rental-roulette.php
+session_start();
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+require '../common/db_connect.php'; 
 
-// 全体を try-catch で囲み、致命的なエラーもキャッチする
+// データの初期化
+$transaction_id = 0;
+$show_roulette = false; 
+$prizes_for_js = [];
+$error_message = '';
+
 try {
-    // 1. セッション開始
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-
-    // 2. DB接続ファイルの読み込み (絶対パスで指定)
-    $db_path = __DIR__ . '/../common/db_connect.php';
-    
-    if (!file_exists($db_path)) {
-        throw new Exception("DB接続ファイルが見つかりません: " . $db_path);
-    }
-    require $db_path;
-
-    // 3. データの初期化
-    $transaction_id = 0;
-    $show_roulette = false;
-    $prizes_for_js = [];
-    $error_message = '';
-
-    // 4. ログイン & IDチェック
+    // ログインチェック
     $customer_id = $_SESSION['customer']['id'] ?? null;
     if ($customer_id === null) {
-        throw new Exception('ログインしていません。<a href="G-1_login.php">ログイン画面へ</a>');
+        throw new Exception('ログイン情報が確認できません。');
     }
     if (!isset($_GET['id'])) {
-        throw new Exception('取引ID(id)がURLに指定されていません。');
+        throw new Exception('取引IDが指定されていません。');
     }
     $transaction_id = $_GET['id'];
 
-    // 5. レンタル情報の確認
+    // DBチェックロジック
     $sql_check = "SELECT 
                     r.coupon_claimed, 
                     p.category_id,
@@ -48,25 +33,24 @@ try {
                 WHERE r.transaction_id = :tid 
                   AND t.customer_id = :cid
                 LIMIT 1";
-    
     $stmt_check = $pdo->prepare($sql_check);
     $stmt_check->execute([':tid' => $transaction_id, ':cid' => $customer_id]);
     $rental_info = $stmt_check->fetch(PDO::FETCH_ASSOC);
 
     if (!$rental_info) {
-        throw new Exception('該当するレンタル履歴が見つかりません。(ID不一致)');
+        throw new Exception('対象のレンタル履歴が見つかりません。');
     }
     if ($rental_info['delivery_status'] !== '返却済み') {
-        throw new Exception('返却済みではありません。現在のステータス: ' . htmlspecialchars($rental_info['delivery_status']));
+        throw new Exception('このレンタルはまだ返却が完了していません。');
     }
     if ($rental_info['coupon_claimed'] == 1) {
         throw new Exception('このレンタルでは既にルーレットを回しています。');
     }
 
-    // 6. ルーレット表示許可
+    // ルーレット表示許可
     $show_roulette = true;
     
-    // 7. 景品リスト取得
+    // 景品リスト取得
     $sql_prizes = "SELECT coupon_name FROM coupon 
                    WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
                    ORDER BY coupon_id ASC";
@@ -75,13 +59,11 @@ try {
     $prizes_for_js = $stmt_prizes->fetchAll(PDO::FETCH_COLUMN, 0);
     
     if (count($prizes_for_js) < 6) {
-        throw new Exception('景品データ(couponテーブル)が不足しています。');
+        throw new Exception('景品データが不足しています。');
     }
 
-} catch (Throwable $e) {
-    // エラーキャッチ
+} catch (Exception $e) {
     $error_message = $e->getMessage();
-    $show_roulette = false;
 }
 ?>
 <!DOCTYPE html>
@@ -93,26 +75,14 @@ try {
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
     <style>
-        /* 念のためHTML内にもスタイルを記述 (CSS読み込み失敗対策) */
-        #roulette {
-            border: 2px solid #1f2937; /* 黒枠線 */
-            border-radius: 50%;
-            /* CSSファイルのマージン設定が優先されるよう、ここは最低限に */
-        }
+        body { padding-top: 0 !important; }
     </style>
 </head>
 <body>
-    <?php 
-    if (file_exists(__DIR__ . '/../common/header.php')) {
-        require __DIR__ . '/../common/header.php';
-    }
-    ?>
-    
     <div class="container">
+
         <header class="header">
-            <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>">
-                <img src="../img/modoru.png" alt="戻る" class="back-link">
-            </a>
+        <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
             <h1 class="header-title">ルーレット</h1>
             <span class="header-dummy"></span>
         </header>
@@ -120,8 +90,7 @@ try {
         <main class="main-content">
             <?php if (!empty($error_message)): ?>
                 <div class="error-box">
-                    <h3>システムエラー</h3>
-                    <p><?php echo $error_message; ?></p>
+                    <p><?php echo htmlspecialchars($error_message); ?></p>
                 </div>
                 <div style="text-align:center; margin-top:20px;">
                     <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette-back" style="background:#999; padding:10px 20px; color:white; text-decoration:none; border-radius:5px;">履歴詳細に戻る</a>
@@ -155,7 +124,6 @@ try {
         const resultP = document.getElementById('result');
         const rouletteContainer = document.getElementById('roulette-container');
         
-        // PHPデータをJSONで受け取る
         const sectors = <?php echo json_encode($prizes_for_js); ?>; 
         const transactionId = <?php echo $transaction_id; ?>;
         
@@ -168,7 +136,7 @@ try {
             if(rouletteContainer.clientWidth > 0){
                 canvasSize = rouletteContainer.clientWidth * 0.8;
             } else {
-                canvasSize = 300; 
+                canvasSize = 300;
             }
             if (canvasSize < 200) canvasSize = 200;
             if (canvasSize > 320) canvasSize = 320;
@@ -197,7 +165,7 @@ try {
                 ctx.rotate((index + 0.5) * sectorAngle);
                 ctx.textAlign = "right";
                 ctx.font = `bold ${canvasSize * 0.05}px Arial`;
-                ctx.fillStyle = "#000000"; // ★黒文字
+                ctx.fillStyle = "#000000"; 
                 ctx.textBaseline = "middle";
                 ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
                 ctx.restore();
@@ -225,9 +193,7 @@ try {
                     const prizeIndex = data.prize_index;
                     const prizeName = data.prize_name;
                     let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
-                    // 12時の位置 (270度 = 1.5PI) に合わせる
-                    let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI);
-                    
+                    let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI); 
                     const totalRotation = 10 * (2 * Math.PI) + targetAngle;
                     animateSpin(totalRotation, prizeName);
                 } else {
@@ -236,7 +202,7 @@ try {
                 }
             })
             .catch(error => {
-                resultP.textContent = `通信エラー: ${error.message}`;
+                resultP.textContent = `通信エラーが発生しました。`;
                 spinButton.disabled = false;
                 console.error('Fetch Error:', error);
             });
@@ -274,5 +240,6 @@ try {
     });
     </script>
     <?php endif; ?>
+
 </body>
 </html>

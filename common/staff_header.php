@@ -9,16 +9,13 @@
     <h1>ニシムラ Online</h1>
   </div>
 
-  <!-- 右側：ユーザーアイコン画像 -->
-  <div class="user-icon">
-    <img src="../img/icon.png" alt="ユーザーアイコン">
-  </div>
+  
 
   <!-- スライドメニュー -->
   <nav id="sideMenu" class="side-menu">
     <ul>
         <li><a href="../バック/G-20_customer-management.php">顧客管理</a></li>
-        <li><a href="/バック/G-22_product.php">商品管理</a></li>
+        <li><a href="../バック/G-22_product.php">商品管理</a></li>
     </ul>
   </nav>
 

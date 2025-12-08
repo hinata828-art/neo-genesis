@@ -1,7 +1,6 @@
 <?php
-// --- 必要ファイル読み込み ---
-require '../common/db_connect.php';
 session_start();
+require '../common/db_connect.php';
 
 // --- product_id 取得 ---
 if (!isset($_GET['product_id'])) {
@@ -11,7 +10,8 @@ if (!isset($_GET['product_id'])) {
 $product_id = intval($_GET['product_id']);
 
 // --- スタッフID（ログイン中の管理者） ---
-$staff_id = $_SESSION['staff_id'];
+$staff_id = $_SESSION['staff']['id'];
+$staff_name = $_SESSION['staff']['name'];
 
 // --- 発注日（今日） ---
 $order_date = date('Y-m-d');
@@ -21,21 +21,35 @@ $random_days = rand(1, 7);
 $arrival_date = date('Y-m-d', strtotime("+{$random_days} days"));
 
 // --- 商品名の取得（画面表示用） ---
-$sql = $pdo->prepare("SELECT product_name FROM product WHERE product_id = ?");
+$sql = $pdo->prepare("SELECT * FROM product WHERE product_id = ?");
 $sql->execute([$product_id]);
 $product = $sql->fetch(PDO::FETCH_ASSOC);
 if (!$product) {
     echo "商品が見つかりません。";
     exit();
 }
+// 画像のパスを決定
+$productImagePath = htmlspecialchars($product['product_image']);
+$imageUrl = '';
 
+// 値が「http」で始まる場合はDB直接保存のURLと判断
+if (strpos($productImagePath, 'http') === 0) {
+    $imageUrl = $productImagePath;
+} else if ($productImagePath) {
+    // それ以外の場合はサーバーフォルダ保存のファイル名と判断し、パスを結合
+    // G-24からの相対パスも '../img/' となります。
+    $imageUrl = '../img/' . $productImagePath;
+} else {
+    // 画像データがない場合のデフォルト画像
+    // G-24のHTMLにあるonerrorに対応する画像パスを使用
+    $imageUrl = 'images/noimage.png'; 
+}
 // --- 入荷登録処理 ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $quantity = intval($_POST['quantity']);
-    $cost_price = intval($_POST['cost_price']);
-    $note = $_POST['note'];
-    $staff_id = $_POST['staff_id'];
+    $quantity    = intval($_POST['quantity']);
+    $cost_price  = intval($_POST['cost_price']);
+    $note        = $_POST['note'];
+    $staff_id    = $_POST['staff_id'];
 
     // INSERT（入荷履歴）
     $insert = $pdo->prepare("
@@ -78,43 +92,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/staff_header.css">
 </head>
 <body>
-<?php require_once __DIR__ . '/../common/staff_header.php'; ?>
+  <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
-<h2>入荷登録（<?php echo htmlspecialchars($product['product_name']); ?>）</h2>
+<h2 class="page-title">入荷登録（<?= htmlspecialchars($product['product_name']) ?>）</h2>
 
+<form method="POST">
 <div class="container">
-
-    <form action="" method="POST">
-
+    <!-- 左エリア：入力 -->
+    <div>
         <label>商品名</label>
-        <input type="text" value="<?php echo htmlspecialchars($product['product_name']); ?>" readonly>
+        <input type="text" value="<?= htmlspecialchars($product['product_name']) ?>" readonly class="narrow-input">
 
         <label>発注日（自動）</label>
-        <input type="text" name="order_date" value="<?php echo $order_date; ?>" readonly>
+        <input type="text" name="order_date" value="<?= $order_date ?>" readonly class="narrow-input">
 
         <label>入荷日（自動）</label>
-        <input type="text" name="arrival_date" value="<?php echo $arrival_date; ?>" readonly>
+        <input type="text" name="arrival_date" value="<?= $arrival_date ?>" readonly class="narrow-input">
+
+        <label>担当者（自動）</label>
+        <input type="text" value="<?= htmlspecialchars($staff_name) ?>" readonly class="narrow-input">
+        <input type="hidden" name="staff_id" value="<?= $staff_id ?>">
 
         <label>入荷数量</label>
-        <input type="number" name="quantity" min="1" required>
+        <input type="number" name="quantity" min="1" required class="narrow-input">
 
         <label>仕入れ価格</label>
-        <input type="number" name="cost_price" min="0" required>
+        <input type="number" name="cost_price" min="0" required class="narrow-input">
+
+        <input type="hidden" name="staff_id" value="<?= $staff_id ?>">
+    </div>
+
+    <!-- 右エリア：商品画像＋備考 -->
+    <div>
+        <label>商品画像</label>
+        <div class="product-image-box">
+            <img src="<?= $imageUrl ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
+            </div>
 
         <label>備考</label>
-        <textarea name="note"></textarea>
+        <textarea name="note" class="narrow-input"></textarea>
+    </div>
 
-        <!-- hidden -->
-        <input type="hidden" name="staff_id" value="<?php echo $staff_id; ?>">
-
-        <div class="button-area">
-            <button class="btn" type="submit">登録</button>
-            <a class="btn-cancel" href="G-23_product-detail.php?product_id=<?php echo $product_id; ?>">キャンセル</a>
-        </div>
-
-    </form>
-
+    <!-- ボタン -->
+    <div class="button-area">
+        <button type="submit" class="btn">登録</button>
+        <a class="btn-cancel" href="G-23_product-detail.php?product_id=<?= $product_id ?>">キャンセル</a>
+    </div>
 </div>
+</form>
 
 </body>
 </html>

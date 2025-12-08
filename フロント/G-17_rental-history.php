@@ -1,87 +1,93 @@
 <?php
-// -------------------------------------------------------------------
-// エラーを強制表示する設定 (動作確認用)
-// -------------------------------------------------------------------
+// 1. セッションを開始
+session_start();
+
+// 2. エラー表示設定
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 全体を try-catch で囲み、致命的なエラーもキャッチする
+// 3. 共通DB接続
+require '../common/db_connect.php';
+
+// 4. データ初期化
+$products = [];
+$order_info = null;
+$error_message = '';
+$is_cancellable = false; 
+$transaction_id = 0; 
+$show_roulette_button = false;
+
 try {
-    // 1. セッション開始
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-
-    // 2. DB接続ファイルの読み込み (絶対パスで指定)
-    $db_path = __DIR__ . '/../common/db_connect.php';
-    
-    if (!file_exists($db_path)) {
-        throw new Exception("DB接続ファイルが見つかりません: " . $db_path);
-    }
-    require $db_path;
-
-    // 3. データの初期化
-    $transaction_id = 0;
-    $show_roulette = false;
-    $prizes_for_js = [];
-    $error_message = '';
-
-    // 4. ログイン & IDチェック
-    $customer_id = $_SESSION['customer']['id'] ?? null;
-    if ($customer_id === null) {
-        throw new Exception('ログインしていません。<a href="G-1_login.php">ログイン画面へ</a>');
-    }
+    // 5. ID取得
     if (!isset($_GET['id'])) {
-        throw new Exception('取引ID(id)がURLに指定されていません。');
+        throw new Exception('取引IDが指定されていません。');
     }
     $transaction_id = $_GET['id'];
-
-    // 5. レンタル情報の確認
-    $sql_check = "SELECT 
-                    r.coupon_claimed, 
-                    p.category_id,
-                    t.delivery_status
-                FROM rental AS r
-                JOIN product AS p ON r.product_id = p.product_id
-                JOIN transaction_table AS t ON r.transaction_id = t.transaction_id
-                WHERE r.transaction_id = :tid 
-                  AND t.customer_id = :cid
-                LIMIT 1";
     
-    $stmt_check = $pdo->prepare($sql_check);
-    $stmt_check->execute([':tid' => $transaction_id, ':cid' => $customer_id]);
-    $rental_info = $stmt_check->fetch(PDO::FETCH_ASSOC);
+    // 6. データ取得
+    $sql = "SELECT 
+                t.transaction_date, 
+                t.payment,
+                t.delivery_status,
+                t.total_amount,
+                p.product_id,
+                p.product_name, 
+                p.product_image,
+                p.price,
+                r.rental_start,
+                r.rental_end,
+                r.coupon_claimed 
+            FROM transaction_table AS t
+            JOIN rental AS r ON t.transaction_id = r.transaction_id
+            JOIN product AS p ON r.product_id = p.product_id
+            WHERE t.transaction_id = :id"; 
 
-    if (!$rental_info) {
-        throw new Exception('該当するレンタル履歴が見つかりません。(ID不一致)');
-    }
-    if ($rental_info['delivery_status'] !== '返却済み') {
-        throw new Exception('返却済みではありません。現在のステータス: ' . htmlspecialchars($rental_info['delivery_status']));
-    }
-    if ($rental_info['coupon_claimed'] == 1) {
-        throw new Exception('このレンタルでは既にルーレットを回しています。');
-    }
-
-    // 6. ルーレット表示許可
-    $show_roulette = true;
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':id', $transaction_id, PDO::PARAM_INT);
+    $stmt->execute();
     
-    // 7. 景品リスト取得
-    $sql_prizes = "SELECT coupon_name FROM coupon 
-                   WHERE coupon_id IN (2, 3, 4, 5, 6, 7)
-                   ORDER BY coupon_id ASC";
-    $stmt_prizes = $pdo->prepare($sql_prizes);
-    $stmt_prizes->execute();
-    $prizes_for_js = $stmt_prizes->fetchAll(PDO::FETCH_COLUMN, 0);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($products)) {
+        throw new Exception('該当するレンタル履歴が見つかりません。');
+    }
     
-    if (count($prizes_for_js) < 6) {
-        throw new Exception('景品データ(couponテーブル)が不足しています。');
+    $order_info = $products[0];
+    
+    $order_info['start_date_formatted'] = date('Y/m/d H:i', strtotime($order_info['rental_start']));
+    $order_info['return_date_formatted'] = date('Y/m/d', strtotime($order_info['rental_end']));
+    
+    switch ($order_info['delivery_status']) { 
+        case '注文受付':
+            $order_info['return_status_text'] = '発送準備中です';
+            $is_cancellable = true;
+            break;
+        case 'レンタル中':
+            $order_info['return_status_text'] = '返却予定日: ' . $order_info['return_date_formatted'];
+            break;
+        case '返却済み':
+            $order_info['return_status_text'] = '返却完了済み';
+            if ($order_info['coupon_claimed'] == 0) {
+                $show_roulette_button = true;
+            }
+            break;
+        case 'キャンセル済み':
+            $order_info['return_status_text'] = 'この取引はキャンセルされました';
+            break;
+        default:
+            $order_info['return_status_text'] = 'ステータス: ' . htmlspecialchars($order_info['delivery_status']);
+            break;
     }
 
-} catch (Throwable $e) {
-    // エラーキャッチ
+} catch (Exception $e) {
     $error_message = $e->getMessage();
-    $show_roulette = false;
+}
+
+function getStatusClass($status) {
+    if ($status == 'キャンセル済み') return 'status-cancelled';
+    if ($status == '配達完了' || $status == '返却済み') return 'status-delivered';
+    return 'status-processing'; 
 }
 ?>
 <!DOCTYPE html>
@@ -89,190 +95,136 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>割引ルーレット!!!</title>
+    <title>レンタル履歴詳細</title>
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/G-17_rental-history.css"> 
-    <style>
-        /* 念のためHTML内にもスタイルを記述 (CSS読み込み失敗対策) */
-        #roulette {
-            border: 2px solid #1f2937; /* 黒枠線 */
-            border-radius: 50%;
-            /* CSSファイルのマージン設定が優先されるよう、ここは最低限に */
-        }
-    </style>
 </head>
 <body>
-    <?php 
-    if (file_exists(__DIR__ . '/../common/header.php')) {
-        require __DIR__ . '/../common/header.php';
-    }
-    ?>
+    <?php require '../common/header.php'; ?>
     
     <div class="container">
+
         <header class="header">
-            <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>">
-                <img src="../img/modoru.png" alt="戻る" class="back-link">
-            </a>
-            <h1 class="header-title">ルーレット</h1>
+        <a href="G-4_member-information.php"><img src="../img/modoru.png" alt="戻る" class="back-link"></a>
+            <h1 class="header-title">レンタル履歴</h1>
             <span class="header-dummy"></span>
         </header>
 
         <main class="main-content">
+
             <?php if (!empty($error_message)): ?>
                 <div class="error-box">
-                    <h3>システムエラー</h3>
-                    <p><?php echo $error_message; ?></p>
+                    <p><?php echo htmlspecialchars($error_message); ?></p>
                 </div>
-                <div style="text-align:center; margin-top:20px;">
-                    <a href="G-17_rental-history.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette-back" style="background:#999; padding:10px 20px; color:white; text-decoration:none; border-radius:5px;">履歴詳細に戻る</a>
-                </div>
+                
+            <?php elseif (!empty($products)): ?>
+                
+                <?php foreach ($products as $product): ?>
+                    <section class="product-card">
+                        <div class="product-image-container">
+                            <img src="<?php echo htmlspecialchars($product['product_image']); ?>" alt="商品画像" class="product-image">
+                        </div>
+                        <div class="product-info">
+                            <h2 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h2>
+                            <p class="product-price">単価: ¥<?php echo number_format($product['price']); ?></p> 
+                        </div>
+                        <div class="button-group">
+                            <a href="G-9_product-detail.php?id=<?php echo $product['product_id']; ?>" class="btn btn-detail">詳細</a>
+                            <a href="G-14_rental.php?id=<?php echo $product['product_id']; ?>" class="btn btn-purchase">再度レンタル</a>
+                        </div>
+                    </section>
+                <?php endforeach; ?>
 
-            <?php elseif ($show_roulette && !empty($prizes_for_js)): ?>
-                <section id="roulette-container">
-                    <h2 class="section-title">割引クーポンルーレット！</h2>
-                    <p>次回使える購入クーポンが当たります！</p>
-                    
-                    <div id="roulette">
-                        <div id="pointer"></div>
-                        <canvas id="canvas"></canvas>
+                <section class="detail-section">
+                    <h2 class="section-title">レンタル期間</h2>
+                    <div class="detail-box">
+                        <div class="detail-row">
+                            <span class="detail-label">レンタル開始日時</span>
+                            <span class="detail-value"><?php echo htmlspecialchars($order_info['start_date_formatted']); ?></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">返却予定日</span>
+                            <span class="detail-value"><?php echo htmlspecialchars($order_info['return_date_formatted']); ?></span>
+                        </div>
                     </div>
-
-                    <button id="spin">スピンする</button>
-                    <p id="result"></p>
                 </section>
+
+                <section class="detail-section">
+                    <h2 class="section-title">お支払情報</h2>
+                    <div class="detail-box">
+                        <p class="payment-info">
+                            <?php echo htmlspecialchars($order_info['payment']); ?> | 
+                            合計金額: ¥<?php echo number_format($order_info['total_amount']); ?>
+                        </p>
+                    </div>
+                </section>
+                
+                <section class="delivery-status">
+                    <p class="<?php echo htmlspecialchars(getStatusClass($order_info['delivery_status'])); ?>">
+                        <?php echo htmlspecialchars($order_info['return_status_text']); ?>
+                    </p>
+                </section>
+
+                <?php if ($show_roulette_button): ?>
+                <section class="roulette-link-section">
+                    <a href="G-17_rental-roulette.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette">
+                        <span>🎁</span> 外れなし！ルーレットを回す
+                    </a>
+                </section>
+                <?php endif; ?>
+                
             <?php endif; ?>
+
         </main>
+
+       <footer class="footer">
+            <?php if ($is_cancellable): ?>
+                <a href="#" id="open-cancel-modal" class="footer-link">レンタルキャンセルはコチラ</a>
+            <?php endif; ?>
+       </footer>
+
     </div> 
     
-    <?php if ($show_roulette && !empty($prizes_for_js)): ?>
+    <div id="cancel-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button id="close-modal" class="modal-close-btn">&times;</button>
+            <div class="modal-icon">
+                <img src="../img/alert.png" alt="" style="width: 60px; height: 60px;">
+            </div>
+            <h2>レンタルをキャンセルしますか？</h2>
+            <div class="modal-buttons">
+                <a href="G_transaction-cancel.php?id=<?php echo htmlspecialchars($transaction_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
+                <button id="confirm-no" class="btn btn-secondary">いいえ</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const canvas = document.getElementById('canvas');
-        if (!canvas) return;
-        
-        const ctx = canvas.getContext('2d');
-        const spinButton = document.getElementById('spin');
-        const resultP = document.getElementById('result');
-        const rouletteContainer = document.getElementById('roulette-container');
-        
-        // PHPデータをJSONで受け取る
-        const sectors = <?php echo json_encode($prizes_for_js); ?>; 
-        const transactionId = <?php echo $transaction_id; ?>;
-        
-        const colors = ["#FF0000", "#0000FF", "#00FF00", "#FFFF00", "#FFC0CB", "#800080", "#FFA500", "#FFD700"];
-        let angle = 0;
-        let canvasSize = 0;
-        const sectorAngle = 2 * Math.PI / sectors.length;
+        const openBtn = document.getElementById('open-cancel-modal');
+        if (openBtn) {
+            const modal = document.getElementById('cancel-modal');
+            const closeBtn = document.getElementById('close-modal');
+            const noBtn = document.getElementById('confirm-no');
 
-        function setCanvasSize() {
-            if(rouletteContainer.clientWidth > 0){
-                canvasSize = rouletteContainer.clientWidth * 0.8;
-            } else {
-                canvasSize = 300; 
-            }
-            if (canvasSize < 200) canvasSize = 200;
-            if (canvasSize > 320) canvasSize = 320;
-            
-            canvas.width = canvasSize;
-            canvas.height = canvasSize;
-            drawRoulette();
-        }
-
-        function drawRoulette() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height); 
-            ctx.save();
-            ctx.translate(canvasSize / 2, canvasSize / 2);
-            ctx.rotate(angle); 
-
-            sectors.forEach((sector, index) => {
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.arc(0, 0, canvasSize / 2, index * sectorAngle, (index + 1) * sectorAngle);
-                ctx.fillStyle = colors[index % colors.length];
-                ctx.fill();
-                ctx.closePath();
-
-                ctx.save();
-                ctx.rotate((index + 0.5) * sectorAngle);
-                ctx.textAlign = "right";
-                ctx.font = `bold ${canvasSize * 0.05}px Arial`;
-                ctx.fillStyle = "#000000"; // ★黒文字
-                ctx.textBaseline = "middle";
-                ctx.fillText(sector, canvasSize * 0.45, 0, canvasSize * 0.4); 
-                ctx.restore();
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                modal.style.display = 'flex'; 
             });
-            ctx.restore(); 
-        }
-
-        function spinRoulette() {
-            spinButton.disabled = true;
-            resultP.textContent = "抽選中...";
-
-            fetch('G-17_spin-roulette.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ transaction_id: transactionId })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text) });
+            noBtn.addEventListener('click', function() {
+                modal.style.display = 'none'; 
+            });
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none'; 
+            });
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) { 
+                    modal.style.display = 'none'; 
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    const prizeIndex = data.prize_index;
-                    const prizeName = data.prize_name;
-                    let targetSectorCenter = (prizeIndex + 0.5) * sectorAngle;
-                    // 12時の位置 (270度 = 1.5PI) に合わせる
-                    let targetAngle = (2 * Math.PI) - targetSectorCenter + (1.5 * Math.PI);
-                    
-                    const totalRotation = 10 * (2 * Math.PI) + targetAngle;
-                    animateSpin(totalRotation, prizeName);
-                } else {
-                    resultP.textContent = `エラー: ${data.message}`;
-                    spinButton.disabled = false;
-                }
-            })
-            .catch(error => {
-                resultP.textContent = `通信エラー: ${error.message}`;
-                spinButton.disabled = false;
-                console.error('Fetch Error:', error);
             });
         }
-        
-        function animateSpin(targetAngle, prizeName) {
-            const spinDuration = 3000;
-            const startTime = performance.now();
-            function animate(time) {
-                const elapsed = time - startTime;
-                if (elapsed < spinDuration) {
-                    const t = elapsed / spinDuration;
-                    const easedT = 1 - Math.pow(1 - t, 3);
-                    angle = (targetAngle * easedT) % (2 * Math.PI);
-                    drawRoulette();
-                    requestAnimationFrame(animate);
-                } else {
-                    angle = targetAngle % (2 * Math.PI);
-                    drawRoulette(); 
-                    resultP.textContent = `おめでとうございます！ ${prizeName} クーポンをゲットしました！`;
-                    spinButton.style.display = 'none'; 
-                    const link = document.createElement('a');
-                    link.href = 'G-25_coupon-list.php';
-                    link.textContent = 'クーポン一覧ページへ移動';
-                    link.className = 'coupon-list-link'; 
-                    resultP.after(link); 
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        spinButton.addEventListener('click', spinRoulette);
-        window.addEventListener('resize', setCanvasSize);
-        setCanvasSize();
     });
     </script>
-    <?php endif; ?>
-</body>
+    
+    </body>
 </html>

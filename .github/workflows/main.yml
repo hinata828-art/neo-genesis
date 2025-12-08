@@ -1,51 +1,32 @@
 name: Deploy PHP site to Lolipop /2025/new/neo-genesis/
- 
+
 on:
-
   push:
-
     branches:
+      - main
 
-      - main  # mainブランチにpushされた時に実行
- 
 jobs:
-
   deploy:
-
     runs-on: ubuntu-latest
- 
+
     steps:
-
       - name: Checkout code
-
         uses: actions/checkout@v4
- 
+
       - name: Deploy to Lolipop via FTP
-
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-
         with:
-
           server: ${{ secrets.FTP_SERVER }}
-
           username: ${{ secrets.FTP_USERNAME }}
-
           password: ${{ secrets.FTP_PASSWORD }}
-
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}
-
-          local-dir: ./  # ← アップロード元フォルダ
+          local-dir: ./
 
           exclude: |
-
             **/.git*
-
             **/.github*
-
             **/node_modules/**
-
             **/README.md
-
             **/.env
-
- 
+            **/composer.json
+            **/composer.lock

@@ -201,13 +201,30 @@ if ($keyword !== '') {
         <div class="product-list">
 
             <?php foreach ($products as $p): ?>
+                <?php
+                    // ★★★ 追記: 画像のパスを動的に決定するロジック ★★★
+                    $productImagePath = $p['product_image'];
+                    $imageUrl = '';
+                    
+                    // 値が「http」で始まる場合はDB直接保存のURLと判断
+                    if (strpos($productImagePath, 'http') === 0) {
+                        $imageUrl = htmlspecialchars($productImagePath);
+                    } else if ($productImagePath) {
+                        // それ以外の場合はサーバーフォルダ保存のファイル名と判断し、パスを結合
+                        // G-10からの相対パスは '../img/' となります。
+                        $imageUrl = '../img/' . htmlspecialchars($productImagePath);
+                    } else {
+                        // 画像データがない場合のデフォルト画像 (必要に応じて設定)
+                        $imageUrl = 'images/noimage.png'; 
+                    }
+                    // ★★★ 追記ここまで ★★★
+                ?>
 
                 <div class="product-card">
 
-                    <img src="<?php echo htmlspecialchars($p['product_image']); ?>"
+                    <img src="<?php echo $imageUrl; ?>"
 
                          alt="<?php echo htmlspecialchars($p['product_name']); ?>" class="product-img">
-
                     <div class="product-info">
 
                         <h2><?php echo htmlspecialchars($p['product_name']); ?></h2>

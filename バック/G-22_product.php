@@ -12,34 +12,49 @@ $maker      = trim($_GET['maker'] ?? '');
 $where  = [];
 $params = [];
 
-// フィルターが入力されている場合のみ条件を追加
+// SQL組み立て（最新の入荷情報をJOIN）
+$sql = "
+  SELECT 
+    p.*,
+    sa.quantity AS order_quantity,
+    sa.arrival_date AS last_arrival_date,
+    sa.order_date AS last_order_date
+  FROM product p
+  LEFT JOIN (
+    SELECT s1.*
+    FROM stock_arrival s1
+    INNER JOIN (
+      SELECT product_id, MAX(arrival_date) AS max_arrival
+      FROM stock_arrival
+      GROUP BY product_id
+    ) s2 ON s1.product_id = s2.product_id AND s1.arrival_date = s2.max_arrival
+  ) sa ON sa.product_id = p.product_id
+  WHERE 1=1
+";
+
+// フィルター条件
 if ($search !== '') {
-  $where[] = 'product_name LIKE :search';
+  $sql .= " AND p.product_name LIKE :search";
   $params[':search'] = "%{$search}%";
 }
 if ($min_price !== '' && is_numeric($min_price)) {
-  $where[] = 'price >= :min_price';
+  $sql .= " AND p.price >= :min_price";
   $params[':min_price'] = $min_price;
 }
 if ($max_price !== '' && is_numeric($max_price)) {
-  $where[] = 'price <= :max_price';
+  $sql .= " AND p.price <= :max_price";
   $params[':max_price'] = $max_price;
 }
 if ($category !== '') {
-  $where[] = 'category_id = :category';
+  $sql .= " AND p.category_id = :category";
   $params[':category'] = $category;
 }
 if ($maker !== '') {
-  $where[] = 'maker LIKE :maker';
+  $sql .= " AND p.maker LIKE :maker";
   $params[':maker'] = "%{$maker}%";
 }
 
-// SQL組み立て
-$sql = 'SELECT * FROM product';
-if (!empty($where)) {
-  $sql .= ' WHERE ' . implode(' AND ', $where);
-}
-$sql .= ' ORDER BY product_id ASC';
+$sql .= " ORDER BY p.product_id ASC";
 
 // 実行
 $stmt = $pdo->prepare($sql);
@@ -52,7 +67,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <title>商品管理 - ニシムラ Online</title>
   <link rel="stylesheet" href="../css/G-22_staff_product.css">
-  <link rel="stylesheet" href="../css/staff_header.css">
+    <link rel="stylesheet" href="../css/staff_header.css">
 </head>
 <body>
   <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
@@ -62,7 +77,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- 上部：新規商品登録ボタン＋検索フォーム -->
     <div class="action-row" style="display:flex; gap:10px; align-items:center;">
-      <a href="G-23_product-detail.php" class="new-product-btn">+新規商品登録</a>
+      <a href="G-26_product-addition.php" class="new-product-btn">+新規商品登録</a>
       <form method="get" class="search-bar" style="display:flex; gap:8px;">
         <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="商品名で検索">
         <button type="submit" class="apply-btn">検索</button>
@@ -70,21 +85,35 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="main-area">
-      <!-- 商品一覧（DBから動的表示） -->
+      <!-- 商品一覧 -->
       <section class="product-list" style="flex: 1;">
         <?php if ($products): ?>
           <?php foreach ($products as $p): ?>
             <div class="product-card">
-              <!-- 内部IDと外部公開用コードを両方表示 -->
+              <!-- 内部IDと公開コード -->
               <div class="product-id">
-                内部ID: <?= htmlspecialchars($p['product_id']) ?><br>
-                公開コード: <?= htmlspecialchars($p['jan_code'] ?? '未設定') ?>
+                <span class="internal-id">内部ID: <?= htmlspecialchars($p['product_id']) ?></span><br>
+                <span class="public-code">公開コード: <?= htmlspecialchars($p['jan_code'] ?? '未設定') ?></span>
               </div>
 
               <div class="product-main">
                 <!-- 商品画像 -->
-                <img src="<?= htmlspecialchars($p['product_image']) ?>" alt="商品画像" onerror="this.src='images/noimage.png'">
-                <!-- 商品情報（画像横） -->
+                <?php
+// 商品画像パスの判定（既存URL or imgフォルダ）
+$imagePath = $p['product_image'];
+
+// 既存データ：URL で保存されている場合（https:// or http://）
+if (preg_match('/^https?:\/\//', $imagePath)) {
+    // そのまま使用
+} else {
+    // 新規登録商品：ファイル名のみ → imgフォルダを付与
+    $imagePath = "../img/" . $imagePath;
+}
+?>
+<img src="<?= htmlspecialchars($imagePath) ?>" 
+     alt="商品画像" 
+     onerror="this.src='../img/noimage.png'">
+                <!-- 商品情報 -->
                 <div class="product-info">
                   <h4><?= htmlspecialchars($p['product_name']) ?></h4>
                   <p class="price">¥<?= number_format($p['price']) ?></p>
@@ -111,8 +140,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
               </div>
 
               <div class="product-actions">
-                <button onclick="location.href='G-23_product-detail.php?id=<?= $p['product_id'] ?>'">編集</button>
-                <button onclick="if(confirm('削除しますか？')) location.href='delete_product.php?id=<?= $p['product_id'] ?>'">削除</button>
+                <button onclick="location.href='G-23_product-detail.php?product_id=<?= $p['product_id'] ?>'">編集</button>
+                <button onclick="if(confirm('削除しますか？')) location.href='G-27_delete-product.php?id=<?= $p['product_id'] ?>'">削除</button>
               </div>
             </div>
           <?php endforeach; ?>
@@ -128,7 +157,19 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <label>商品名<br><input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="例: テレビ"></label>
           <label>最低価格<br><input type="text" name="min_price" value="<?= htmlspecialchars($min_price) ?>" placeholder="例: 5000"></label>
           <label>最高価格<br><input type="text" name="max_price" value="<?= htmlspecialchars($max_price) ?>" placeholder="例: 20000"></label>
-          <label>カテゴリー<br><input type="text" name="category" value="<?= htmlspecialchars($category) ?>" placeholder="例: 1"></label>
+          <label>カテゴリー<br>
+          <select name="category">
+            <option value="">すべて</option>
+            <option value="C01" <?= $category==='C01'?'selected':''; ?>>テレビ</option>
+            <option value="C02" <?= $category==='C02'?'selected':''; ?>>冷蔵庫</option>
+            <option value="C03" <?= $category==='C03'?'selected':''; ?>>電子レンジ</option>
+            <option value="C04" <?= $category==='C04'?'selected':''; ?>>カメラ</option>
+            <option value="C05" <?= $category==='C05'?'selected':''; ?>>ヘッドホン</option>
+            <option value="C06" <?= $category==='C06'?'selected':''; ?>>洗濯機</option>
+            <option value="C07" <?= $category==='C07'?'selected':''; ?>>ノートPC</option>
+            <option value="C08" <?= $category==='C08'?'selected':''; ?>>スマートフォン</option>
+          </select>
+          </label>
           <label>メーカー<br><input type="text" name="maker" value="<?= htmlspecialchars($maker) ?>" placeholder="例: AQUAVIEW"></label>
           <button class="apply-btn" type="submit">適用</button>
         </form>

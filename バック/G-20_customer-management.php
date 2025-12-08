@@ -1,10 +1,9 @@
 <?php
-// DB接続
 require '../common/db_connect.php';
 
 // ====== 入力取得（検索・フィルタ） ======
 $keyword = isset($_GET['searchKeyword']) ? trim($_GET['searchKeyword']) : '';
-$ageGroup = isset($_GET['ageGroup']) ? trim($_GET['ageGroup']) : ''; // 年齢カラム導入時に使用
+$ageGroup = isset($_GET['ageGroup']) ? trim($_GET['ageGroup']) : '';
 $pref = isset($_GET['pref']) ? trim($_GET['pref']) : '';
 
 // ====== 都道府県リスト ======
@@ -15,21 +14,19 @@ $prefectures = [
   "香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"
 ];
 
-
-
 // ====== 検索・フィルタ用SQL構築 ======
-// 年齢はテーブルに無いため「-」表示。年齢フィルタはコメントでフックを残します。
 $sql = "
   SELECT
     c.customer_id,
     c.customer_name,
     c.email,
     c.phone_number,
+    c.birth_date,
     a.prefecture,
     a.city,
     a.address_line,
-    a.postal_code
-    -- , c.birth_date -- 例：birth_dateがあれば年齢算出に使用
+    a.postal_code,
+    c.created_at
   FROM customer c
   LEFT JOIN address a ON a.customer_id = c.customer_id
   WHERE 1 = 1
@@ -37,7 +34,7 @@ $sql = "
 
 $params = [];
 
-// キーワード（顧客名部分一致 or ID完全一致）
+// キーワード検索
 if ($keyword !== '') {
   if (ctype_digit($keyword)) {
     $sql .= " AND c.customer_id = :cid";
@@ -54,45 +51,73 @@ if ($pref !== '') {
   $params[':pref'] = $pref;
 }
 
-// 年代フィルタ（年齢カラム導入後に有効化）
-// if ($ageGroup !== '') {
-//   switch ($ageGroup) {
-//     case '10s': $sql .= " AND TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) BETWEEN 10 AND 19"; break;
-//     case '20s': $sql .= " AND TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) BETWEEN 20 AND 29"; break;
-//     case '30s': $sql .= " AND TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) BETWEEN 30 AND 39"; break;
-//     case '40s': $sql .= " AND TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) BETWEEN 40 AND 49"; break;
-//     case '50s': $sql .= " AND TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) BETWEEN 50 AND 59"; break;
-//     case '60s': $sql .= " AND TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) >= 60"; break;
-//   }
-// }
+// 年代フィルタ（birth_dateから算出）
+if ($ageGroup !== '') {
+  $now = new DateTime();
+  $currentYear = (int)$now->format('Y');
+
+  switch ($ageGroup) {
+    case '10s':
+      $minYear = $currentYear - 19;
+      $maxYear = $currentYear - 10;
+      break;
+    case '20s':
+      $minYear = $currentYear - 29;
+      $maxYear = $currentYear - 20;
+      break;
+    case '30s':
+      $minYear = $currentYear - 39;
+      $maxYear = $currentYear - 30;
+      break;
+    case '40s':
+      $minYear = $currentYear - 49;
+      $maxYear = $currentYear - 40;
+      break;
+    case '50s':
+      $minYear = $currentYear - 59;
+      $maxYear = $currentYear - 50;
+      break;
+    case '60s':
+      $minYear = $currentYear - 69;
+      $maxYear = $currentYear - 60;
+      break;
+    default:
+      $minYear = null;
+      $maxYear = null;
+  }
+
+  if ($minYear && $maxYear) {
+    $sql .= " AND YEAR(c.birth_date) BETWEEN :minYear AND :maxYear";
+    $params[':minYear'] = $minYear;
+    $params[':maxYear'] = $maxYear;
+  }
+}
 
 $sql .= " ORDER BY c.customer_id ASC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $rows = $stmt->fetchAll();
-
-// ====== HTML描画 ======
 ?>
+
 <!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>顧客管理</title>
-    <link rel="stylesheet" href="../css/G-20_customer-management.css">
-    <link rel="stylesheet" href="../css/staff_header.css">
-  
+  <link rel="stylesheet" href="../css/G-20_customer-management.css">
+  <link rel="stylesheet" href="../css/staff_header.css">
 </head>
 <body>
-  <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
+    <?php require_once __DIR__ . '/../common/staff_header.php'; ?>
 
   <main class="page">
     <div class="page-title">
       <h1>顧客管理</h1>
     </div>
 
-    <!-- 統合検索バー（顧客名 or ID） -->
+    <!-- 統合検索バー -->
     <div class="search-bar">
       <form class="search-form" method="get">
         <label for="searchKeyword">顧客名またはID</label>
@@ -121,9 +146,9 @@ $rows = $stmt->fetchAll();
             <thead>
               <tr>
                 <th class="col-name">顧客名</th>
-                <th class="col-id">ID</th>
+                <th class="col-id">ID / 公開コード</th>
                 <th class="col-age">年齢</th>
-                <th class="col-action">操作</th>
+              
               </tr>
             </thead>
             <tbody>
@@ -134,16 +159,30 @@ $rows = $stmt->fetchAll();
               <?php else: ?>
                 <?php foreach ($rows as $row): ?>
                   <?php
-                    // 年齢算出（birth_dateがある前提の例。現状は「-」）
-                    // $age = null;
-                    // if (!empty($row['birth_date'])) {
-                    //   $age = (int)((new DateTime())->diff(new DateTime($row['birth_date']))->y);
-                    // }
+                    // 年齢表示
                     $ageDisplay = '-';
+                    if (!empty($row['birth_date'])) {
+                      $birth = new DateTime($row['birth_date']);
+                      $today = new DateTime();
+                      $age = $today->diff($birth)->y;
+                      $ageDisplay = $age . '歳';
+                    }
+
+                    // 公開用8桁コード生成
+                    $publicCode = '';
+                    if (!empty($row['created_at'])) {
+                        $dt = new DateTime($row['created_at']);
+                        $yearMonth = $dt->format('y') . $dt->format('m'); // 年下二桁＋月
+                        $serial = str_pad($row['customer_id'], 4, '0', STR_PAD_LEFT);
+                        $publicCode = $yearMonth . $serial;
+                    }
                   ?>
                   <tr>
                     <td><?php echo htmlspecialchars($row['customer_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($row['customer_id'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td>
+                      内部ID: <?php echo htmlspecialchars($row['customer_id'] ?? '', ENT_QUOTES, 'UTF-8'); ?><br>
+                      公開コード: <?php echo htmlspecialchars($publicCode, ENT_QUOTES, 'UTF-8'); ?>
+                    </td>
                     <td><?php echo $ageDisplay; ?></td>
                     <td>
                       <form action="G-21_customer-detail.php" method="get" style="display:inline;">
@@ -191,7 +230,6 @@ $rows = $stmt->fetchAll();
             </select>
           </div>
 
-          <!-- 検索キーワードの維持 -->
           <input type="hidden" name="searchKeyword" value="<?php echo htmlspecialchars($keyword, ENT_QUOTES, 'UTF-8'); ?>" />
 
           <div class="form-actions">

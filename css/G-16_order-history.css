@@ -4,6 +4,8 @@ body {
     margin: 0;
     background-color: #f3f4f6;
     color: #1f2937;
+    /* ★ 修正点: 共通ヘッダーの高さ分(約120px)の余白を追加 */
+    padding-top: 120px; 
 }
 
 /* --- 全体コンテナ (スマホ幅) --- */
@@ -15,14 +17,22 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+/* --- ヘッダー（ローカル） --- */
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
-    background-color: #ffffff; /* ★ この行を追加 */
+    background-color: #ffffff;
+
+    /* ★ 修正点: 共通ヘッダー(fixed)の下に配置するため、通常フローに戻す */
+    /* position: fixed;  <-- もしこれがあれば削除するか relative に変更 */
+    position: relative; 
+    width: 100%;
+    z-index: 1; /* 共通ヘッダー(z-index: 1000)より下になるように */
 }
+
 .back-link {
     font-size: 24px;
     font-weight: bold;
