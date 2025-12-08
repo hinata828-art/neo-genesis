@@ -136,6 +136,30 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                             </select>
                             </div>
                     </div>
+                    <div id="credit-fields" style="display: none;">
+                    <label>カード番号：</label>
+                    <input type="text" name="card_number" placeholder="例：1234-5678-9012-3456"><br>
+                    <label>有効期限：</label>
+                    <input type="text" name="card_expiry" placeholder="例：12/29"><br>
+                    <label>セキュリティコード：</label>
+                    <input type="text" name="card_cvv" placeholder="例：123"><br>
+                </div>
+
+                <script>
+                function togglePaymentFields() {
+                    const selected = document.getElementById("payment").value;
+                    const creditFields = document.getElementById("credit-fields");
+
+                    if (selected === "クレジット") {  // ← 値を一致させる
+                        creditFields.style.display = "block";
+                    } else {
+                        creditFields.style.display = "none";
+                    }
+                }
+
+                // ページ読み込み時に初期状態を反映
+                document.addEventListener("DOMContentLoaded", togglePaymentFields);
+                </script>
 
                     <div class="form-group">
                             <label for="birthdate">生年月日</label>
