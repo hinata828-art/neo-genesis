@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // 画像アップロード先
-$targetDir = __DIR__ . '/../img/';   // front → img の相対パス
+$targetDir = __DIR__ . '/../AIimage/';   // front → img の相対パス
 
 if (!is_dir($targetDir)) {
     mkdir($targetDir, 0777, true);
