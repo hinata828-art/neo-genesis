@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // 画像アップロード先
-$targetDir = __DIR__ . '/../AIimage/';   // front → img の相対パス
+$targetDir = __DIR__ . '/../img/';   // front → img の相対パス
 
 if (!is_dir($targetDir)) {
     mkdir($targetDir, 0777, true);
@@ -23,13 +23,6 @@ if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPL
     if (!move_uploaded_file($_FILES['product_image']['tmp_name'], $targetPath)) {
         die("画像の保存に失敗しました");
     }
-
-    // ★ 公開URLを生成してDBに保存する値を作成
-    $baseUrl = "https://aso2501223.chu.jp/AIimage/";
-    $dbPath = $baseUrl . $filename;
-} else {
-    $dbPath = null;
-}
 
 // 商品を仮登録（JANコードは後で生成）
 $sql = "INSERT INTO product (product_name, price, category_id, maker, color, product_detail, product_image, stock_quantity)
