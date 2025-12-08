@@ -5,8 +5,8 @@ require '../common/db_connect.php';
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// 画像アップロード先
-$targetDir = __DIR__ . '/../img/';   // front → img の相対パス
+// 画像アップロード先（バック → img）
+$targetDir = __DIR__ . '/../img/';
 
 if (!is_dir($targetDir)) {
     mkdir($targetDir, 0777, true);
@@ -14,8 +14,11 @@ if (!is_dir($targetDir)) {
 
 $filename = null;
 
-// 画像が送信されている場合
+// ------------------------------
+// 画像アップロード処理
+// ------------------------------
 if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+
     $ext = pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION);
     $filename = 'img_' . time() . '.' . $ext;
     $targetPath = $targetDir . $filename;
@@ -24,9 +27,22 @@ if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPL
         die("画像の保存に失敗しました");
     }
 
-// 商品を仮登録（JANコードは後で生成）
-$sql = "INSERT INTO product (product_name, price, category_id, maker, color, product_detail, product_image, stock_quantity)
-        VALUES (:product_name, :price, :category_id, :maker, :color, :product_detail, :product_image, 0)";
+} else {
+    die("画像が送信されていません。");
+}
+
+// DB に保存する画像パス（ブラウザ表示用：バック → img）
+$dbPath = '../img/' . $filename;
+
+
+// ------------------------------
+// 商品仮登録（JANコードは後で付与）
+// ------------------------------
+$sql = "INSERT INTO product 
+        (product_name, price, category_id, maker, color, product_detail, product_image, stock_quantity)
+        VALUES 
+        (:product_name, :price, :category_id, :maker, :color, :product_detail, :product_image, :stock_quantity)";
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
     ':product_name'   => $_POST['product_name'],
@@ -35,17 +51,20 @@ $stmt->execute([
     ':maker'          => $_POST['maker'],
     ':color'          => $_POST['color'],
     ':product_detail' => $_POST['product_detail'],
-    ':product_image'  => $dbPath   // ← ここを $filename から $dbPath に変更
+    ':product_image'  => $dbPath,
+    ':stock_quantity' => $_POST['stock_quantity']
 ]);
 
-
-// 登録した商品IDを取得
+// 登録した商品ID
 $product_id = $pdo->lastInsertId();
 
-// JANコード生成
-$categorySuffix = substr($_POST['category_id'], -2); // 末尾2桁
-$maker = $_POST['maker'];
 
+// ------------------------------
+// JANコード生成
+// ------------------------------
+$categorySuffix = substr($_POST['category_id'], -2); 
+
+$maker = $_POST['maker'];
 switch ($maker) {
     case '外山ファクトリー':
         $makerCode1 = '827'; $makerCode2 = '0827'; break;
@@ -64,7 +83,8 @@ switch ($maker) {
 $productIdPadded = str_pad($product_id, 4, '0', STR_PAD_LEFT);
 $jan_code = $categorySuffix . $makerCode1 . $makerCode2 . $productIdPadded;
 
-// JANコードを更新
+
+// JANコード更新
 $updateSql = "UPDATE product SET jan_code = :jan_code WHERE product_id = :id";
 $updateStmt = $pdo->prepare($updateSql);
 $updateStmt->execute([
@@ -72,11 +92,11 @@ $updateStmt->execute([
     ':id'       => $product_id
 ]);
 
-// 完了後アラート + 画面遷移
+
+// 完了後
 echo "<script>
         alert('商品を登録しました。JANコード: {$jan_code}');
         location.href='G-22_product.php';
       </script>";
-    var_dump($maker, $jan_code);
-
 exit;
+
