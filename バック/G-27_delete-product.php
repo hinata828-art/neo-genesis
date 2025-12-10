@@ -22,15 +22,20 @@ if ($id !== '') {
 
     //以下エラー対応プログラム（バグったらここだけ削除）
     if ($image) {
-    // URL形式ならファイル名だけ抽出
-    $basename = basename($image); // 例: img_123456.png
+    if (preg_match('/^https?:\/\//', $image)) {
+        // 既存商品（URL形式） → ファイル削除は不要（外部URLなので物理ファイルなし）
+        // 何もしない
+    } elseif (strpos($image, '../img/') === 0) {
+        // 新規商品（../img/で始まる相対パス）
+        $basename = basename($image); // img_xxx.png
+        $filePath = __DIR__ . '/../img/' . $basename;
 
-    $filePath = __DIR__ . '/../img/' . $basename;
-
-    if (file_exists($filePath)) {
-        unlink($filePath);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+      }
     }
-}
+
 
 }
 ?>
