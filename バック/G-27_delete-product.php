@@ -14,10 +14,24 @@ if ($id !== '') {
     $stmt = $pdo->prepare("DELETE FROM product WHERE product_id = :id");
     $stmt->execute([':id' => $id]);
 
-    // ③ 画像ファイルも削除
+    /*// ③ 画像ファイルも削除
     if ($image && file_exists(__DIR__ . '/../img/' . $image)) {
         unlink(__DIR__ . '/../img/' . $image);
     }
+    */
+
+    //以下エラー対応プログラム（バグったらここだけ削除）
+    if ($image) {
+    // URL形式ならファイル名だけ抽出
+    $basename = basename($image); // 例: img_123456.png
+
+    $filePath = __DIR__ . '/../img/' . $basename;
+
+    if (file_exists($filePath)) {
+        unlink($filePath);
+    }
+}
+
 }
 ?>
 
