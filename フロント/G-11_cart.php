@@ -4,6 +4,18 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require __DIR__ . '/../common/db_connect.php';
 
+// =====================================
+// ▼ 個別購入時：カートから削除（HTML 出力前に実行）
+// =====================================
+if (isset($_GET['id'], $_GET['color'])) {
+    $key = $_GET['id'] . '_' . $_GET['color'];
+
+    if (isset($_SESSION['cart'][$key])) {
+        unset($_SESSION['cart'][$key]);
+    }
+}
+// =====================================
+
 // カート取得
 $cart = $_SESSION['cart'] ?? [];
 $cart_items = [];
@@ -27,11 +39,11 @@ $color_display_map = [
 
 // カート内の商品を1件ずつ処理
 foreach ($cart as $key => $qty) {
-    // 商品IDとカラーを分離（例： "23_red" → 23, red）
     list($product_id, $color) = explode('_', $key);
 
-    // 商品データを取得
-    $sql = "SELECT product_id, product_name, price, product_image, color FROM product WHERE product_id = ?";
+    // 商品データ取得
+    $sql = "SELECT product_id, product_name, price, product_image, color 
+            FROM product WHERE product_id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$product_id]);
     $p = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -39,50 +51,39 @@ foreach ($cart as $key => $qty) {
     if ($p) {
         $item = $p;
         $item['quantity'] = $qty;
-        $item['color'] = $color; // 'original', '青' など
-        
-        // ★★★ 修正: 画像パス決定ロジックの適用 ★★★
-        $productImagePath = $p['product_image']; // DBからの画像パス/URL
+        $item['color'] = $color;
 
-        // 1. カラーバリアントの適用
-        // 'original'やDBのデフォルトカラー以外の時、パスにサフィックスを付与
+        // ★ カラーバリアント画像処理
+        $productImagePath = $p['product_image'];
+
         if ($color !== 'original' && $color !== $p['color']) {
             if (strpos($productImagePath, 'http') === 0) {
-                // DB URL形式の場合: 末尾にカラーサフィックスを付与 (例: .../カメラ1 -> .../カメラ1-青)
                 $productImagePath .= '-' . $color;
             } else {
-                // ファイル名形式の場合: 拡張子の前にカラーサフィックスを付与
                 $info = pathinfo($productImagePath);
                 if (!empty($info['extension'])) {
-                    // 拡張子がある場合: filename-color.ext
                     $productImagePath = $info['filename'] . '-' . $color . '.' . $info['extension'];
                 } else {
-                    // 拡張子がない場合 (念のため): filename-color
                     $productImagePath .= '-' . $color;
                 }
             }
         }
-        
-        // 2. パス/URL形式の決定 (表示用URLの生成)
-        $imageUrl = '';
+
+        // 表示用 URL の生成
         if (strpos($productImagePath, 'http') === 0) {
-            $imageUrl = $productImagePath; // 完全なURL
-        } else if ($productImagePath) {
-            // G-11からの相対パスは '../img/'
-            $imageUrl = '../img/' . $productImagePath; // サーバーフォルダ内のファイル
+            $imageUrl = $productImagePath;
+        } elseif ($productImagePath) {
+            $imageUrl = '../img/' . $productImagePath;
         } else {
             $imageUrl = 'images/noimage.png';
         }
 
-        $item['product_image'] = $imageUrl; // 最終的な表示用URLをセット
-        // ★★★ 修正ここまで ★★★
+        $item['product_image'] = $imageUrl;
 
         $cart_items[$key] = $item;
         $total += $item['price'] * $item['quantity'];
     }
 }
-
-// ------------------------------------
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -96,14 +97,7 @@ foreach ($cart as $key => $qty) {
 </head>
 
 <body>
-    <?php require __DIR__ . '/../common/header.php'; ?>
-    <?php
-    $breadcrumbs = [
-        ['name' => 'ホーム', 'url' => 'G-8_home.php'],
-        ['name' => 'カート']
-    ];
-    //require __DIR__ . '/../common/breadcrumb.php';
-    ?>
+<?php require __DIR__ . '/../common/header.php'; ?>
 
 <div class="cart-container">
     <h2>カート</h2>
@@ -113,13 +107,25 @@ foreach ($cart as $key => $qty) {
         <div class="button-area">
             <a href="G-8_home.php" class="btn back">お買い物を続ける</a>
         </div>
+
     <?php else: ?>
         <div class="summary-area">
             <p>合計点数：<?php echo $cart_total_qty; ?>点</p>
             <p>合計金額：¥<?php echo number_format($total); ?></p>
+
             <div class="button-area">
                 <a href="G-8_home.php" class="btn back-to-shop-btn">お買い物を続ける</a>
-                <a href="G-12_order.php" class="btn checkout-btn">レジへ進む</a>
+
+                <?php
+                    $cart_query = '';
+                    foreach ($cart as $key => $qty) {
+                        $cart_query .= 'cart_items[]=' . urlencode($key) . '&';
+                    }
+                    $cart_query = rtrim($cart_query, '&');
+                ?>
+                <a href="G-12_order.php?<?php echo $cart_query; ?>" class="btn checkout-btn">
+                    レジへ進む
+                </a>
             </div>
         </div>
 
@@ -128,53 +134,41 @@ foreach ($cart as $key => $qty) {
                 <div class="cart-item">
                     <div class="item-right">
                         <h3>
-                            <a href="G-9_product-detail.php?id=<?= $item['product_id'] ?>"><?= htmlspecialchars($item['product_name']) ?></a>
+                            <a href="G-9_product-detail.php?id=<?= $item['product_id'] ?>">
+                                <?= htmlspecialchars($item['product_name']) ?>
+                            </a>
                         </h3>
-                        <p class="item-color">カラー: 
-                            <?php echo htmlspecialchars($color_display_map[$item['color']] ?? $item['color']); ?>
+
+                        <p class="item-color">
+                            カラー:
+                            <?= htmlspecialchars($color_display_map[$item['color']] ?? $item['color']) ?>
                         </p>
-                        <p class="item-price">¥<?php echo number_format($item['price']) ?></p>
-                        
+
+                        <p class="item-price">¥<?= number_format($item['price']) ?></p>
+
                         <div class="action-buttons">
                             <form method="POST" action="G-11_delete-cart.php" class="delete-form">
                                 <input type="hidden" name="key" value="<?= htmlspecialchars($key) ?>">
                                 <button type="submit" class="delete-btn">削除</button>
                             </form>
+
                             <a href="G-12_order.php?id=<?= urlencode($item['product_id']) ?>&color=<?= urlencode($item['color']) ?>"
-   class="buy-btn" onclick="event.stopPropagation();">購入</a>
+                               class="buy-btn"
+                               onclick="event.stopPropagation();">
+                                購入
+                            </a>
                         </div>
                     </div>
 
                     <div class="item-left">
-                        <img src="<?= htmlspecialchars($item['product_image']) ?>" alt="<?= htmlspecialchars($item['product_name']) ?>" class="product-img">
+                        <img src="<?= htmlspecialchars($item['product_image']) ?>"
+                             alt="<?= htmlspecialchars($item['product_name']) ?>"
+                             class="product-img">
                     </div>
                 </div>
             <?php endforeach; ?>
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
 </div>
 </body>
-<?php
-// ================================
-// ▼▼ G-11_cart.php の最後に追加 ▼▼
-// ================================
-
-
-
-// ▼ 2. 個別購入（id + color が来たらその商品だけ削除）
-if (isset($_GET['id'], $_GET['color'])) {
-    $key = $_GET['id'] . '_' . $_GET['color'];
-
-    if (isset($_SESSION['cart'][$key])) {
-        unset($_SESSION['cart'][$key]);
-    }
-
-    // G-12 に遷移
-    // header("Location: G-12_order.php?id=" . urlencode($_GET['id']) . "&color=" . urlencode($_GET['color']));
-    // 個別購入はG-12_order.php内のロジックで処理されるため、ここではセッションの削除のみに留め、リダイレクトは個別購入リンク (buy-btn) の処理に任せる
-    // (既存のコードの意図が不明確なため、ここではコメントアウトし、buy-btnのリンク先をそのまま使う)
-
-    // この部分のロジックは、個別の購入リンクから遷移した場合、カートからその商品を削除する処理と思われるが、
-    // 既存のコードではこのブロックはどこからも呼ばれていないため、一旦そのまま残します。
-}
-?>
+</html>
