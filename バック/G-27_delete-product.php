@@ -14,10 +14,29 @@ if ($id !== '') {
     $stmt = $pdo->prepare("DELETE FROM product WHERE product_id = :id");
     $stmt->execute([':id' => $id]);
 
-    // ③ 画像ファイルも削除
+    /*// ③ 画像ファイルも削除
     if ($image && file_exists(__DIR__ . '/../img/' . $image)) {
         unlink(__DIR__ . '/../img/' . $image);
     }
+    */
+
+    //以下エラー対応プログラム（バグったらここだけ削除）
+    if ($image) {
+    if (preg_match('/^https?:\/\//', $image)) {
+        // 既存商品（URL形式） → ファイル削除は不要（外部URLなので物理ファイルなし）
+        // 何もしない
+    } elseif (strpos($image, '../img/') === 0) {
+        // 新規商品（../img/で始まる相対パス）
+        $basename = basename($image); // img_xxx.png
+        $filePath = __DIR__ . '/../img/' . $basename;
+
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+      }
+    }
+
+
 }
 ?>
 

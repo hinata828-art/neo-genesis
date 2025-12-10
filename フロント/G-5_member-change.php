@@ -124,7 +124,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                     <div class="form-group">
                         <label for="payment">お支払方法</label>
                         <div class="input-wrapper select-wrapper">
-                            <select id="payment" name="payment_method">
+                            <select id="payment" name="payment_method" onchange="togglePaymentFields()">
                                 <?php foreach ($payment_options as $option): ?>
                                     <option value="<?php echo $option; ?>" 
                                         <?php if ($option === ($customer_info['payment_method'] ?? '')): ?>
@@ -136,6 +136,34 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                             </select>
                             </div>
                     </div>
+                    <div id="credit-fields" style="display: none;">
+                    <label>カード番号：</label>
+                    <input type="text" name="card_number" placeholder="例：1234-5678-9012-3456"><br>
+                    <label>有効期限：</label>
+                    <input type="text" name="card_expiry" placeholder="例：12/29"><br>
+                    <label>セキュリティコード：</label>
+                    <input type="text" name="card_cvv" placeholder="例：123"><br>
+                </div>
+
+                <script>
+                function togglePaymentFields() {
+                    const selected = document.getElementById("payment").value;
+                    const creditFields = document.getElementById("credit-fields");
+
+                    if (selected === "クレジット") {
+                        creditFields.style.display = "block";
+                    } else {
+                        creditFields.style.display = "none";
+                    }
+                }
+
+                document.addEventListener("DOMContentLoaded", () => {
+                    const paymentSelect = document.getElementById("payment");
+                    paymentSelect.addEventListener("change", togglePaymentFields);
+                    togglePaymentFields(); // 初期状態を反映
+                });
+                </script>
+
 
                     <div class="form-group">
                             <label for="birthdate">生年月日</label>

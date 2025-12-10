@@ -191,24 +191,34 @@ $final_total_price = $total_price - $discount_amount;
     <hr>
     
     <!-- 商品リスト表示 -->
+       <!-- 商品リスト表示 -->
     <?php foreach ($cart_items as $item): ?>
     <div class="product-section">
         <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="商品画像" class="product-image">
         
         <div class="product-info">
             <label class="product-name"><?php echo htmlspecialchars($item['product_name']); ?></label>
+
             <div class="product-color-row">
                 <label class="product-color-label">商品カラー：</label>
                 <label class="product-color"><?php echo htmlspecialchars($item['color_display']); ?></label>
             </div>
+
             <?php if ($item['qty'] > 1): ?>
             <div class="product-qty-row">
                 <label>数量：<?php echo $item['qty']; ?>個</label>
             </div>
             <?php endif; ?>
+
+            <!-- ★ 追加：商品ごとの小計 ★ -->
+            <div class="product-price-row">
+                <label>小計：￥<?php echo number_format($item['price'] * $item['qty']); ?></label>
+            </div>
+
         </div>
     </div>
     <?php endforeach; ?>
+
     
     <div class="price-section">
         <p>商品の小計：<span class="price">￥<?php echo number_format($total_price); ?></span></p>
