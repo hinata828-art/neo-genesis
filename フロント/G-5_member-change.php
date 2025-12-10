@@ -124,7 +124,7 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                     <div class="form-group">
                         <label for="payment">お支払方法</label>
                         <div class="input-wrapper select-wrapper">
-                            <select id="payment" name="payment_method">
+                            <select id="payment" name="payment_method" onchange="togglePaymentFields()">
                                 <?php foreach ($payment_options as $option): ?>
                                     <option value="<?php echo $option; ?>" 
                                         <?php if ($option === ($customer_info['payment_method'] ?? '')): ?>
@@ -150,16 +150,20 @@ $payment_options = ['クレジット', '代金引換', '銀行振込', 'コン�
                     const selected = document.getElementById("payment").value;
                     const creditFields = document.getElementById("credit-fields");
 
-                    if (selected === "クレジット") {  // ← 値を一致させる
+                    if (selected === "クレジット") {
                         creditFields.style.display = "block";
                     } else {
                         creditFields.style.display = "none";
                     }
                 }
 
-                // ページ読み込み時に初期状態を反映
-                document.addEventListener("DOMContentLoaded", togglePaymentFields);
+                document.addEventListener("DOMContentLoaded", () => {
+                    const paymentSelect = document.getElementById("payment");
+                    paymentSelect.addEventListener("change", togglePaymentFields);
+                    togglePaymentFields(); // 初期状態を反映
+                });
                 </script>
+
 
                     <div class="form-group">
                             <label for="birthdate">生年月日</label>
