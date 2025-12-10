@@ -76,10 +76,11 @@ $categoryList = [
                 };
                 reader.readAsDataURL(file);
             } else {
-                preview.src = "";
+                preview.src = ""; // 非画像なら空にする
             }
         });
         </script>
+
 
         <label>商品説明</label>
         <textarea name="product_detail" required></textarea>
