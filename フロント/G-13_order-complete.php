@@ -144,6 +144,7 @@ try {
 
     // コミット
     $pdo->commit();
+    unset($_SESSION['cart']);
 
     // === 6. 配送日数 ===
     $sql_delivery = "
