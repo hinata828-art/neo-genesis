@@ -169,6 +169,8 @@ if ($best_coupon) {
 }
 
 $final_total_price = $total_price - $discount_amount;
+
+
 // ================================================================
 ?>
 <!DOCTYPE html>

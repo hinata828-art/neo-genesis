@@ -81,7 +81,13 @@ foreach ($cart as $key => $qty) {
         $total += $item['price'] * $item['quantity'];
     }
 }
-
+// HTMLより前に配置
+if (isset($_GET['id'], $_GET['color'])) {
+    // 単品モード
+    // 対象商品の情報をデータとして G-12 へリダイレクト
+    header("Location: G-12.php?id=$id&color=$color&qty=1&mode=single");
+    exit;
+}
 // ------------------------------------
 ?>
 <!DOCTYPE html>
@@ -154,27 +160,4 @@ foreach ($cart as $key => $qty) {
     </div>
 </div>
 </body>
-<?php
-// ================================
-// ▼▼ G-11_cart.php の最後に追加 ▼▼
-// ================================
-
-
-
-// ▼ 2. 個別購入（id + color が来たらその商品だけ削除）
-if (isset($_GET['id'], $_GET['color'])) {
-    $key = $_GET['id'] . '_' . $_GET['color'];
-
-    if (isset($_SESSION['cart'][$key])) {
-        unset($_SESSION['cart'][$key]);
-    }
-
-    // G-12 に遷移
-    // header("Location: G-12_order.php?id=" . urlencode($_GET['id']) . "&color=" . urlencode($_GET['color']));
-    // 個別購入はG-12_order.php内のロジックで処理されるため、ここではセッションの削除のみに留め、リダイレクトは個別購入リンク (buy-btn) の処理に任せる
-    // (既存のコードの意図が不明確なため、ここではコメントアウトし、buy-btnのリンク先をそのまま使う)
-
-    // この部分のロジックは、個別の購入リンクから遷移した場合、カートからその商品を削除する処理と思われるが、
-    // 既存のコードではこのブロックはどこからも呼ばれていないため、一旦そのまま残します。
-}
-?>
+</html>
