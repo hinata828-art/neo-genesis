@@ -4,8 +4,6 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 require '../common/db_connect.php'; 
 
-// === 1. G-12からのPOSTデータを受け取る ===
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('不正なアクセスです。');
 }
@@ -16,11 +14,11 @@ if ($customer_id === null) {
     exit('ログイン情報（顧客ID）がセッションに見つかりません。');
 }
 
-// ★★★ 修正点: JSONデータを受け取って分解する ★★★
+// === G-12から渡された商品一覧(JSON) ===
 $json_items = $_POST['cart_items_json'] ?? '';
 $items = json_decode($json_items, true);
 
-// JSONから1つ目の商品データを取り出す
+// 最初の商品
 if (!empty($items) && is_array($items)) {
     $first_item = $items[0];
     $base_product_id = $first_item['product_id'] ?? 0;
@@ -29,19 +27,17 @@ if (!empty($items) && is_array($items)) {
     $base_product_id = 0;
     $selected_color_file_name = 'original';
 }
-// ★★★ 修正ここまで ★★★
 
 $total_amount = $_POST['total_amount'] ?? 0;
 $payment_method = $_POST['payment'] ?? '不明';
 
-// オプション
 $option_warranty = $_POST['option_warranty'] ?? null;
 $option_delivery = $_POST['option_delivery'] ?? null;
 
-// クーポンID
-$customer_coupon_id = $_POST['customer_coupon_id'] ?? 0; 
+$customer_coupon_id = $_POST['customer_coupon_id'] ?? 0;
 
-// === 2. 逆引き辞書 ===
+
+// === カラー表示マップ（G-12と同じ）===
 $color_display_map = [
     'original' => 'オリジナル',
     '白色'     => 'ホワイト',
@@ -55,11 +51,9 @@ $color_display_map = [
     'グレー'     => 'グレー'
 ];
 
-$selected_color_display_name = $color_display_map[$selected_color_file_name] ?? $selected_color_file_name;
+$selected_color_display_name = $color_display_map[$selected_color_file_name]
+                              ?? $selected_color_file_name;
 
-// === 3. DB接続と初期化 ===
-// ★★★ ここが今回のエラー原因 → try の前に絶対必要！ ★★★
-$connect = 'mysql:host=' . SERVER . ';dbname=' . DBNAME . ';charset=utf8';
 
 $order_info = [
     'transaction_id' => '---',
@@ -67,13 +61,15 @@ $order_info = [
     'payment' => $payment_method,
     'delivery_days' => '---'
 ];
+
 $final_product_id = $base_product_id; 
+
 
 try {
     $pdo = new PDO($connect, USER, PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // === 4. 正しい商品IDを検索する ===
+    // 色バリエーション商品を取得
     if ($selected_color_display_name !== 'オリジナル') {
 
         $sql_get_name = "SELECT product_name FROM product WHERE product_id = ?";
@@ -84,7 +80,8 @@ try {
         if ($base_product) {
             $base_product_name = $base_product['product_name'];
 
-            $sql_find_variant = "SELECT product_id FROM product WHERE product_name = ? AND color = ?";
+            $sql_find_variant = "SELECT product_id FROM product 
+                                 WHERE product_name = ? AND color = ?";
             $stmt_find_variant = $pdo->prepare($sql_find_variant);
             $stmt_find_variant->execute([$base_product_name, $selected_color_display_name]);
             $variant_product = $stmt_find_variant->fetch(PDO::FETCH_ASSOC);
@@ -95,74 +92,73 @@ try {
         }
     }
 
-    // === 5. データベース書き込み処理 ===
+
+    // === 購入処理開始 ===
     $pdo->beginTransaction();
 
     // 1. transaction_table
     $sql_transaction = "INSERT INTO transaction_table 
-                            (customer_id, transaction_type, transaction_date, payment, delivery_status, total_amount)
+                          (customer_id, transaction_type, transaction_date, payment, delivery_status, total_amount)
                         VALUES
-                            (?, '購入', NOW(), ?, '注文受付', ?)";
-    
-    $stmt_transaction = $pdo->prepare($sql_transaction);
-    $stmt_transaction->execute([
-        $customer_id,
-        $payment_method,
-        $total_amount
-    ]);
+                          (?, '購入', NOW(), ?, '注文受付', ?)";
 
-    // 2. 新しい transaction_id
+    $stmt_transaction = $pdo->prepare($sql_transaction);
+    $stmt_transaction->execute([$customer_id, $payment_method, $total_amount]);
+
     $new_transaction_id = $pdo->lastInsertId();
     $order_info['transaction_id'] = $new_transaction_id;
 
-    // 3. transaction_detail
-    $sql_detail = "INSERT INTO transaction_detail 
-                        (transaction_id, product_id, quantity)
-                   VALUES
-                        (?, ?, 1)";
-    
-    $stmt_detail = $pdo->prepare($sql_detail);
-    $stmt_detail->execute([
-        $new_transaction_id,
-        $final_product_id 
-    ]);
 
-    // 4. クーポン使用済み
-    if ($customer_coupon_id > 0) {
-        $sql_coupon_update = "UPDATE customer_coupon 
-                              SET used_at = NOW() 
-                              WHERE customer_coupon_id = :ccid 
-                              AND customer_id = :cid
-                              AND used_at IS NULL"; 
-                              
-        $stmt_coupon = $pdo->prepare($sql_coupon_update);
-        $stmt_coupon->execute([
-            ':ccid' => $customer_coupon_id,
-            ':cid' => $customer_id
+    // 2. transaction_detail へ商品をすべて登録
+    $sql_detail = "INSERT INTO transaction_detail 
+                      (transaction_id, product_id, quantity)
+                   VALUES (?, ?, ?)";
+
+    $stmt_detail = $pdo->prepare($sql_detail);
+
+    foreach ($items as $one) {
+        $stmt_detail->execute([
+            $new_transaction_id,
+            $one['product_id'],   // こちらは色バリエーションも含まれたID
+            $one['qty'] ?? 1
         ]);
     }
 
-    // コミット
+
+    // 3. クーポン使用済みに
+    if ($customer_coupon_id > 0) {
+        $sql_coupon_update = "UPDATE customer_coupon 
+                              SET used_at = NOW()
+                              WHERE customer_coupon_id = :ccid
+                                AND customer_id = :cid
+                                AND used_at IS NULL";
+
+        $stmt_coupon = $pdo->prepare($sql_coupon_update);
+        $stmt_coupon->execute([
+            ':ccid' => $customer_coupon_id,
+            ':cid'  => $customer_id
+        ]);
+    }
+
+
+    // ★★★ ここが重要！購入完了後にカートを空にする ★★★
+    unset($_SESSION['cart']);
+
     $pdo->commit();
 
-    // === 6. 配送日数 ===
+    // 配送日数取得
     $sql_delivery = "
         SELECT c.delivery_days
         FROM transaction_detail td
         JOIN product p ON td.product_id = p.product_id
         JOIN category c ON p.category_id = c.category_id
         WHERE td.transaction_id = ?
-        LIMIT 1
-    ";
+        LIMIT 1";
     $stmt_delivery = $pdo->prepare($sql_delivery);
     $stmt_delivery->execute([$new_transaction_id]);
     $delivery = $stmt_delivery->fetch(PDO::FETCH_ASSOC);
 
-    if ($delivery) {
-        $order_info['delivery_days'] = $delivery['delivery_days'];
-    } else {
-        $order_info['delivery_days'] = '配送情報未設定';
-    }
+    $order_info['delivery_days'] = $delivery['delivery_days'] ?? '配送情報未設定';
 
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {
@@ -170,6 +166,8 @@ try {
     }
     $order_info['delivery_days'] = '注文処理エラー: ' . $e->getMessage();
 }
+?>
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
