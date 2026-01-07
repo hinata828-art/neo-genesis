@@ -162,9 +162,9 @@ $initial_total_price = $initial_subtotal + $compensation_price;
 
     <div class="delivery-section">
         <label>お届け先氏名：</label><br>
-        <input type="text" name="name" class="input-text" value="<?php echo htmlspecialchars($customer_info['name'] ?? ''); ?>" required><br>
+        <input type="text" name="name" class="input-text" value="<?php echo htmlspecialchars($customer_info['customer_name'] ?? ''); ?>" required><br>
         <label>お届け先住所：</label><br>
-        <input type="text" name="address" class="input-text" value="<?php echo htmlspecialchars($customer_info['address'] ?? ''); ?>" required><br>
+        <input type="text" name="address" class="input-text" value="<?php echo htmlspecialchars($customer_info['full_address'] ?? ''); ?>" required><br>
     </div>
 
     <hr>
