@@ -177,6 +177,7 @@ function getStatusClass($status) {
                 </div>
 
                 <a href="G-5_member-change.php" class="btn btn-edit">会員情報変更画面へ</a>
+                <?php $_SESSION['customer_info'] = $customer_info; ?>
             </section>
             <?php endif; ?>
 
