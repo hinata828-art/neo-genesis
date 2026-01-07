@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 // --- お知らせ用ロジックの追加 ---
 
 // 1. 商品テーブルからランダムに3〜5件取得
