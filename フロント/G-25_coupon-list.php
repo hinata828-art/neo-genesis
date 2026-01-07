@@ -10,7 +10,7 @@ if (isset($_SESSION['customer']['id'])) {
     $customer_id = $_SESSION['customer']['id'];
 } else {
     // ログインしていない場合、ログインページへリダイレクト
-    header('Location: G-1_login.php');
+    header('Location: G-1_customer-form.php');
     exit;
 }
 //$customer_id = $_SESSION['customer_id'] ?? 6; // 仮の顧客ID
