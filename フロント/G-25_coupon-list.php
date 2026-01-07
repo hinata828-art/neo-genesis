@@ -9,9 +9,8 @@ require '../common/db_connect.php'; // DB接続ファイル
 if (isset($_SESSION['customer']['id'])) {
     $customer_id = $_SESSION['customer']['id'];
 } else {
-    // ログインしていない場合
-    echo "ログインしていません。";
-    // header('Location: G-1_login.php'); // ログインページへ
+    // ログインしていない場合、ログインページへリダイレクト
+    header('Location: G-1_login.php');
     exit;
 }
 //$customer_id = $_SESSION['customer_id'] ?? 6; // 仮の顧客ID
