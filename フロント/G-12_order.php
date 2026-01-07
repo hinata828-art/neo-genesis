@@ -193,6 +193,7 @@ $final_total_price = $total_price - $discount_amount;
     <title>注文情報入力</title>
 </head>
 <body>
+    <?php var_dump($customer_info); ?>
     <?php require __DIR__ . '/../common/header.php'; ?>
     
 <div class="container">
