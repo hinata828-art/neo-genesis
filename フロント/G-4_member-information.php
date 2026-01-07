@@ -25,7 +25,7 @@ $error_message = '';
 
 try {
     // 5. SQL 1: 会員情報の取得 (変更なし)
-    $sql_customer = "SELECT c.*, a.prefecture, a.city 
+    $sql_customer = "SELECT c.*, a.prefecture, a.city, a.address_line
                         FROM customer AS c
                         LEFT JOIN address AS a ON c.customer_id = a.customer_id
                         WHERE c.customer_id = :id
