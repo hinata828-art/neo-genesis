@@ -1,3 +1,8 @@
+<?php
+// ヘッダーなどでセッションを使う場合は最初に記述
+session_start();
+// ※ここで共通ヘッダーなどを読み込む
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,7 +16,7 @@
     <?php require __DIR__ . '/../common/header.php'; ?>
     
     <div class="container">
-            <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="logo">
+        <img src="../img/NishimuraOnline.png" alt="ニシムラOnline" class="logo">
 
         <main class="confirm-box">
             <div class="alert-icon">⚠️</div>
@@ -26,6 +31,5 @@
             </div>
         </main>
     </div>
-    
 </body>
 </html>
