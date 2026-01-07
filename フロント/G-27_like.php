@@ -1,20 +1,40 @@
 <?php
-// 1. データベース接続（例）
-$pdo = new PDO('mysql:host=localhost;dbname=shop_db', 'user', 'pass');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// 2. ログイン中のユーザーID（仮に123とします）
-$user_id = 123;
+session_start();
+// 正しい接続ファイルを読み込みます
+require '../common/db_connect.php'; 
 
-// 3. お気に入りテーブルと商品テーブルを結合して取得
-$sql = "SELECT p.id, p.name, p.price, p.image_url 
-        FROM likes AS l
-        JOIN products AS p ON l.product_id = p.id
-        WHERE l.user_id = :user_id
-        ORDER BY l.created_at DESC";
+// ログインチェック
+if (isset($_SESSION['customer']['id'])) {
+    $customer_id = $_SESSION['customer']['id'];
+} else {
+    // ログインしていない場合はログイン画面へ（ファイル名はプロジェクトに合わせてください）
+    header('Location: G-1_customer-form.php');
+    exit;
+}
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['user_id' => $user_id]);
-$favorite_items = $stmt->fetchAll();
+/**
+ * $pdo という変数が db_connect.php で定義されている前提です。
+ * もしエラーが出る場合は $pdo を $db などに変えてみてください。
+ */
+try {
+    // あなたのDB構造（productテーブル）に合わせたSQL
+    // お気に入りテーブル名は仮に 'likes' としていますが、実際のテーブル名に合わせてください
+    $sql = "SELECT p.product_id, p.product_name, p.price, p.product_image 
+            FROM likes AS l
+            JOIN product AS p ON l.product_id = p.product_id
+            WHERE l.customer_id = :customer_id
+            ORDER BY l.created_at DESC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['customer_id' => $customer_id]);
+    $favorite_items = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // SQLエラーなどを画面に表示
+    die("エラーが発生しました: " . htmlspecialchars($e->getMessage()));
+}
 ?>
 
 <div class="favorite-container">
@@ -23,11 +43,11 @@ $favorite_items = $stmt->fetchAll();
         <?php foreach ($favorite_items as $item): ?>
         <div class="product-card">
             <div class="product-image">
-                <img src="<?= htmlspecialchars($item['image_url']) ?>" alt="商品画像">
+                <img src="<?= htmlspecialchars($item['product_image'] ?? '../img/no-image.png') ?>" alt="商品画像">
             </div>
             <div class="product-info">
-                <h3><?= htmlspecialchars($item['name']) ?></h3>
-                <p class="price">¥<?= number_format($item['price']) ?></p>
+                <h3><?= htmlspecialchars($item['product_name']) ?></h3>
+                <p class="price">¥<?= number_format((int)($item['price'] ?? 0)) ?></p>
                 <div class="actions">
                     <button class="btn-buy">カートに入れる</button>
                     <button class="btn-remove">削除</button>
@@ -37,18 +57,3 @@ $favorite_items = $stmt->fetchAll();
         <?php endforeach; ?>
     </div>
 </div>
-
-<style>
-/* CSS部分（フォーマットを整える） */
-.favorite-container { max-width: 1000px; margin: 0 auto; padding: 20px; font-family: sans-serif; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-.product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: 0.3s; }
-.product-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.product-image img { width: 100%; height: 200px; object-fit: cover; }
-.product-info { padding: 15px; }
-.product-info h3 { font-size: 16px; margin: 0 0 10px; }
-.price { color: #e60000; font-weight: bold; font-size: 18px; }
-.actions { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.btn-buy { background: #ff9900; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; }
-.btn-remove { background: none; border: 1px solid #ccc; color: #666; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-</style>
