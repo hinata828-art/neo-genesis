@@ -3,17 +3,26 @@
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+$customer_info = $_SESSION['customer_info'] ?? null;
+
 require '../common/db_connect.php';
 
 // 2. ログイン状態の確認
-$customer_info = null;
+/*$customer_info = null;
 $customer_id = 0;
 if (isset($_SESSION['customer'])) {
     $customer_info = $_SESSION['customer'];
     $customer_id = $_SESSION['customer']['id'];
 } else {
     $customer_info = ['name' => '（ゲスト）', 'address' => '（住所未登録）'];
-}
+}*/
+if (!isset($_SESSION['customer'])) { 
+    echo "ログインしていません。"; 
+    exit; 
+} 
+
+$customer_id = $_SESSION['customer']['id'];
 
 // 3. カラー名マップ
 $color_display_map = [

@@ -161,7 +161,7 @@ function getStatusClass($status) {
                 </div>
                 <div class="info-group">
                     <label for="address">ご住所</label>
-                    <input type="text" id="address" value="<?php echo htmlspecialchars($customer_info['full_address']); ?>" readonly>
+                    <input type="text" id="address" value="<?php echo htmlspecialchars($customer_info['full_address']['address_line']); ?>" readonly>
                 </div>
                 <div class="info-group">
                     <label for="phone">電話番号</label>
@@ -177,6 +177,7 @@ function getStatusClass($status) {
                 </div>
 
                 <a href="G-5_member-change.php" class="btn btn-edit">会員情報変更画面へ</a>
+                <?php $_SESSION['customer_info'] = $customer_info; ?>
             </section>
             <?php endif; ?>
 
