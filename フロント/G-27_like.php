@@ -23,7 +23,7 @@ try {
     // あなたのDB構造（productテーブル）に合わせたSQL
     // お気に入りテーブル名は仮に 'likes' としていますが、実際のテーブル名に合わせてください
     $sql = "SELECT p.product_id, p.product_name, p.price, p.product_image 
-            FROM likes AS l
+            FROM like AS l
             JOIN product AS p ON l.product_id = p.product_id
             WHERE l.customer_id = :customer_id
             ORDER BY l.created_at DESC";
