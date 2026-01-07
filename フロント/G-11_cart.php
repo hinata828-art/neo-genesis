@@ -84,6 +84,14 @@ foreach ($cart as $key => $qty) {
         $total += $item['price'] * $item['quantity'];
     }
 }
+
+if (isset($_GET['id'], $_GET['color'])) {
+    // 単品モード
+    // 対象商品の情報をデータとして G-12 へリダイレクト
+    header("Location: G-12.php?id=$id&color=$color&qty=1&mode=single");
+    exit;
+}
+// ------------------------------------
 ?>
 <!DOCTYPE html>
 <html lang="ja">
