@@ -3,6 +3,8 @@
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+$customer_info = $_SESSION['customer_info'] ?? null;
+
 require '../common/db_connect.php';
 
 // 2. ログイン状態の確認
