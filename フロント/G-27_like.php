@@ -20,10 +20,9 @@ if (isset($_SESSION['customer']['id'])) {
  * もしエラーが出る場合は $pdo を $db などに変えてみてください。
  */
 try {
-    // あなたのDB構造（productテーブル）に合わせたSQL
-    // お気に入りテーブル名は仮に 'likes' としていますが、実際のテーブル名に合わせてください
+    // テーブル名 `like` をバッククォートで囲む
     $sql = "SELECT p.product_id, p.product_name, p.price, p.product_image 
-            FROM like AS l
+            FROM `like` AS l
             JOIN product AS p ON l.product_id = p.product_id
             WHERE l.customer_id = :customer_id
             ORDER BY l.created_at DESC";
@@ -32,7 +31,6 @@ try {
     $stmt->execute(['customer_id' => $customer_id]);
     $favorite_items = $stmt->fetchAll();
 } catch (PDOException $e) {
-    // SQLエラーなどを画面に表示
     die("エラーが発生しました: " . htmlspecialchars($e->getMessage()));
 }
 ?>
