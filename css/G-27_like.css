@@ -1,0 +1,149 @@
+@charset "utf-8";
+
+body {
+    background-color: #f9f9f9;
+    font-family: "Noto Sans JP", sans-serif;
+}
+
+.favorite-container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.page-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    border-left: 5px solid #007bff;
+    padding-left: 15px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* ボタンの配置基準 */
+}
+
+.product-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* 画像エリアの設定 */
+.image-area {
+    position: relative; /* ハートボタンをここに重ねる */
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.product-image img, .image-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+/* ★画像の上に重ねるハートボタン */
+.btn-favorite-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9); /* 半透明の白背景 */
+    border: 1px solid #eee;
+    color: #ccc;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+    z-index: 10; /* 画像より手前に表示 */
+}
+
+/* 登録済み（常にこの状態） */
+.btn-favorite-overlay.active {
+    color: #ff4757; /* 赤色 */
+}
+
+.btn-favorite-overlay:hover {
+    transform: scale(1.1);
+    background: #fff;
+}
+
+.product-info {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-info h3 {
+    font-size: 16px;
+    margin: 0 0 10px;
+    color: #333;
+    height: 2.8em;
+    overflow: hidden;
+}
+
+.price {
+    color: #e60000;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.actions {
+    margin-top: auto;
+}
+
+.btn-buy {
+    display: block;
+    background: #007bff;
+    color: white;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.btn-buy:hover {
+    opacity: 0.8;
+}
+
+/* 空メッセージ */
+.no-items {
+    text-align: center;
+    padding: 50px;
+    color: #777;
+}
+
+.home-link {
+    text-align: center;
+    margin-top: 20px;
+}
+.home-link a {
+    color: #007bff;
+    text-decoration: underline;
+}
