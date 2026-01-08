@@ -1,4 +1,4 @@
-/* G-10_product-list.css (商品カード横幅広め版) */
+/* G-10_product-list.css (商品カード横幅広め版 + お気に入りボタン) */
 
 body {
     font-family: sans-serif;
@@ -30,24 +30,29 @@ hr {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    width: 320px; /* ← ここを 260px → 320px に変更 */
+    width: 320px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    
+    /* ★追加: ハートボタンを右上に絶対配置するために必須 */
+    position: relative; 
 }
 
 /* 画像も少し大きめに調整 */
 .product-img {
     width: 100%;
-    height: 240px; /* ← 200px → 240px に変更 */
+    height: 240px;
     object-fit: cover;
     border-bottom: 1px solid #ddd;
 }
 
 .product-info {
     padding: 0.8rem;
+    width: 100%; /* 幅を確保 */
+    box-sizing: border-box; /* パディングを含めた幅計算 */
 }
 
 .product-info h2 {
@@ -80,6 +85,41 @@ hr {
     margin: 2rem 0;
     font-size: 1.1rem;
     color: #777;
+}
+
+/* ===== ★ここから追加: お気に入りボタンのスタイル ===== */
+
+.btn-favorite-overlay {
+    position: absolute; /* 親要素(.product-card)の右上を基準に配置 */
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* 正円にする */
+    background: rgba(255, 255, 255, 0.9); /* 半透明の白背景 */
+    border: 1px solid #ddd;
+    color: #ccc; /* 未登録時はグレー */
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; /* ハートを中央寄せ */
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* 画像より手前に表示 */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* 軽く影をつける */
+}
+
+/* 登録済み（赤色） */
+.btn-favorite-overlay.active {
+    color: #ff4757;
+    border-color: #ff4757;
+    background-color: #fff0f1;
+}
+
+/* ホバー時の動き */
+.btn-favorite-overlay:hover {
+    transform: scale(1.1); /* 少し大きく */
+    background: #fff;
 }
 
 /* ===== スマホ対応（600px以下） ===== */
