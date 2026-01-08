@@ -20,14 +20,16 @@ if (isset($_SESSION['customer']['id'])) {
  * もしエラーが出る場合は $pdo を $db などに変えてみてください。
  */
 try {
-    // テーブル名 `like` をバッククォートで囲む
+    // カラム名を実際のテーブル(user_id, created_time)に合わせる
     $sql = "SELECT p.product_id, p.product_name, p.price, p.product_image 
             FROM `like` AS l
             JOIN product AS p ON l.product_id = p.product_id
-            WHERE l.customer_id = :customer_id
-            ORDER BY l.created_at DESC";
+            WHERE l.user_id = :customer_id
+            ORDER BY l.created_time DESC";
 
     $stmt = $pdo->prepare($sql);
+    
+    // プレースホルダに渡す値は、セッションから取得した $customer_id のままでOKです
     $stmt->execute(['customer_id' => $customer_id]);
     $favorite_items = $stmt->fetchAll();
 } catch (PDOException $e) {
