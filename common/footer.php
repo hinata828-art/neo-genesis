@@ -177,10 +177,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.status === 'success') {
                         // 成功時: 既存のモーダルを使ってメッセージを表示
                         openModal(
-                           true // HTMLタグを有効にする
-                            '🎉 よく見つけましたね！', 
-                            'おめでとうございます！<br>全商品に使える <strong>${data.discount_rate}% 割引クーポン</strong> をゲットしました！<br><br><a href="G-25_coupon-list.php" style="color:blue; text-decoration:underline;">クーポン一覧を確認する</a>',
-                        );
+            '🎉 よく見つけましたね！',
+                `おめでとうございます！<br>
+                全商品に使える <strong>${data.discount_rate}% 割引クーポン</strong> をゲットしました！<br><br>
+                <a href="G-25_coupon-list.php" style="color:blue; text-decoration:underline;">
+                クーポン一覧を確認する
+                </a>`,
+                true
+                );
+
                     } else {
                         // 失敗時 (例: ログインしていない等)
                         openModal('残念...', 'クーポンの獲得に失敗しました: ' + data.message);
