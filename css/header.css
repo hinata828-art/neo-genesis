@@ -34,7 +34,7 @@ header {
 .header-left {
     display: flex;
     align-items: center;
-    gap: 4px; /* ← 余白を縮めた */
+    gap: 1px; /* ← 余白を縮めた */ /*4から1に変更*/
     flex-shrink: 0;
 }
 
@@ -55,7 +55,7 @@ header {
 
 /* ロゴ */
 .header-logo img {
-    height: 100px;
+    height: 60px;
     width: auto;
 }
 
