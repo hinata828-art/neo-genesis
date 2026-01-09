@@ -17,8 +17,7 @@
     <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
         今すぐ<br>チェック！
     </div>
-</footer>
-
+    
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -47,6 +46,7 @@
         © 2025 ニシムラ.online All Rights Reserved.
     </div>
 </div>
+</footer>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // ===== 1. スライダー制御 =====
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         openModal(
                            true // HTMLタグを有効にする
                             '🎉 よく見つけましたね！', 
-                            `おめでとうございます！<br>全商品に使える <strong>${data.discount_rate}% 割引クーポン</strong> をゲットしました！<br><br><a href="G-25_coupon-list.php" style="color:blue; text-decoration:underline;">クーポン一覧を確認する</a>`,
+                            'おめでとうございます！<br>全商品に使える <strong>${data.discount_rate}% 割引クーポン</strong> をゲットしました！<br><br><a href="G-25_coupon-list.php" style="color:blue; text-decoration:underline;">クーポン一覧を確認する</a>',
                         );
                     } else {
                         // 失敗時 (例: ログインしていない等)
