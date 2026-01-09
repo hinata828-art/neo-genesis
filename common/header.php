@@ -97,6 +97,8 @@ $user_name = $login ? $_SESSION['customer']['name'] : '';
         <li><a href="../フロント/G-8_home.php">トップページ</a></li>
         <li><a href="../フロント/G-25_coupon-list.php">所持クーポン一覧</a></li>
         <li><a href="../フロント/G-6_withdrawal-check.php">ログアウト</a></li>
+        <li><a href="../フロント/G-26_notice.php">お知らせ</a></li>
+        <li><a href="../フロント/G-27_like.php">お気に入り</a></li>
     </ul>
 </nav>
 

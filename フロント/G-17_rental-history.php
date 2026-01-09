@@ -129,8 +129,11 @@ function getStatusClass($status) {
                             <p class="product-price">単価: ¥<?php echo number_format($product['price']); ?></p> 
                         </div>
                         <div class="button-group">
-                            <a href="G-9_product-detail.php?id=<?php echo $product['product_id']; ?>" class="btn btn-detail">詳細</a>
-                            <a href="G-14_rental.php?id=<?php echo $product['product_id']; ?>" class="btn btn-purchase">再度レンタル</a>
+
+                            <a href="G-17_rental_sub.php?id=<?php echo $transaction_id; ?>" class="btn btn-purchase">
+                                レンタル期間を延長する
+                            </a>
+
                         </div>
                     </section>
                 <?php endforeach; ?>
@@ -165,66 +168,11 @@ function getStatusClass($status) {
                     </p>
                 </section>
 
-                <?php if ($show_roulette_button): ?>
-                <section class="roulette-link-section">
-                    <a href="G-17_rental-roulette.php?id=<?php echo htmlspecialchars($transaction_id); ?>" class="btn-roulette">
-                        <span>🎁</span> 外れなし！ルーレットを回す
-                    </a>
-                </section>
-                <?php endif; ?>
-                
             <?php endif; ?>
 
         </main>
 
-       <footer class="footer">
-            <?php if ($is_cancellable): ?>
-                <a href="#" id="open-cancel-modal" class="footer-link">レンタルキャンセルはコチラ</a>
-            <?php endif; ?>
-       </footer>
-
     </div> 
-    
-    <div id="cancel-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <button id="close-modal" class="modal-close-btn">&times;</button>
-            <div class="modal-icon">
-                <img src="../img/alert.png" alt="" style="width: 60px; height: 60px;">
-            </div>
-            <h2>レンタルをキャンセルしますか？</h2>
-            <div class="modal-buttons">
-                <a href="G_transaction-cancel.php?id=<?php echo htmlspecialchars($transaction_id); ?>" id="confirm-yes" class="btn btn-danger">はい</a>
-                <button id="confirm-no" class="btn btn-secondary">いいえ</button>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const openBtn = document.getElementById('open-cancel-modal');
-        if (openBtn) {
-            const modal = document.getElementById('cancel-modal');
-            const closeBtn = document.getElementById('close-modal');
-            const noBtn = document.getElementById('confirm-no');
 
-            openBtn.addEventListener('click', function(e) {
-                e.preventDefault(); 
-                modal.style.display = 'flex'; 
-            });
-            noBtn.addEventListener('click', function() {
-                modal.style.display = 'none'; 
-            });
-            closeBtn.addEventListener('click', function() {
-                modal.style.display = 'none'; 
-            });
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) { 
-                    modal.style.display = 'none'; 
-                }
-            });
-        }
-    });
-    </script>
-    
-    </body>
+</body>
 </html>
