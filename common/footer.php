@@ -28,7 +28,35 @@
 </div>
 
 <div id="rain-container"></div>
+<hr>
+<div class="footer-menu">
+    <nav class="footer-links">
+        <a href="#">お問い合わせフォーム</a>
+        <a href="#">よくある質問</a>
+        <a href="#">会社概要</a>
+        <a href="#">利用規約</a>
+        <a href="#">プライバシーポリシー</a>
+    </nav>
 
+    <h4 class="category-title">カテゴリー</h4>
+
+    
+    <nav class="kaden-links">
+        <a href="#">テレビ</a>
+        <a href="#">冷蔵庫</a>
+        <a href="#">電子レンジ</a>
+        <a href="#">カメラ</a>
+        <a href="#">電子レンジ・オーブンレンジ</a>
+    </nav>
+
+    <div class="admin-login">
+        <a href="../バック/G-19_admin-login.php">管理者ログインはこちら</a>
+    </div>
+
+    <div class="copyright">
+        © 2025 ニシムラ.online All Rights Reserved.
+    </div>
+</div>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // ===== 1. スライダー制御 =====
@@ -178,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-</script>            
+</script>  
+
 </body>
 </html>
