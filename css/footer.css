@@ -1,0 +1,259 @@
+.footer-banner {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch; 
+    background-color: #f8f8f8;
+    padding: 15px 10px;
+    border-top: 2px solid #ddd;
+    width: 100%;
+    margin-top: 40px;
+}
+
+.footer-box {
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9em;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    flex: 1; 
+    margin: 0 5px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    height: 100px;
+    /* クリック可能に見せる */
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.footer-box:hover {
+    background-color: #e0e0e0;
+}
+
+
+/* --- ★★★ モーダル（ポップアップ）スタイル ★★★ --- */
+
+/* モーダル背景 (画面全体) */
+.modal {
+    display: none; /* 初期状態は非表示 */
+    position: fixed;
+    z-index: 5000; /* 最前面 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* 半透明の黒 */
+    
+    /* 中央寄せのキモ */
+    justify-content: center; 
+    align-items: center;
+}
+
+/* モーダルの中身 (白い箱) */
+.modal-content {
+    background-color: #fefefe;
+    margin: 0; /* auto ではなく 0 (flexboxで制御するため) */
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s;
+    text-align: center; /* テキスト中央揃え */
+}
+
+/* タイトル */
+#modal-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+    color: #333;
+}
+
+/* 本文 */
+#modal-text {
+    line-height: 1.6;
+    color: #555;
+    font-size: 1.1em;
+}
+
+/* 閉じるボタン (×) */
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close-btn:hover,
+.close-btn:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* フェードインアニメーション */
+@keyframes fadeIn {
+    from {opacity: 0; transform: scale(0.9);}
+    to {opacity: 1; transform: scale(1);}
+}
+
+
+/* --- ★★★ イースターエッグ（家電落下）用CSS ★★★ --- */
+
+/* 落下コンテナ */
+#rain-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* 画像の下にある要素をクリック可能にする */
+    z-index: 9999; 
+    overflow: hidden;
+}
+
+/* 落下するアイテム */
+.falling-item {
+    position: absolute;
+    top: -100px; /* 画面外からスタート */
+    opacity: 0.9;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards; /* 最後に消えるまで再生 */
+}
+
+/* 落下アニメーション */
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg); /* 画面の下まで落ちる */
+        opacity: 0;
+    }
+}
+.footer-menu {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.footer-links,
+.category-links,
+.kaden-links {
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    margin: 0 10px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #333;
+}
+
+.category-title {
+    margin: 10px 0 6px 0;
+    font-weight: bold;
+}
+
+.category-links a,
+.kaden-links a {
+    margin: 0 8px;
+    font-size: 13px;
+    text-decoration: none;
+    color: #555;
+}
+
+.admin-login {
+    margin: 10px 0;
+}
+
+.copyright {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #888;
+}
+/* ===== 共通設定 ===== */
+.footer-menu {
+    text-align: center;
+    padding: 16px 0;
+    background-color: #f9f9f9;
+}
+
+.footer-links {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    margin: 0 8px;
+    font-size: 12px;          /* 小さめ文字 */
+    color: #1e5bb8;           /* 青文字 */
+    text-decoration: none;
+    line-height: 1.8;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* 管理者ログイン */
+.admin-login {
+    margin: 8px 0;
+}
+
+.admin-login a {
+    font-size: 12px;
+    color: #1e5bb8;
+    text-decoration: none;
+}
+
+.admin-login a:hover {
+    text-decoration: underline;
+}
+
+/* コピーライト */
+.copyright {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #1e5bb8;
+}
+
+/* ===== スマホ対応 ===== */
+@media screen and (max-width: 767px) {
+
+    .footer-menu {
+        padding: 14px 10px;
+        text-align: left; /* スマホは左寄せ */
+    }
+
+    .footer-links {
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .footer-links a {
+        display: inline-block;
+        margin: 4px 6px;
+        font-size: 13px;   /* スマホでは少し大きく */
+    }
+
+    .admin-login {
+        text-align: center;
+        margin: 12px 0;
+    }
+
+    .copyright {
+        text-align: center;
+        font-size: 11px;
+        margin-top: 12px;
+    }
+}
