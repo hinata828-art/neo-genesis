@@ -11,8 +11,7 @@ $transaction_id = (int)$_POST['transaction_id'];
 $extend_days    = (int)$_POST['extend_days'];
 
 try {
-
-    // 許可する延長日数（改ざん防止）
+    // 延長可能日数（ユーザーが選べるものだけ）
     $allowed_days = [3, 7, 30, 90, 365];
     if (!in_array($extend_days, $allowed_days, true)) {
         exit('無効な延長日数です。');
@@ -34,13 +33,13 @@ try {
         exit('レンタル情報が見つかりません。');
     }
 
-    // 返却済み or キャンセル済みは延長不可
+    // 返却済み・キャンセル済みは延長不可
     if ($rental['delivery_status'] === '返却済み' ||
         $rental['delivery_status'] === 'キャンセル済み') {
         exit('この取引は延長できません。');
     }
 
-    // ★ 延長日数を加算 ★
+    // 新しい返却日を計算
     $new_end = date(
         'Y-m-d',
         strtotime($rental['rental_end'] . " +{$extend_days} day")
