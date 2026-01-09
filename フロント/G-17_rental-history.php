@@ -130,7 +130,6 @@ function getStatusClass($status) {
                         </div>
                         <div class="button-group">
 
-                            <!-- 延長ボタン -->
                             <a href="G-17_rental_sub.php?id=<?php echo $transaction_id; ?>" class="btn btn-purchase">
                                 レンタル期間を延長する
                             </a>
