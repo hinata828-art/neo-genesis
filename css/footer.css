@@ -182,3 +182,78 @@
     font-size: 12px;
     color: #888;
 }
+/* ===== 共通設定 ===== */
+.footer-menu {
+    text-align: center;
+    padding: 16px 0;
+    background-color: #f9f9f9;
+}
+
+.footer-links {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    margin: 0 8px;
+    font-size: 12px;          /* 小さめ文字 */
+    color: #1e5bb8;           /* 青文字 */
+    text-decoration: none;
+    line-height: 1.8;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* 管理者ログイン */
+.admin-login {
+    margin: 8px 0;
+}
+
+.admin-login a {
+    font-size: 12px;
+    color: #1e5bb8;
+    text-decoration: none;
+}
+
+.admin-login a:hover {
+    text-decoration: underline;
+}
+
+/* コピーライト */
+.copyright {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #1e5bb8;
+}
+
+/* ===== スマホ対応 ===== */
+@media screen and (max-width: 767px) {
+
+    .footer-menu {
+        padding: 14px 10px;
+        text-align: left; /* スマホは左寄せ */
+    }
+
+    .footer-links {
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .footer-links a {
+        display: inline-block;
+        margin: 4px 6px;
+        font-size: 13px;   /* スマホでは少し大きく */
+    }
+
+    .admin-login {
+        text-align: center;
+        margin: 12px 0;
+    }
+
+    .copyright {
+        text-align: center;
+        font-size: 11px;
+        margin-top: 12px;
+    }
+}

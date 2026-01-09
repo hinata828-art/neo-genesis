@@ -38,17 +38,7 @@
         <a href="#">プライバシーポリシー</a>
     </nav>
 
-    <h4 class="category-title">カテゴリー</h4>
-
     
-    <nav class="kaden-links">
-        <a href="#">テレビ</a>
-        <a href="#">冷蔵庫</a>
-        <a href="#">電子レンジ</a>
-        <a href="#">カメラ</a>
-        <a href="#">電子レンジ・オーブンレンジ</a>
-    </nav>
-
     <div class="admin-login">
         <a href="../バック/G-19_admin-login.php">管理者ログインはこちら</a>
     </div>
