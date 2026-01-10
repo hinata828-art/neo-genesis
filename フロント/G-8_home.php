@@ -31,6 +31,7 @@ try {
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/breadcrumb.css">
     <link rel="stylesheet" href="../css/G-8_home.css">
+    <link rel="stylesheet" href="../css/footer.css">
 </head>
 
 <body>
@@ -131,7 +132,7 @@ try {
     </section>
 
 </main>
-
+    <?php require_once __DIR__ . '/../common/footer.php'; ?>
 
 </body>
 </html>
