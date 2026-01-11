@@ -73,9 +73,14 @@
 
 @media screen and (max-width: 768px) {
 
-    /* 上部3ボタンを縦並び */
+    /* =========================
+       上部：3つのボタン
+    ========================= */
+
     .footer-banner {
         padding: 16px 12px;
+        display: flex;
+        flex-direction: column;
     }
 
     .footer-box {
@@ -84,16 +89,25 @@
         font-size: 14px;
     }
 
-    /* フッターメニューを縦並び */
+    /* =========================
+       中段：フッターリンク
+    ========================= */
+
     .footer-menu {
+        width: 100%;
+        display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
         margin-top: 16px;
+        gap: 16px;
     }
 
     .footer-links {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        gap: 8px;
     }
 
     .footer-links a {
@@ -101,11 +115,21 @@
         font-size: 14px;
     }
 
+    /* =========================
+       管理者ログイン
+    ========================= */
+
     .admin-login {
+        width: 100%;
         text-align: center;
     }
 
+    /* =========================
+       copyright
+    ========================= */
+
     .copyright {
+        width: 100%;
         text-align: center;
         font-size: 11px;
         line-height: 1.4;
