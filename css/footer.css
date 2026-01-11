@@ -73,65 +73,62 @@
 
 @media screen and (max-width: 768px) {
 
-    /* =========================
-       上部：3つのボタン
-    ========================= */
-
+    /* footer全体 */
     .footer-banner {
         padding: 16px 12px;
         display: flex;
         flex-direction: column;
     }
 
-    .footer-box {
-        width: 100%;
+    /* ===== 上部3ボタン：横並び ===== */
+    .footer-banner > .footer-box {
+        width: 32%;
+        font-size: 13px;
         margin-bottom: 12px;
-        font-size: 14px;
     }
 
-    /* =========================
-       中段：フッターリンク
-    ========================= */
-
-    .footer-menu {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 16px;
-        gap: 16px;
+    .footer-banner {
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
+    /* ===== フッターリンク：横並び＋折り返し ===== */
     .footer-links {
         width: 100%;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px 12px;
     }
 
     .footer-links a {
-        text-align: center;
-        font-size: 14px;
+        font-size: 13px;
+        white-space: nowrap;
     }
 
-    /* =========================
-       管理者ログイン
-    ========================= */
-
+    /* ===== 管理者ログイン：中央 ===== */
     .admin-login {
         width: 100%;
         text-align: center;
+        margin-top: 12px;
     }
 
-    /* =========================
-       copyright
-    ========================= */
-
+    /* ===== copyright ===== */
     .copyright {
         width: 100%;
         text-align: center;
         font-size: 11px;
         line-height: 1.4;
+        margin-top: 12px;
+    }
+
+    /* footer-menu 全体を縦 */
+    .footer-menu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
     }
 }
