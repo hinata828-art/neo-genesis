@@ -1,5 +1,6 @@
 
   <footer class="footer-banner">
+    <div class="footer-top^buttons">
     <div class="footer-box" id="roulette-box" role="button" tabindex="0">
         レンタルで<br>お得な<br>ルーレット！！
     </div>
@@ -9,12 +10,12 @@
     <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
         今すぐ<br>チェック！
     </div>
-    
+    </div>
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
         <h3 id="modal-title"></h3>
-        <p id="modal-text">ここに詳細な情報が表示されます。</p>
+       
     </div>
 </div>
 

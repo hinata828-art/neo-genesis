@@ -79,7 +79,18 @@
         display: flex;
         flex-direction: column;
     }
+    .footer-top-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
 
+    .footer-top-buttons .footer-box {
+        width: 32%;
+        font-size: 13px;
+    }
+}
     /* ===== 上部3ボタン：横並び ===== */
     .footer-banner > .footer-box {
         width: 32%;
@@ -131,4 +142,4 @@
         gap: 8px;
         margin-top: 16px;
     }
-}
+
