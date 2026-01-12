@@ -9,7 +9,12 @@
     padding: 20px 16px;
     box-sizing: border-box;
 }
-
+.footer-top-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+}
 /* 上部3ボタン */
 .footer-box {
     border: 1px solid #ccc;
@@ -20,6 +25,7 @@
     background-color: #fff;
     font-weight: bold;
 }
+
 
 /* モーダルなどがあるため relative */
 .footer-banner {
@@ -90,7 +96,7 @@
         width: 32%;
         font-size: 13px;
     }
-}
+
     /* ===== 上部3ボタン：横並び ===== */
     .footer-banner > .footer-box {
         width: 32%;
@@ -143,3 +149,4 @@
         margin-top: 16px;
     }
 
+}
