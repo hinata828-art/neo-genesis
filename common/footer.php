@@ -1,52 +1,40 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-      <link rel="stylesheet" href="../css/footer.css">
-</head>
-<body>
-  <footer class="footer-banner">
-    <div class="footer-box" id="roulette-box" role="button" tabindex="0">
-        レンタルで<br>お得な<br>ルーレット！！
+<footer class="footer-banner">
+    <div class="footer-top-buttons">
+        <div class="footer-box" id="roulette-box" role="button" tabindex="0">
+            レンタルで<br>お得な<br>ルーレット！！
+        </div>
+        <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">
+            レンタル<br>OK!!!
+        </div>
+        <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
+            今すぐ<br>チェック！
+        </div>
     </div>
-    <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">
-        レンタル<br>OK!!!
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3 id="modal-title"></h3>
+            <div id="modal-text" style="margin-top: 15px; line-height: 1.6;"></div>
+        </div>
     </div>
-    <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
-        今すぐ<br>チェック！
+    <div id="rain-container"></div>
+    <hr>
+    
+    <div class="footer-menu">
+        <nav class="footer-links">
+            <a href="#">お問い合わせフォーム</a>
+            <a href="#">よくある質問</a>
+            <a href="#">会社概要</a>
+            <a href="#">利用規約</a>
+            <a href="#">プライバシーポリシー</a>
+        </nav>
+
+        <div class="copyright">
+            © 2025 ニシムラ.online All Rights Reserved.
+        </div>
     </div>
 </footer>
-
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h3 id="modal-title"></h3>
-        <p id="modal-text">ここに詳細な情報が表示されます。</p>
-    </div>
-</div>
-
-<div id="rain-container"></div>
-<hr>
-<div class="footer-menu">
-    <nav class="footer-links">
-        <a href="#">お問い合わせフォーム</a>
-        <a href="#">よくある質問</a>
-        <a href="#">会社概要</a>
-        <a href="#">利用規約</a>
-        <a href="#">プライバシーポリシー</a>
-    </nav>
-
-    
-    <div class="admin-login">
-        <a href="../バック/G-19_admin-login.php">管理者ログインはこちら</a>
-    </div>
-
-    <div class="copyright">
-        © 2025 ニシムラ.online All Rights Reserved.
-    </div>
-</div>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // ===== 1. スライダー制御 =====
@@ -177,10 +165,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.status === 'success') {
                         // 成功時: 既存のモーダルを使ってメッセージを表示
                         openModal(
-                           true // HTMLタグを有効にする
-                            '🎉 よく見つけましたね！', 
-                            `おめでとうございます！<br>全商品に使える <strong>${data.discount_rate}% 割引クーポン</strong> をゲットしました！<br><br><a href="G-25_coupon-list.php" style="color:blue; text-decoration:underline;">クーポン一覧を確認する</a>`,
-                        );
+            '🎉 よく見つけましたね！',
+                `おめでとうございます！<br>
+                全商品に使える <strong>${data.discount_rate}% 割引クーポン</strong> をゲットしました！<br><br>
+                <a href="G-25_coupon-list.php" style="color:blue; text-decoration:underline;">
+                クーポン一覧を確認する
+                </a>`,
+                true
+                );
+
                     } else {
                         // 失敗時 (例: ログインしていない等)
                         openModal('残念...', 'クーポンの獲得に失敗しました: ' + data.message);
@@ -197,6 +190,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>  
-
-</body>
-</html>
