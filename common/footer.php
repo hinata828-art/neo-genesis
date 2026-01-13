@@ -1,44 +1,39 @@
-
-  <footer class="footer-banner">
+<footer class="footer-banner">
     <div class="footer-top-buttons">
-    <div class="footer-box" id="roulette-box" role="button" tabindex="0">
-        レンタルで<br>お得な<br>ルーレット！！
+        <div class="footer-box" id="roulette-box" role="button" tabindex="0">
+            レンタルで<br>お得な<br>ルーレット！！
+        </div>
+        <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">
+            レンタル<br>OK!!!
+        </div>
+        <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
+            今すぐ<br>チェック！
+        </div>
     </div>
-    <div class="footer-box" id="rental-ok-box" role="button" tabindex="0">
-        レンタル<br>OK!!!
-    </div>
-    <div class="footer-box" id="easter-egg-btn" role="button" tabindex="0">
-        今すぐ<br>チェック！
-    </div>
-    </div>
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h3 id="modal-title"></h3>
-       
-    </div>
-</div>
 
-<div id="rain-container"></div>
-<hr>
-<div class="footer-menu">
-    <nav class="footer-links">
-        <a href="#">お問い合わせフォーム</a>
-        <a href="#">よくある質問</a>
-        <a href="#">会社概要</a>
-        <a href="#">利用規約</a>
-        <a href="#">プライバシーポリシー</a>
-    </nav>
-
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3 id="modal-title"></h3>
+            <div id="modal-text" style="margin-top: 15px; line-height: 1.6;"></div>
+        </div>
+    </div>
+    <div id="rain-container"></div>
+    <hr>
     
-    <div class="admin-login">
-        <a href="../バック/G-19_admin-login.php">管理者ログインはこちら</a>
-    </div>
+    <div class="footer-menu">
+        <nav class="footer-links">
+            <a href="#">お問い合わせフォーム</a>
+            <a href="#">よくある質問</a>
+            <a href="#">会社概要</a>
+            <a href="#">利用規約</a>
+            <a href="#">プライバシーポリシー</a>
+        </nav>
 
-    <div class="copyright">
-        © 2025 ニシムラ.online All Rights Reserved.
+        <div class="copyright">
+            © 2025 ニシムラ.online All Rights Reserved.
+        </div>
     </div>
-</div>
 </footer>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
