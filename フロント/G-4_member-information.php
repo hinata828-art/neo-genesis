@@ -25,7 +25,7 @@ try {
     // 会員情報取得
     // ===============================
     $sql_customer = "
-        SELECT c.*, a.prefecture, a.city, a.full_address
+        SELECT c.*, a.prefecture, a.city, a.address_line
         FROM customer c
         LEFT JOIN address a ON c.customer_id = a.customer_id
         WHERE c.customer_id = :id
