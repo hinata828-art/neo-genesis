@@ -60,16 +60,33 @@ section h2 {
 }
 
 /* =========================================
-   1. 代表挨拶エリア
+   1. 代表挨拶エリア（修正版）
 ========================================= */
 .message-box {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    gap: 20px; /* 画像とテキストの間の隙間 */
+    align-items: flex-start; /* 上揃え */
 }
 
+/* 画像エリア */
+.message-img {
+    flex: 0 0 200px; /* 幅を200pxに固定（調整可能） */
+    text-align: center;
+}
+
+/* 画像本体 */
+.message-img img {
+    width: 100%; /* 親要素の幅いっぱいにする */
+    height: auto; /* 高さは自動調整 */
+    border-radius: 10px; /* 角を丸くする */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 軽く影をつける */
+    object-fit: cover; /* トリミングして枠に収める（必要なら） */
+}
+
+/* テキストエリア */
 .message-text {
-    background: #fafafa; /* 商品カード(.item)と同じ背景色 */
+    flex: 1; /* 残りの幅をすべて使う */
+    background: #fafafa;
     padding: 20px;
     border-radius: 10px;
     line-height: 1.8;
@@ -86,6 +103,22 @@ section h2 {
 .ceo-name span {
     font-size: 1.3em;
     margin-left: 10px;
+}
+
+/* スマホ対応（レスポンシブ）の追加 */
+@media screen and (max-width: 600px) {
+    /* スマホでは縦並びにする */
+    .message-box {
+        flex-direction: column;
+    }
+    
+    /* スマホでの画像エリア調整 */
+    .message-img {
+        flex: 0 0 auto; /* 幅の固定を解除 */
+        width: 100%; /* 横幅いっぱいにする */
+        max-width: 300px; /* ただし大きすぎないように制限 */
+        margin: 0 auto; /* 中央寄せ */
+    }
 }
 
 /* =========================================

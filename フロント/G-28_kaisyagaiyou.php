@@ -26,8 +26,10 @@ session_start();
             <section class="ceo-message">
                 <h2>代表挨拶</h2>
                 <div class="message-box">
-                    <div class="message-text">
+                    <div class="message-img">
                         <img src="../img/nisimura.jpg" alt="西村 陽奈太">
+                    </div>
+                    <div class="message-text">
                         <p>
                             「家電で、明日をちょっと便利に。」<br>
                             私たちNISHIMURAelectronicsは、博多の地から最新のテクノロジーをお届けすることを使命としています。<br>
@@ -38,7 +40,7 @@ session_start();
                             代表取締役社長 <span>西村 陽奈太</span>
                         </p>
                     </div>
-                    </div>
+                </div>
             </section>
 
             <section class="company-info">
