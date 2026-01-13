@@ -152,6 +152,12 @@ function getStatusClass($status) {
                 </div>
             </section>
 
+            <?php
+echo "<pre>";
+var_dump($customer_info);
+echo "</pre>";
+?>
+
             <?php if ($customer_info): ?>
             <section class="info-section">
                 <h2 class="section-title">会員情報</h2>
