@@ -15,7 +15,6 @@ session_start();
     <?php // include '../common/header.php'; ?>
     <header style="background:#ccc; padding:10px; text-align:center;">
         <h1>NISHIMURAelectronics</h1>
-        <a href="index.php">トップに戻る</a>
     </header>
 
     <div class="container">
@@ -28,6 +27,7 @@ session_start();
                 <h2>代表挨拶</h2>
                 <div class="message-box">
                     <div class="message-text">
+                        <img src="../img/nisimura.jpg" alt="西村 陽奈太">
                         <p>
                             「家電で、明日をちょっと便利に。」<br>
                             私たちNISHIMURAelectronicsは、博多の地から最新のテクノロジーをお届けすることを使命としています。<br>
