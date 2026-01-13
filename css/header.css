@@ -176,16 +176,22 @@ header {
 }
 
 /* ===== スマホ対応 ===== */
+/* ===== スマホ対応 ===== */
 @media (max-width: 600px) {
 
     body {
-        padding-top: 140px;
+        /* ヘッダーがかなりスリムになるので、本文の開始位置もそれに合わせて調整 */
+        padding-top: 110px; 
     }
 
+    /* ▼▼▼ ここが一番のポイントです ▼▼▼ */
+    /* ロゴの高さを80pxから40pxに変更 */
+    /* これにより、ロゴの横にある文字の上下の「無駄な余白」が消えます */
     .header-logo img {
-        height: 80px;
+        height: 40px; 
     }
 
+    /* 文字サイズはそのままでOK */
     .welcome-message {
         font-size: 13px;
     }
@@ -193,15 +199,22 @@ header {
         font-size: 15px;
     }
 
+    /* アイコンサイズも少し調整（バランスのため） */
     .header-user {
-        width: 36px;
-        height: 36px;
+        width: 32px; /* 36から少し小さく */
+        height: 32px;
     }
 
     .header-cart a {
-        padding: 6px 10px;
+        padding: 4px 8px; /* カートボタンも少しスリムに */
     }
 
+    /* ▼▼▼ ヘッダー全体の上下の余白も縮める設定を追加 ▼▼▼ */
+    header {
+        padding: 5px 0; /* PCの10pxから5pxに半減 */
+    }
+
+    /* その他の設定はそのまま */
     .category-select {
         width: 80px;
         font-size: 13px;
@@ -212,9 +225,10 @@ header {
         padding: 10px 50px 10px 12px;
         font-size: 14px;
     }
-
+    
+    /* 検索バーの上の隙間（前回の修正箇所） */
+    /* 上の段が縮んだので、ここは少しあっても気にならないかもしれませんが、お好みで調整してください */
     .bottom-row {
-        /* PCでは8pxのまま、スマホでは2px（または0）にして詰める */
         margin-top: 2px;
     }
 }
