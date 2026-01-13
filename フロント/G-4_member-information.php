@@ -169,11 +169,7 @@ function getStatusClass($status) {
 </section>
 
 <!-- 会員情報 -->
-<?php
- echo "<pre>";
-var_dump($customer_info);
-echo "</pre>";
-?>
+
 <?php if ($customer_info): ?>
 
 <section class="info-section">
