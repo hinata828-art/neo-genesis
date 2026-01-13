@@ -135,7 +135,7 @@ header {
 
 /* ===== 下段：検索バー ===== */
 .bottom-row {
-    margin-top: 8px;
+    margin-top: 2px; /* ← ここを「8px」から「2px」や「0」に変更 */
     padding: 0 10px;
     display: flex;
 }
