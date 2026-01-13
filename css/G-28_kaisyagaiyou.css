@@ -1,0 +1,198 @@
+@charset "UTF-8";
+
+/* =========================================
+   全体レイアウト (ホーム画面の .pickapp を参考に統一)
+========================================= */
+body {
+    background-color: #f5f5f5; /* 背景を少しグレーにして白カードを目立たせる */
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+}
+
+.container {
+    width: 95%;
+    max-width: 800px; /* 読みやすいように幅を制限 */
+    margin: 20px auto;
+}
+
+/* ページタイトルエリア */
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.page-subtitle {
+    font-size: 0.9em;
+    color: #007b83; /* カテゴリーアイコンの文字色と合わせる */
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+/* =========================================
+   セクション共通デザイン (カード型)
+========================================= */
+section {
+    background-color: #fff;
+    border-radius: 10px; /* .pickapp と同じ丸み */
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* .pickapp と同じ影 */
+}
+
+/* セクション見出し */
+section h2 {
+    color: #007b83; /* カテゴリーアイコンの文字色を採用（赤だと強すぎるため） */
+    font-size: 1.4em;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border-bottom: 2px solid #fafafa;
+    padding-bottom: 10px;
+}
+
+/* =========================================
+   1. 代表挨拶エリア
+========================================= */
+.message-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message-text {
+    background: #fafafa; /* 商品カード(.item)と同じ背景色 */
+    padding: 20px;
+    border-radius: 10px;
+    line-height: 1.8;
+    font-size: 0.95em;
+}
+
+.ceo-name {
+    text-align: right;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.ceo-name span {
+    font-size: 1.3em;
+    margin-left: 10px;
+}
+
+/* =========================================
+   2. 会社概要テーブル
+========================================= */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table th,
+.info-table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.info-table th {
+    width: 30%;
+    color: #007b83; /* テーマカラー */
+    font-weight: bold;
+    white-space: nowrap; /* 項目名は折り返さない */
+}
+
+.info-table td {
+    color: #333;
+}
+
+/* 最後の線は消す */
+.info-table tr:last-child th,
+.info-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================
+   3. アクセスマップ
+========================================= */
+.map-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 の比率 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 10px; /* マップの角も丸くする */
+    background-color: #eee;
+}
+
+.map-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* =========================================
+   トップに戻るボタン (商品ボタン .item-btn のスタイル流用)
+========================================= */
+.back-btn-area {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.back-btn {
+    background-color: #ffd700; /* 商品ボタンと同じ黄色 */
+    color: #333;
+    text-decoration: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.2s, background-color 0.2s;
+    display: inline-block;
+}
+
+.back-btn:hover {
+    background-color: #ffcc00;
+    transform: scale(1.03); /* 商品カードと同じホバー挙動 */
+}
+
+/* =========================================
+   スマホ対応 (レスポンシブ)
+========================================= */
+@media screen and (max-width: 600px) {
+    .container {
+        width: 95%;
+    }
+
+    .info-table th,
+    .info-table td {
+        display: block;
+        width: 100%;
+        border-bottom: none;
+    }
+    
+    .info-table th {
+        padding-bottom: 5px;
+        background-color: #fafafa;
+        border-radius: 5px;
+        padding: 8px;
+        margin-top: 10px;
+    }
+    
+    .info-table td {
+        padding-top: 5px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+}

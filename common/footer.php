@@ -25,7 +25,7 @@
         <nav class="footer-links">
             <a href="#">お問い合わせフォーム</a>
             <a href="#">よくある質問</a>
-            <a href="#">会社概要</a>
+            <a href="../フロント/G-28_kaisyagaiyou.php">会社概要</a>
             <a href="#">利用規約</a>
             <a href="#">プライバシーポリシー</a>
         </nav>
@@ -89,14 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
     rouletteBox.addEventListener('click', () => {
         openModal(
             'レンタルでお得なルーレット！！',
-            'レンタル商品をご利用いただくと、お得な特典が当たるルーレットに挑戦できます！詳細はキャンペーンページをご確認ください。'
+            'レンタル商品をご利用いただくと、お得な特典が当たるルーレットに挑戦できます！'
         );
     });
 
     rentalOkBox.addEventListener('click', () => {
         openModal(
             'レンタルOK!!!',
-            '当社の多くの商品がレンタル可能です！最新の家電をお気軽に、必要な期間だけご利用いただけます。レンタル可能な商品の一覧はこちら。'
+            '当社の多くの商品がレンタル可能です！最新の家電をお気軽に、必要な期間だけご利用いただけます。'
         );
     });
 
