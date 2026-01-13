@@ -25,7 +25,7 @@ try {
     // 会員情報取得
     // ===============================
     $sql_customer = "
-        SELECT c.*, a.prefecture, a.city
+        SELECT c.*, a.prefecture, a.city, a.full_address
         FROM customer c
         LEFT JOIN address a ON c.customer_id = a.customer_id
         WHERE c.customer_id = :id
@@ -40,7 +40,7 @@ try {
     }
 
     $customer_info['full_address'] =
-        ($customer_info['prefecture'] ?? '') . ($customer_info['city'] ?? '');
+        ($customer_info['prefecture'] ?? '') . ($customer_info['city'] ?? '') . ($customer_info['full_address'] ?? '');
     if (!$customer_info['full_address']) $customer_info['full_address'] = '（住所未登録）';
     if (!$customer_info['phone_number']) $customer_info['phone_number'] = '（電話番号未登録）';
     if (!$customer_info['payment_method']) $customer_info['payment_method'] = '（支払方法未登録）';
@@ -167,6 +167,8 @@ function getStatusClass($status) {
 </section>
 
 <!-- 会員情報 -->
+<?php if ($customer_info): ?>
+
 <section class="info-section">
     <h2 class="section-title">会員情報</h2>
 
@@ -192,7 +194,11 @@ function getStatusClass($status) {
     </div>
 
     <a href="G-5_member-change.php" class="btn btn-edit">会員情報変更画面へ</a>
+    <?php $_SESSION['customer_info'] = $customer_info; ?>
+
 </section>
+<?php endif; ?>
+
 
 </main>
 </div>
