@@ -1,20 +1,22 @@
 /* =========================
    共通（PC・スマホ共通）
 ========================= */
-
 .footer-banner {
     width: 100%;
     background-color: #ffffff;
     border-top: 1px solid #ccc;
     padding: 20px 16px;
     box-sizing: border-box;
+    position: relative; /* モーダル等の基準 */
 }
+
 .footer-top-buttons {
     display: flex;
     justify-content: space-between;
     gap: 8px;
     margin-bottom: 12px;
 }
+
 /* 上部3ボタン */
 .footer-box {
     border: 1px solid #ccc;
@@ -24,18 +26,12 @@
     cursor: pointer;
     background-color: #fff;
     font-weight: bold;
-}
-
-
-/* モーダルなどがあるため relative */
-.footer-banner {
-    position: relative;
+    user-select: none; /* 連打した時に文字選択されないように */
 }
 
 /* =========================
    フッターメニュー（PC）
 ========================= */
-
 .footer-menu {
     display: flex;
     justify-content: space-between;
@@ -74,20 +70,16 @@
 }
 
 /* =========================
-   スマホ対応（追加）
+   スマホ対応
 ========================= */
-
 @media screen and (max-width: 768px) {
-
-    /* footer全体 */
     .footer-banner {
         padding: 16px 12px;
         display: flex;
         flex-direction: column;
     }
+
     .footer-top-buttons {
-        display: flex;
-        justify-content: space-between;
         gap: 8px;
         margin-bottom: 12px;
     }
@@ -97,19 +89,6 @@
         font-size: 13px;
     }
 
-    /* ===== 上部3ボタン：横並び ===== */
-    .footer-banner > .footer-box {
-        width: 32%;
-        font-size: 13px;
-        margin-bottom: 12px;
-    }
-
-    .footer-banner {
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    /* ===== フッターリンク：横並び＋折り返し ===== */
     .footer-links {
         width: 100%;
         display: flex;
@@ -124,109 +103,103 @@
         white-space: nowrap;
     }
 
-    /* ===== 管理者ログイン：中央 ===== */
-    .admin-login {
+    .admin-login, .copyright {
         width: 100%;
         text-align: center;
-        margin-top: 12px;
     }
-
-    /* ===== copyright ===== */
-    .copyright {
-        width: 100%;
-        text-align: center;
-        font-size: 11px;
-        line-height: 1.4;
-        margin-top: 12px;
-    }
-
-    /* footer-menu 全体を縦 */
+    
     .footer-menu {
-        display: flex;
         flex-direction: column;
         align-items: center;
         gap: 8px;
         margin-top: 16px;
     }
-
 }
 
 /* =========================
-   モーダル（ポップアップ）用CSS
+   モーダル（ポップアップ）設定
+   ※ここが中央表示の肝です
 ========================= */
 .modal {
-    display: none; /* 初期状態は非表示 */
-    position: fixed;
-    z-index: 1000; /* 最前面に表示 */
+    display: none;       /* 初期状態は非表示 */
+    position: fixed;     /* 画面全体に固定 */
+    z-index: 1000;       /* 最前面 */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5); /* 背景を半透明の黒に */
-    justify-content: center; /* 中央寄せ */
-    align-items: center;     /* 中央寄せ */
+    
+    /* ▼▼ flexboxで中央寄せ ▼▼ */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
     background-color: #fefefe;
     margin: auto;
-    padding: 20px;
+    padding: 30px;
     border: 1px solid #888;
     width: 80%;
-    max-width: 500px; /* PCで見やすくなるよう最大幅を設定 */
-    border-radius: 10px;
+    max-width: 500px;
+    border-radius: 12px;
     position: relative;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
 }
 
 .close-btn {
     color: #aaa;
-    float: right;
+    position: absolute;
+    top: 10px;
+    right: 15px;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
-    line-height: 20px;
+    line-height: 1;
 }
 
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.close-btn:hover {
+    color: #000;
 }
 
 /* =========================
-   落下アニメーション用CSS
+   落下アニメーション設定
+   ※ここが降ってくる動作の肝です
 ========================= */
 #rain-container {
-    position: fixed; /* 画面全体に固定 */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* 画像が降ってきても、後ろのリンクをクリックできるようにする */
-    z-index: 9999; /* モーダルよりさらに上、または調整してください */
+    pointer-events: none; /* クリックを邪魔しない */
+    z-index: 9999;
     overflow: hidden;
 }
 
 .falling-item {
     position: absolute;
-    top: -100px; /* 画面の少し上からスタート */
+    top: -150px; /* 画面の見えない上空からスタート */
     user-select: none;
-    animation-name: fall; /* 下のアニメーションを実行 */
-    animation-timing-function: linear; /* 一定の速度で */
-    animation-fill-mode: forwards; /* 終わったらその場にとどまる（JSで消すのでなくてもOK） */
+    
+    /* アニメーション実行 */
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
 }
 
-/* 落下する動きの定義 */
+/* 落下アニメーションの動き定義 */
 @keyframes fall {
     0% {
         transform: translateY(0) rotate(0deg);
         opacity: 1;
     }
     100% {
-        transform: translateY(110vh) rotate(360deg); /* 画面下(110vh)まで落ちながら回転 */
+        /* 画面下まで落ちながら回転 */
+        transform: translateY(120vh) rotate(360deg);
         opacity: 1;
     }
 }
