@@ -40,7 +40,9 @@ try {
     }
 
     $customer_info['full_address'] =
-        ($customer_info['prefecture'] ?? '') . ($customer_info['city'] ?? '') . ($customer_info['full_address'] ?? '');
+        ($customer_info['prefecture'] ?? '') . 
+        ($customer_info['city'] ?? '') . 
+        ($customer_info['address_line'] ?? '');
     if (!$customer_info['full_address']) $customer_info['full_address'] = '（住所未登録）';
     if (!$customer_info['phone_number']) $customer_info['phone_number'] = '（電話番号未登録）';
     if (!$customer_info['payment_method']) $customer_info['payment_method'] = '（支払方法未登録）';
